@@ -12,6 +12,7 @@ import ExercisePage from "./pages/ExercisePage";
 import MoodPage from "./pages/MoodPage";
 import GoalsPage from "./pages/GoalsPage";
 import CalendarPage from "./pages/CalendarPage";
+import SettingsPage from "./pages/SettingsPage";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/mood" element={<MoodPage />} />
           <Route path="/goals" element={<GoalsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

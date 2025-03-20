@@ -76,17 +76,19 @@ const SidebarNav = () => {
           active={pathname === '/settings'}
         />
         <div className="mt-4 mx-3">
-          <div className="flex items-center p-2 rounded-xl bg-secondary">
-            <div className="flex-shrink-0 mr-3">
-              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-                <User className="h-5 w-5" />
+          <Link to="/settings" className="block">
+            <div className="flex items-center p-2 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors">
+              <div className="flex-shrink-0 mr-3">
+                <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
+                  <User className="h-5 w-5" />
+                </div>
+              </div>
+              <div>
+                <p className="font-medium text-sm">John Doe</p>
+                <p className="text-xs text-muted-foreground">Premium Plan</p>
               </div>
             </div>
-            <div>
-              <p className="font-medium text-sm">John Doe</p>
-              <p className="text-xs text-muted-foreground">Premium Plan</p>
-            </div>
-          </div>
+          </Link>
         </div>
       </div>
     </div>
