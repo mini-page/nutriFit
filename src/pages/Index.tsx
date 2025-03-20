@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Header from '@/components/ui/header';
 import WaterTracker from '@/components/ui/water-tracker';
@@ -8,7 +7,7 @@ import MoodTracker from '@/components/ui/mood-tracker';
 import DailyGoal from '@/components/ui/daily-goal';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Activity, ChevronDown, TrendingUp } from 'lucide-react';
+import { Activity, ChevronDown, TrendingUp, Droplet } from 'lucide-react';
 
 const Index = () => {
   const isMobile = useIsMobile();
