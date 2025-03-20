@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Settings, User, Upload, Download, Palette, Bell, Shield, Moon, SunMedium } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Settings, Palette, Bell, Shield, Moon, SunMedium, Download, Upload } from 'lucide-react';
 import Header from '@/components/ui/header';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -10,15 +10,8 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from 'sonner';
-import { 
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
+import { FormLabel } from '@/components/ui/form';
 import { 
   Accordion,
   AccordionContent,
@@ -29,28 +22,57 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
-import { useForm } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 
 const SettingsPage = () => {
   const isMobile = useIsMobile();
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light');
+  const [userName, setUserName] = useState('John Doe');
   
-  const form = useForm({
-    defaultValues: {
-      name: 'John Doe',
-      email: 'john@example.com',
-      bio: 'Fitness enthusiast trying to stay healthy and track progress.',
-    },
-  });
+  // Handle theme switching
+  useEffect(() => {
+    // Check if theme preference is stored
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'system' || 'light';
+    setTheme(savedTheme);
+    
+    // Apply theme to document
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else if (savedTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else if (savedTheme === 'system') {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, []);
+  
+  // Update theme when it changes
+  const handleThemeChange = (value: 'light' | 'dark' | 'system') => {
+    setTheme(value);
+    localStorage.setItem('theme', value);
+    
+    if (value === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else if (value === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else if (value === 'system') {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+    
+    toast.success(`Theme changed to ${value} mode`);
+  };
 
   const handleExportData = () => {
     // Mock function to export user data
     const mockUserData = {
       personalInfo: {
-        name: 'John Doe',
-        email: 'john@example.com',
+        name: userName,
       },
       trackers: {
         water: [{ date: '2023-06-01', amount: 2000 }],
@@ -92,7 +114,12 @@ const SettingsPage = () => {
           try {
             const jsonData = JSON.parse(event.target?.result as string);
             console.log('Imported data:', jsonData);
-            // Here you would process and store the data
+            
+            // Update username if available in the imported data
+            if (jsonData.personalInfo?.name) {
+              setUserName(jsonData.personalInfo.name);
+            }
+            
             toast.success('Data imported successfully!');
           } catch (error) {
             console.error('Error parsing JSON file:', error);
@@ -105,11 +132,6 @@ const SettingsPage = () => {
     };
     
     input.click();
-  };
-
-  const onSubmit = (data: any) => {
-    console.log(data);
-    toast.success('Profile updated!');
   };
 
   return (
@@ -128,12 +150,15 @@ const SettingsPage = () => {
             <p className="text-muted-foreground">Customize your NutriFit experience</p>
           </div>
           
-          <Tabs defaultValue="account" className="w-full">
-            <TabsList className="grid grid-cols-4 mb-8 w-full max-w-2xl">
-              <TabsTrigger value="account" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                <span>Account</span>
-              </TabsTrigger>
+          <div className="mb-6 p-4 rounded-lg bg-secondary flex items-center">
+            <div className="flex-1">
+              <p className="font-medium text-foreground">Welcome, {userName}</p>
+              <p className="text-sm text-muted-foreground">Premium Plan</p>
+            </div>
+          </div>
+          
+          <Tabs defaultValue="appearance" className="w-full">
+            <TabsList className="grid grid-cols-3 mb-8 w-full max-w-2xl">
               <TabsTrigger value="appearance" className="flex items-center gap-2">
                 <Palette className="h-4 w-4" />
                 <span>Appearance</span>
@@ -148,109 +173,47 @@ const SettingsPage = () => {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="account" className="space-y-6">
-              <div className="glass-card p-6">
-                <h3 className="text-lg font-medium mb-4">Profile Information</h3>
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="email" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="bio"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Bio</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              {...field} 
-                              placeholder="Tell us about yourself" 
-                              className="resize-none" 
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Brief description for your profile.
-                          </FormDescription>
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <Button type="submit">Save Changes</Button>
-                  </form>
-                </Form>
-              </div>
-              
-              <div className="glass-card p-6">
-                <h3 className="text-lg font-medium mb-4">Account Management</h3>
-                <div className="space-y-4">
-                  <Button 
-                    variant="outline" 
-                    className="w-full md:w-auto justify-start border-amber-500 text-amber-500 hover:bg-amber-500/10"
-                  >
-                    Change Password
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full md:w-auto justify-start border-red-500 text-red-500 hover:bg-red-500/10"
-                  >
-                    Delete Account
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-            
             <TabsContent value="appearance" className="space-y-6">
               <div className="glass-card p-6">
                 <h3 className="text-lg font-medium mb-4">Theme</h3>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
-                    <div className="mb-3">Choose theme mode:</div>
+                    <div className="mb-3 font-medium">Theme Mode</div>
                     <RadioGroup
                       value={theme}
-                      onValueChange={(value) => setTheme(value as 'light' | 'dark' | 'system')}
-                      className="flex flex-col space-y-1"
+                      onValueChange={(value) => handleThemeChange(value as 'light' | 'dark' | 'system')}
+                      className="flex flex-col space-y-3"
                     >
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors">
                         <RadioGroupItem value="light" id="light" />
-                        <FormLabel htmlFor="light" className="flex items-center gap-2">
-                          <SunMedium className="h-4 w-4" />
-                          Light
+                        <FormLabel htmlFor="light" className="flex items-center gap-2 cursor-pointer">
+                          <SunMedium className="h-5 w-5 text-amber-500" />
+                          <div>
+                            <p className="font-medium">Light Mode</p>
+                            <p className="text-sm text-muted-foreground">Use light theme for the application</p>
+                          </div>
                         </FormLabel>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      
+                      <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors">
                         <RadioGroupItem value="dark" id="dark" />
-                        <FormLabel htmlFor="dark" className="flex items-center gap-2">
-                          <Moon className="h-4 w-4" />
-                          Dark
+                        <FormLabel htmlFor="dark" className="flex items-center gap-2 cursor-pointer">
+                          <Moon className="h-5 w-5 text-indigo-400" />
+                          <div>
+                            <p className="font-medium">Dark Mode</p>
+                            <p className="text-sm text-muted-foreground">Use dark theme for the application</p>
+                          </div>
                         </FormLabel>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      
+                      <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors">
                         <RadioGroupItem value="system" id="system" />
-                        <FormLabel htmlFor="system">System</FormLabel>
+                        <FormLabel htmlFor="system" className="flex items-center gap-2 cursor-pointer">
+                          <div>
+                            <p className="font-medium">System Preference</p>
+                            <p className="text-sm text-muted-foreground">Follow your system's theme setting</p>
+                          </div>
+                        </FormLabel>
                       </div>
                     </RadioGroup>
                   </div>
@@ -258,15 +221,49 @@ const SettingsPage = () => {
                   <Separator />
                   
                   <div>
-                    <div className="mb-3">Color Accent:</div>
-                    <ToggleGroup type="single" className="flex flex-wrap gap-1">
-                      <ToggleGroupItem value="blue" aria-label="Blue accent" className="w-8 h-8 rounded-full bg-blue-500" />
-                      <ToggleGroupItem value="green" aria-label="Green accent" className="w-8 h-8 rounded-full bg-green-500" />
-                      <ToggleGroupItem value="purple" aria-label="Purple accent" className="w-8 h-8 rounded-full bg-purple-500" />
-                      <ToggleGroupItem value="pink" aria-label="Pink accent" className="w-8 h-8 rounded-full bg-pink-500" />
-                      <ToggleGroupItem value="orange" aria-label="Orange accent" className="w-8 h-8 rounded-full bg-orange-500" />
-                      <ToggleGroupItem value="cyan" aria-label="Cyan accent" className="w-8 h-8 rounded-full bg-cyan-500" />
+                    <div className="mb-3 font-medium">Color Accent</div>
+                    <ToggleGroup type="single" className="flex flex-wrap gap-2">
+                      <ToggleGroupItem value="blue" aria-label="Blue accent" className="w-10 h-10 rounded-full bg-blue-500" />
+                      <ToggleGroupItem value="green" aria-label="Green accent" className="w-10 h-10 rounded-full bg-green-500" />
+                      <ToggleGroupItem value="purple" aria-label="Purple accent" className="w-10 h-10 rounded-full bg-purple-500" />
+                      <ToggleGroupItem value="pink" aria-label="Pink accent" className="w-10 h-10 rounded-full bg-pink-500" />
+                      <ToggleGroupItem value="orange" aria-label="Orange accent" className="w-10 h-10 rounded-full bg-orange-500" />
+                      <ToggleGroupItem value="cyan" aria-label="Cyan accent" className="w-10 h-10 rounded-full bg-cyan-500" />
                     </ToggleGroup>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div>
+                    <div className="mb-3 font-medium">Font Size</div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button variant="outline" className="text-sm">Small</Button>
+                      <Button variant="outline" className="text-base bg-secondary">Medium</Button>
+                      <Button variant="outline" className="text-lg">Large</Button>
+                    </div>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div>
+                    <div className="mb-3 font-medium">Animation & Effects</div>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Reduce Motion</FormLabel>
+                          <p className="text-sm text-muted-foreground">Minimize animations throughout the app</p>
+                        </div>
+                        <Switch />
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Glass Effects</FormLabel>
+                          <p className="text-sm text-muted-foreground">Enable glass morphism effects</p>
+                        </div>
+                        <Switch defaultChecked />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -274,25 +271,54 @@ const SettingsPage = () => {
               <div className="glass-card p-6">
                 <h3 className="text-lg font-medium mb-4">Customize Dashboard</h3>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span>Show Water Tracker</span>
-                    <Switch defaultChecked />
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="water" defaultChecked />
+                    <label
+                      htmlFor="water"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Show Water Tracker
+                    </label>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>Show Nutrition Tracker</span>
-                    <Switch defaultChecked />
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="nutrition" defaultChecked />
+                    <label
+                      htmlFor="nutrition"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Show Nutrition Tracker
+                    </label>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>Show Exercise Tracker</span>
-                    <Switch defaultChecked />
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="exercise" defaultChecked />
+                    <label
+                      htmlFor="exercise"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Show Exercise Tracker
+                    </label>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>Show Mood Tracker</span>
-                    <Switch defaultChecked />
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="mood" defaultChecked />
+                    <label
+                      htmlFor="mood"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Show Mood Tracker
+                    </label>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>Show Goals Tracker</span>
-                    <Switch defaultChecked />
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="goals" defaultChecked />
+                    <label
+                      htmlFor="goals"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Show Goals Tracker
+                    </label>
                   </div>
                 </div>
               </div>
@@ -413,6 +439,7 @@ const SettingsPage = () => {
                     onClick={() => {
                       if (confirm('Are you sure you want to clear all your data? This cannot be undone.')) {
                         // Here you would clear localStorage or other stored data
+                        localStorage.clear();
                         toast.success('All data has been cleared');
                       }
                     }}
