@@ -48,11 +48,26 @@
   animation: wave 10s ease-in-out infinite;
 }
 
-@keyframes wave {
-  0%, 100% {
-    transform: translateX(0) translateY(0);
-  }
-  50% {
-    transform: translateX(-25px) translateY(-5px);
+/* Dark mode support for SVG colors in water wave */
+.dark .water-wave .shape-fill {
+  fill: rgba(255, 255, 255, 0.1);
+}
+
+/* Additional dark mode adjustments */
+.dark .card-highlight {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth transitions between light and dark modes */
+*, *::before, *::after {
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+/* Media query to fix mood tracker on small screens */
+@media (max-width: 640px) {
+  .mood-tracker-emoji {
+    font-size: 1.25rem;
+    padding: 0.5rem;
   }
 }

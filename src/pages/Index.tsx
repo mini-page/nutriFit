@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Header from '@/components/ui/header';
 import WaterTracker from '@/components/ui/water-tracker';
@@ -7,7 +8,7 @@ import MoodTracker from '@/components/ui/mood-tracker';
 import DailyGoal from '@/components/ui/daily-goal';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Activity, ChevronDown, TrendingUp, Droplet } from 'lucide-react';
+import { Activity, ChevronDown, TrendingUp, Droplet, Moon } from 'lucide-react';
 
 const Index = () => {
   const isMobile = useIsMobile();
@@ -47,7 +48,7 @@ const Index = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-              <div className="bg-secondary/50 rounded-xl p-4 flex items-center">
+              <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center">
                 <div className="h-12 w-12 rounded-full bg-water/10 flex items-center justify-center mr-4">
                   <Droplet className="h-6 w-6 text-water" />
                 </div>
@@ -57,7 +58,7 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="bg-secondary/50 rounded-xl p-4 flex items-center">
+              <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center">
                 <div className="h-12 w-12 rounded-full bg-calories/10 flex items-center justify-center mr-4">
                   <Activity className="h-6 w-6 text-calories" />
                 </div>
@@ -67,13 +68,13 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="bg-secondary/50 rounded-xl p-4 flex items-center">
+              <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center">
                 <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-                  <Activity className="h-6 w-6 text-primary" />
+                  <Moon className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Daily Steps</p>
-                  <p className="text-xl font-bold">8,423</p>
+                  <p className="text-sm text-muted-foreground">Sleep Quality</p>
+                  <p className="text-xl font-bold">Good</p>
                 </div>
               </div>
             </div>
@@ -92,26 +93,26 @@ const Index = () => {
                   <Activity className="h-5 w-5 text-primary" />
                   <span>Quick Actions</span>
                 </h3>
-                <span className="category-pill bg-secondary text-muted-foreground">
+                <span className="category-pill bg-secondary dark:bg-secondary/30 text-muted-foreground">
                   <Activity className="h-3.5 w-3.5" />
                   Tools
                 </span>
               </div>
               
               <div className="grid grid-cols-2 gap-3 mt-4">
-                <button className="p-3 bg-secondary rounded-xl hover:bg-secondary/70 transition-colors flex flex-col items-center justify-center">
+                <button className="p-3 bg-secondary dark:bg-secondary/20 rounded-xl hover:bg-secondary/70 dark:hover:bg-secondary/30 transition-colors flex flex-col items-center justify-center">
                   <Activity className="h-5 w-5 mb-2 text-primary" />
                   <span className="text-sm">Log Exercise</span>
                 </button>
-                <button className="p-3 bg-secondary rounded-xl hover:bg-secondary/70 transition-colors flex flex-col items-center justify-center">
+                <button className="p-3 bg-secondary dark:bg-secondary/20 rounded-xl hover:bg-secondary/70 dark:hover:bg-secondary/30 transition-colors flex flex-col items-center justify-center">
                   <Droplet className="h-5 w-5 mb-2 text-water" />
                   <span className="text-sm">Add Water</span>
                 </button>
-                <button className="p-3 bg-secondary rounded-xl hover:bg-secondary/70 transition-colors flex flex-col items-center justify-center">
+                <button className="p-3 bg-secondary dark:bg-secondary/20 rounded-xl hover:bg-secondary/70 dark:hover:bg-secondary/30 transition-colors flex flex-col items-center justify-center">
                   <TrendingUp className="h-5 w-5 mb-2 text-goal" />
                   <span className="text-sm">Set Goal</span>
                 </button>
-                <button className="p-3 bg-secondary rounded-xl hover:bg-secondary/70 transition-colors flex flex-col items-center justify-center">
+                <button className="p-3 bg-secondary dark:bg-secondary/20 rounded-xl hover:bg-secondary/70 dark:hover:bg-secondary/30 transition-colors flex flex-col items-center justify-center">
                   <Activity className="h-5 w-5 mb-2 text-calories" />
                   <span className="text-sm">Log Meal</span>
                 </button>
