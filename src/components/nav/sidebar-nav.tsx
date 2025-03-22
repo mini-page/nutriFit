@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Droplet, Flame, Activity, SmilePlus, Target, Calendar, Settings } from 'lucide-react';
+import { LayoutDashboard, Droplet, Flame, Activity, SmilePlus, Target, Calendar, Settings, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavItemProps {
@@ -39,6 +39,7 @@ const SidebarNav = () => {
     { icon: <Flame className="h-5 w-5" />, label: 'Nutrition', href: '/nutrition' },
     { icon: <Activity className="h-5 w-5" />, label: 'Exercise', href: '/exercise' },
     { icon: <SmilePlus className="h-5 w-5" />, label: 'Mood', href: '/mood' },
+    { icon: <Moon className="h-5 w-5" />, label: 'Sleep', href: '/sleep' },
     { icon: <Target className="h-5 w-5" />, label: 'Goals', href: '/goals' },
     { icon: <Calendar className="h-5 w-5" />, label: 'Calendar', href: '/calendar' },
   ];
