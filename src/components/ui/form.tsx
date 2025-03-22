@@ -59,6 +59,12 @@ const useFormField = () => {
       formItemId: `${id}-form-item`,
       formDescriptionId: `${id}-form-item-description`,
       formMessageId: `${id}-form-item-message`,
+      // Add these properties to fix TypeScript errors
+      error: undefined,
+      invalid: false,
+      isDirty: false,
+      isTouched: false,
+      isValidating: false
     }
   }
 
