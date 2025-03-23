@@ -7,6 +7,7 @@ import SettingsLayout from '@/components/settings/SettingsLayout';
 import AppearanceSettings from '@/components/settings/AppearanceSettings';
 import NotificationSettings from '@/components/settings/NotificationSettings';
 import DataSettings from '@/components/settings/DataSettings';
+import MainLayout from '@/components/layout/MainLayout';
 
 const SettingsPage = () => {
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light');
@@ -119,42 +120,44 @@ const SettingsPage = () => {
   };
 
   return (
-    <SettingsLayout userName={userName}>
-      <Tabs defaultValue="appearance" className="w-full">
-        <TabsList className="grid grid-cols-3 mb-8 w-full max-w-2xl">
-          <TabsTrigger value="appearance" className="flex items-center gap-2">
-            <Palette className="h-4 w-4" />
-            <span>Appearance</span>
-          </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center gap-2">
-            <Bell className="h-4 w-4" />
-            <span>Notifications</span>
-          </TabsTrigger>
-          <TabsTrigger value="data" className="flex items-center gap-2">
-            <Shield className="h-4 w-4" />
-            <span>Data</span>
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="appearance">
-          <AppearanceSettings 
-            theme={theme} 
-            handleThemeChange={handleThemeChange} 
-          />
-        </TabsContent>
-        
-        <TabsContent value="notifications">
-          <NotificationSettings />
-        </TabsContent>
-        
-        <TabsContent value="data">
-          <DataSettings 
-            handleExportData={handleExportData} 
-            handleImportData={handleImportData} 
-          />
-        </TabsContent>
-      </Tabs>
-    </SettingsLayout>
+    <MainLayout>
+      <SettingsLayout userName={userName}>
+        <Tabs defaultValue="appearance" className="w-full">
+          <TabsList className="grid grid-cols-3 mb-8 w-full max-w-2xl">
+            <TabsTrigger value="appearance" className="flex items-center gap-2">
+              <Palette className="h-4 w-4" />
+              <span>Appearance</span>
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              <span>Notifications</span>
+            </TabsTrigger>
+            <TabsTrigger value="data" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              <span>Data</span>
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="appearance">
+            <AppearanceSettings 
+              theme={theme} 
+              handleThemeChange={handleThemeChange} 
+            />
+          </TabsContent>
+          
+          <TabsContent value="notifications">
+            <NotificationSettings />
+          </TabsContent>
+          
+          <TabsContent value="data">
+            <DataSettings 
+              handleExportData={handleExportData} 
+              handleImportData={handleImportData} 
+            />
+          </TabsContent>
+        </Tabs>
+      </SettingsLayout>
+    </MainLayout>
   );
 };
 
