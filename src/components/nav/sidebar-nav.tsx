@@ -30,8 +30,15 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active }) => {
 };
 
 const SidebarNav = () => {
-  const location = useLocation();
-  const pathname = location.pathname;
+  // Safely check if we can use useLocation
+  let pathname = '/';
+  try {
+    const location = useLocation();
+    pathname = location.pathname;
+  } catch (error) {
+    // If useLocation throws an error, we're outside of Router context
+    console.warn('SidebarNav rendered outside Router context, defaulting active state to homepage');
+  }
 
   const navItems = [
     { icon: <LayoutDashboard className="h-5 w-5" />, label: 'Dashboard', href: '/' },
