@@ -1,69 +1,70 @@
-# Welcome to your Lovable project
 
-## Project info
+# NutriFit - Your Daily Fitness Companion
 
-**URL**: https://lovable.dev/projects/d19eb147-0c90-4cea-8e0a-0817e26be8f1
+![NutriFit Dashboard](https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=1200&q=80)
 
-## How can I edit this code?
+## 🌟 Overview
 
-There are several ways of editing your application.
+NutriFit is a comprehensive health and fitness tracking application designed to help users monitor and improve their wellness journey. The application provides an intuitive dashboard that tracks water intake, nutrition, exercise, mood, sleep patterns, and personal goals.
 
-**Use Lovable**
+## ✨ Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d19eb147-0c90-4cea-8e0a-0817e26be8f1) and start prompting.
+- **Comprehensive Dashboard**: Get a quick overview of all your health metrics in one place
+- **Water Tracking**: Monitor your daily water consumption
+- **Nutrition Management**: Track your caloric intake and meal planning
+- **Exercise Logger**: Record and analyze your workout sessions
+- **Mood Tracking**: Monitor your emotional well-being
+- **Sleep Analytics**: Track your sleep patterns and quality
+- **Goal Setting**: Set and track personalized fitness and wellness goals
+- **Calendar View**: Plan and visualize your fitness journey
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🖥️ Screenshots
 
-**Use your preferred IDE**
+### Dashboard Overview
+![Dashboard](https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Goal Tracking
+![Goals Tracker](https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Technologies Used
 
-Follow these steps:
+- **Frontend**: React, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui
+- **State Management**: React Query
+- **Routing**: React Router
+- **Data Visualization**: Recharts
+- **Icons**: Lucide React
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🚀 Getting Started
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Prerequisites
 
-# Step 3: Install the necessary dependencies.
-npm i
+- Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+
+# Navigate to the project directory
+cd nutrifit
+
+# Install dependencies
+npm install
+
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## 📱 Responsive Design
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+NutriFit is fully responsive and works seamlessly across desktop, tablet, and mobile devices.
 
-**Use GitHub Codespaces**
+## 👤 Created By
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Developed with 💖 by Umang Gupta
 
-## What technologies are used for this project?
+## 📄 License
 
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/d19eb147-0c90-4cea-8e0a-0817e26be8f1) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+This project is licensed under the MIT License - see the LICENSE file for details.
