@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import WaterTracker from '@/components/ui/water-tracker';
@@ -107,7 +106,6 @@ const Index = () => {
   return (
     <MainLayout>
       <div className="mb-6 animate-on-mount opacity-0">
-        <h2 className="text-2xl font-bold mb-2">Hello, Umang! 👋</h2>
         <p className="text-muted-foreground">Track your fitness journey and stay on top of your health goals.</p>
       </div>
       

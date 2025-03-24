@@ -43,6 +43,7 @@ const SidebarNav = () => {
 
   const today = new Date();
   const formattedDate = format(today, 'E dd MMM yyyy');
+  const mobileDate = format(today, 'MMM dd, E');
 
   const navItems = [
     { icon: <LayoutDashboard className="h-5 w-5" />, label: 'Dashboard', href: '/' },

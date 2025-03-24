@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from '@/hooks/use-mobile';
 import SidebarNav from '@/components/nav/sidebar-nav';
@@ -17,14 +16,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NotificationDisplay } from '@/components/ui/notification-display';
+import { MobileMenu } from '@/components/ui/mobile-menu';
 
 interface HeaderProps {
   className?: string;
+  userName?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ className }) => {
+const Header: React.FC<HeaderProps> = ({ className, userName = "Raghav" }) => {
   const today = new Date();
-  const formattedDate = format(today, 'E dd MMM yyyy');
   const mobileDate = format(today, 'MMM dd, E');
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
@@ -44,11 +45,6 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
     // Close any open dropdowns or menus
     setShowNotifications(false);
     setIsMenuOpen(false);
-  };
-
-  const handleNotificationClick = (id: number) => {
-    toast.success(`Notification ${id} marked as read`);
-    // In a real app, would mark notification as read in state/database
   };
 
   // Notification data
@@ -94,37 +90,18 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
       {/* Left section with mobile menu and app name */}
       <div className="flex items-center gap-3">
         {isMobile && (
-          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-            <SheetTrigger asChild>
-              <button className="p-2 text-muted-foreground hover:text-foreground focus:outline-none">
-                <Menu className="h-5 w-5" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-72">
-              <div className="flex items-center justify-between border-b p-4">
-                <div className="flex items-center">
-                  <div className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
-                    <Activity className="h-5 w-5" />
-                  </div>
-                  <h1 className="text-xl font-bold">NutriFit</h1>
-                </div>
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="p-2 rounded-full hover:bg-secondary"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              <SidebarNav />
-            </SheetContent>
-          </Sheet>
+          <MobileMenu 
+            isOpen={isMenuOpen} 
+            setIsOpen={setIsMenuOpen} 
+            mobileDate={mobileDate}
+          />
         )}
         
         {/* App logo and name */}
         <div className="flex flex-col">
           <h1 className="text-xl font-bold flex items-center">
             {!isMobile ? (
-              <span>Welcome, Raghav</span>
+              <span>Hello, {userName}</span>
             ) : (
               <>
                 <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
@@ -192,7 +169,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             </DropdownMenuLabel>
             
             {notifications.slice(0, 2).map(notification => (
-              <DropdownMenuItem key={notification.id} className="flex flex-col items-start" onClick={() => handleNotificationClick(notification.id)}>
+              <DropdownMenuItem key={notification.id} className="flex flex-col items-start" onClick={() => NotificationDisplay.handleNotificationClick(notification.id)}>
                 <div className="flex w-full justify-between">
                   <span className="font-medium">{notification.title}</span>
                   {notification.unread && <span className="w-2 h-2 bg-primary rounded-full" />}
@@ -211,63 +188,10 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
       {/* Notification Popup */}
       {showNotifications && (
-        <div className="notification-overlay" onClick={closeNotifications}>
-          <div 
-            className="notification-popup glass-card p-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Notifications</h3>
-              <button 
-                className="p-1.5 rounded-full hover:bg-secondary transition-colors"
-                onClick={closeNotifications}
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-              {notifications.length > 0 ? (
-                notifications.map((notification) => (
-                  <div 
-                    key={notification.id}
-                    className={cn(
-                      "p-3 rounded-lg cursor-pointer transition-colors",
-                      notification.unread 
-                        ? "bg-secondary/70" 
-                        : "bg-secondary/30 hover:bg-secondary/40"
-                    )}
-                    onClick={() => handleNotificationClick(notification.id)}
-                  >
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-medium">{notification.title}</h4>
-                      <span className="text-xs text-muted-foreground">{notification.time}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{notification.message}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">No notifications yet</p>
-                </div>
-              )}
-            </div>
-            
-            {notifications.length > 0 && (
-              <div className="mt-4 pt-2 border-t">
-                <button 
-                  className="w-full text-sm text-center text-primary hover:underline"
-                  onClick={() => {
-                    toast.success('All notifications marked as read');
-                    closeNotifications();
-                  }}
-                >
-                  Mark all as read
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        <NotificationDisplay 
+          notifications={notifications} 
+          onClose={closeNotifications} 
+        />
       )}
     </header>
   );
