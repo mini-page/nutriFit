@@ -1,10 +1,18 @@
 
 import React, { useState } from 'react';
-import { User, Menu, Bell, X } from 'lucide-react';
+import { User, Bell, X, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   className?: string;
@@ -13,6 +21,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ className }) => {
   const today = new Date();
   const formattedDate = format(today, 'E dd MMM yyyy');
+  const mobileDate = format(today, 'MMM dd, E');
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -26,6 +35,8 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
   const handleNavigation = (path: string) => {
     navigate(path);
+    // Close any open dropdowns or menus
+    setShowNotifications(false);
   };
 
   const handleNotificationClick = (id: number) => {
@@ -72,42 +83,82 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <header className={cn("py-6 px-8 flex items-center justify-between", className)}>
+    <header className={cn("py-4 px-4 sm:px-8 flex items-center justify-between", className)}>
       <div className="flex items-center">
-        <button className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors mr-6 sm:hidden">
-          <Menu className="h-5 w-5" />
-        </button>
-        <div>
-          {/* App name only shows on mobile when sidebar is hidden */}
-          <h1 className="text-2xl font-bold sm:hidden">NutriFit</h1>
+        {/* Modern app logo and name section */}
+        <div className="flex flex-col">
+          <h1 className="text-xl font-bold">NutriFit</h1>
           <p 
-            className="text-muted-foreground text-sm cursor-pointer hover:text-foreground transition-colors"
+            className="text-muted-foreground text-xs cursor-pointer hover:text-foreground transition-colors"
             onClick={() => handleNavigation('/calendar')}
           >
-            {formattedDate}
+            {mobileDate}
           </p>
         </div>
       </div>
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        {/* Standalone notification button for larger screens */}
         <button 
-          className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors relative"
+          className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors relative hidden sm:flex"
           onClick={toggleNotifications}
+          aria-label="Notifications"
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full" />
           )}
         </button>
+
+        {/* Profile button for larger screens */}
         <button 
-          className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-secondary transition-colors"
+          className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full hover:bg-secondary transition-colors"
           onClick={() => handleNavigation('/settings')}
         >
           <div className="bg-primary text-primary-foreground rounded-full p-1">
             <User className="h-4 w-4" />
           </div>
-          <span className="font-medium hidden sm:inline-block">My Profile</span>
+          <span className="font-medium">My Profile</span>
         </button>
+
+        {/* Combined dropdown menu for mobile */}
+        <DropdownMenu>
+          <DropdownMenuTrigger className="sm:hidden p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+            <MoreVertical className="h-5 w-5" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => handleNavigation('/settings')}>
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuLabel className="flex items-center justify-between">
+              <span>Notifications</span>
+              {unreadCount > 0 && (
+                <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                  {unreadCount}
+                </span>
+              )}
+            </DropdownMenuLabel>
+            
+            {notifications.slice(0, 2).map(notification => (
+              <DropdownMenuItem key={notification.id} className="flex flex-col items-start" onClick={() => handleNotificationClick(notification.id)}>
+                <div className="flex w-full justify-between">
+                  <span className="font-medium">{notification.title}</span>
+                  {notification.unread && <span className="w-2 h-2 bg-primary rounded-full" />}
+                </div>
+                <span className="text-xs text-muted-foreground">{notification.time}</span>
+              </DropdownMenuItem>
+            ))}
+            
+            <DropdownMenuItem onClick={toggleNotifications} className="text-primary">
+              <Bell className="mr-2 h-4 w-4" />
+              <span>View all notifications</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Notification Popup */}
