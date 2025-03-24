@@ -1,10 +1,14 @@
 
 import React, { useState } from 'react';
-import { User, Bell, X, MoreVertical } from 'lucide-react';
+import { User, Bell, X, MoreVertical, Menu, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useIsMobile } from '@/hooks/use-mobile';
+import SidebarNav from '@/components/nav/sidebar-nav';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +28,8 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   const mobileDate = format(today, 'MMM dd, E');
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -37,6 +43,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
     navigate(path);
     // Close any open dropdowns or menus
     setShowNotifications(false);
+    setIsMenuOpen(false);
   };
 
   const handleNotificationClick = (id: number) => {
@@ -83,17 +90,58 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <header className={cn("py-4 px-4 sm:px-8 flex items-center justify-between", className)}>
-      <div className="flex items-center">
-        {/* Modern app logo and name section */}
+    <header className={cn("w-full py-3 px-4 sm:px-8 flex items-center justify-between", className)}>
+      {/* Left section with mobile menu and app name */}
+      <div className="flex items-center gap-3">
+        {isMobile && (
+          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <SheetTrigger asChild>
+              <button className="p-2 text-muted-foreground hover:text-foreground focus:outline-none">
+                <Menu className="h-5 w-5" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-72">
+              <div className="flex items-center justify-between border-b p-4">
+                <div className="flex items-center">
+                  <div className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
+                    <Activity className="h-5 w-5" />
+                  </div>
+                  <h1 className="text-xl font-bold">NutriFit</h1>
+                </div>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-2 rounded-full hover:bg-secondary"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <SidebarNav />
+            </SheetContent>
+          </Sheet>
+        )}
+        
+        {/* App logo and name */}
         <div className="flex flex-col">
-          <h1 className="text-xl font-bold">NutriFit</h1>
-          <p 
-            className="text-muted-foreground text-xs cursor-pointer hover:text-foreground transition-colors"
-            onClick={() => handleNavigation('/calendar')}
-          >
-            {mobileDate}
-          </p>
+          <h1 className="text-xl font-bold flex items-center">
+            {!isMobile ? (
+              <span>Welcome, Raghav</span>
+            ) : (
+              <>
+                <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
+                  <Activity className="h-5 w-5" />
+                </span>
+                NutriFit
+              </>
+            )}
+          </h1>
+          {isMobile && (
+            <p 
+              className="text-muted-foreground text-xs cursor-pointer hover:text-foreground transition-colors"
+              onClick={() => handleNavigation('/calendar')}
+            >
+              {mobileDate}
+            </p>
+          )}
         </div>
       </div>
       
