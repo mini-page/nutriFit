@@ -18,7 +18,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => 
         </button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-72">
-        <div className="flex items-center justify-between border-b p-4">
+        <div className="flex items-center justify-between border-b p-4 bg-secondary/30 rounded-b-xl">
           <div className="flex items-center">
             <div className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
               <Activity className="h-5 w-5" />

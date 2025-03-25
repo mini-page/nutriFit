@@ -13,7 +13,7 @@
   transform: translateY(0) !important;
 }
 
-/* Remove vertical lift effect for tracker pages */
+/* Uniform card styling for tracker pages */
 .glass-card {
   transform: none;
   transition: all 0.3s ease;
@@ -24,7 +24,7 @@
   transform: none;
 }
 
-/* Change hover effect to shadow darkening instead of lift */
+/* Enhance hover effect with shadow darkening instead of lift */
 .glass-card:hover {
   transform: none;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);

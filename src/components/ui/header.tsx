@@ -66,7 +66,10 @@ const Header: React.FC<HeaderProps> = ({ className, userName = "Umang" }) => {
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <header className={cn("w-full py-3 px-4 sm:px-8 flex items-center justify-between", className)}>
+    <header className={cn(
+      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-background shadow-sm rounded-b-xl border-b", 
+      className
+    )}>
       {/* Left section with mobile menu and branding */}
       <div className="flex items-center gap-3">
         {isMobile && (

@@ -71,7 +71,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
               NutriFit
             </h1>
             <p 
-              className="text-muted-foreground text-sm mt-1 cursor-pointer hover:text-foreground transition-colors"
+              className="text-muted-foreground text-sm mt-1 cursor-pointer hover:text-foreground transition-colors md:hidden"
               onClick={() => {
                 try {
                   window.location.href = '/calendar';
@@ -101,7 +101,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
         </div>
       </div>
 
-      <div className="mt-auto border-t border-border pt-3 px-3 pb-6">
+      <div className="mt-auto border-t border-border pt-3 px-3 pb-6 bg-secondary/30">
         <NavItem
           icon={<Settings className="h-5 w-5" />}
           label="Settings"

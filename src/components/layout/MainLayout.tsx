@@ -16,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {!isMobile && <SidebarNav />}
       
       <div className="flex-1 flex flex-col">
-        <div className="flex items-center border-b">
+        <div className="flex items-center">
           <Header userName="Umang" />
         </div>
         <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
