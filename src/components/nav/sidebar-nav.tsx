@@ -12,6 +12,10 @@ interface NavItemProps {
   active?: boolean;
 }
 
+interface SidebarNavProps {
+  hideLogo?: boolean;
+}
+
 const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active }) => {
   return (
     <Link
@@ -30,7 +34,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active }) => {
   );
 };
 
-const SidebarNav = () => {
+const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
   // Safely check if we can use useLocation
   let pathname = '/';
   try {
@@ -43,7 +47,6 @@ const SidebarNav = () => {
 
   const today = new Date();
   const formattedDate = format(today, 'E dd MMM yyyy');
-  const mobileDate = format(today, 'MMM dd, E');
 
   const navItems = [
     { icon: <LayoutDashboard className="h-5 w-5" />, label: 'Dashboard', href: '/' },
@@ -58,29 +61,32 @@ const SidebarNav = () => {
 
   return (
     <div className="w-60 h-screen sticky top-0 flex flex-col border-r border-border pt-6 bg-background/80 backdrop-blur-md">
-      <div className="px-6 mb-2">
-        <h1 className="text-2xl font-bold flex items-center">
-          <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
-            <Activity className="h-5 w-5" />
-          </span>
-          NutriFit
-        </h1>
-        <p 
-          className="text-muted-foreground text-sm mt-1 cursor-pointer hover:text-foreground transition-colors"
-          onClick={() => {
-            try {
-              window.location.href = '/calendar';
-            } catch (e) {
-              console.error(e);
-            }
-          }}
-        >
-          {formattedDate}
-        </p>
-      </div>
+      {!hideLogo && (
+        <>
+          <div className="px-6 mb-2">
+            <h1 className="text-2xl font-bold flex items-center">
+              <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
+                <Activity className="h-5 w-5" />
+              </span>
+              NutriFit
+            </h1>
+            <p 
+              className="text-muted-foreground text-sm mt-1 cursor-pointer hover:text-foreground transition-colors"
+              onClick={() => {
+                try {
+                  window.location.href = '/calendar';
+                } catch (e) {
+                  console.error(e);
+                }
+              }}
+            >
+              {formattedDate}
+            </p>
+          </div>
+          <div className="mt-4 border-t border-border pt-4 mx-6 mb-4"></div>
+        </>
+      )}
       
-      <div className="mt-4 border-t border-border pt-4 mx-6 mb-4"></div>
-
       <div className="px-3 flex-1 overflow-auto">
         <div className="space-y-1">
           {navItems.map((item) => (

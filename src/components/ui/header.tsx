@@ -1,13 +1,12 @@
 
 import React, { useState } from 'react';
-import { User, Bell, X, MoreVertical, Menu, Activity } from 'lucide-react';
+import { Activity, MoreVertical, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { MobileMenu } from '@/components/ui/mobile-menu';
+import { UserProfileMenu } from '@/components/ui/user-profile-menu';
+import { NotificationButton, Notification } from '@/components/ui/notification-button';
 import { useIsMobile } from '@/hooks/use-mobile';
-import SidebarNav from '@/components/nav/sidebar-nav';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,39 +15,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { NotificationDisplay } from '@/components/ui/notification-display';
-import { MobileMenu } from '@/components/ui/mobile-menu';
 
 interface HeaderProps {
   className?: string;
   userName?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ className, userName = "Raghav" }) => {
+const Header: React.FC<HeaderProps> = ({ className, userName = "Umang" }) => {
   const today = new Date();
-  const mobileDate = format(today, 'MMM dd, E');
-  const navigate = useNavigate();
-  const [showNotifications, setShowNotifications] = useState(false);
+  const formattedDate = format(today, 'MMM dd, E');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
 
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
-
-  const closeNotifications = () => {
-    setShowNotifications(false);
-  };
-
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    // Close any open dropdowns or menus
-    setShowNotifications(false);
-    setIsMenuOpen(false);
-  };
-
   // Notification data
-  const notifications = [
+  const notifications: Notification[] = [
     { 
       id: 1, 
       title: "Water goal reached", 
@@ -87,17 +67,16 @@ const Header: React.FC<HeaderProps> = ({ className, userName = "Raghav" }) => {
 
   return (
     <header className={cn("w-full py-3 px-4 sm:px-8 flex items-center justify-between", className)}>
-      {/* Left section with mobile menu and app name */}
+      {/* Left section with mobile menu and branding */}
       <div className="flex items-center gap-3">
         {isMobile && (
           <MobileMenu 
             isOpen={isMenuOpen} 
-            setIsOpen={setIsMenuOpen} 
-            mobileDate={mobileDate}
+            setIsOpen={setIsMenuOpen}
           />
         )}
         
-        {/* App logo and name */}
+        {/* App logo and greeting */}
         <div className="flex flex-col">
           <h1 className="text-xl font-bold flex items-center">
             {!isMobile ? (
@@ -111,88 +90,65 @@ const Header: React.FC<HeaderProps> = ({ className, userName = "Raghav" }) => {
               </>
             )}
           </h1>
-          {isMobile && (
-            <p 
-              className="text-muted-foreground text-xs cursor-pointer hover:text-foreground transition-colors"
-              onClick={() => handleNavigation('/calendar')}
-            >
-              {mobileDate}
-            </p>
-          )}
+          <p className="text-muted-foreground text-xs">
+            {formattedDate}
+          </p>
         </div>
       </div>
       
+      {/* Right section with notifications and profile */}
       <div className="flex items-center gap-3">
-        {/* Standalone notification button for larger screens */}
-        <button 
-          className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors relative hidden sm:flex"
-          onClick={toggleNotifications}
-          aria-label="Notifications"
-        >
-          <Bell className="h-5 w-5" />
-          {unreadCount > 0 && (
-            <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full" />
-          )}
-        </button>
+        {/* Desktop: Show notification button and profile separately */}
+        {!isMobile && (
+          <>
+            <NotificationButton notifications={notifications} />
+            <UserProfileMenu userName={userName} />
+          </>
+        )}
 
-        {/* Profile button for larger screens */}
-        <button 
-          className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full hover:bg-secondary transition-colors"
-          onClick={() => handleNavigation('/settings')}
-        >
-          <div className="bg-primary text-primary-foreground rounded-full p-1">
-            <User className="h-4 w-4" />
-          </div>
-          <span className="font-medium">My Profile</span>
-        </button>
-
-        {/* Combined dropdown menu for mobile */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="sm:hidden p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-            <MoreVertical className="h-5 w-5" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => handleNavigation('/settings')}>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            
-            <DropdownMenuLabel className="flex items-center justify-between">
-              <span>Notifications</span>
-              {unreadCount > 0 && (
-                <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
-                  {unreadCount}
-                </span>
-              )}
-            </DropdownMenuLabel>
-            
-            {notifications.slice(0, 2).map(notification => (
-              <DropdownMenuItem key={notification.id} className="flex flex-col items-start" onClick={() => NotificationDisplay.handleNotificationClick(notification.id)}>
-                <div className="flex w-full justify-between">
-                  <span className="font-medium">{notification.title}</span>
-                  {notification.unread && <span className="w-2 h-2 bg-primary rounded-full" />}
-                </div>
-                <span className="text-xs text-muted-foreground">{notification.time}</span>
+        {/* Mobile: Combined dropdown menu */}
+        {isMobile && (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+              <MoreVertical className="h-5 w-5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => window.location.href = '/settings'}>
+                Profile Settings
               </DropdownMenuItem>
-            ))}
-            
-            <DropdownMenuItem onClick={toggleNotifications} className="text-primary">
-              <Bell className="mr-2 h-4 w-4" />
-              <span>View all notifications</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuLabel className="flex items-center justify-between">
+                <span>Notifications</span>
+                {unreadCount > 0 && (
+                  <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                    {unreadCount}
+                  </span>
+                )}
+              </DropdownMenuLabel>
+              
+              {notifications.slice(0, 2).map(notification => (
+                <DropdownMenuItem key={notification.id} className="flex flex-col items-start">
+                  <div className="flex w-full justify-between">
+                    <span className="font-medium">{notification.title}</span>
+                    {notification.unread && <span className="w-2 h-2 bg-primary rounded-full" />}
+                  </div>
+                  <span className="text-xs text-muted-foreground">{notification.time}</span>
+                </DropdownMenuItem>
+              ))}
+              
+              <DropdownMenuItem className="text-primary" onClick={() => {
+                const event = new Event('view-all-notifications');
+                document.dispatchEvent(event);
+              }}>
+                <Bell className="mr-2 h-4 w-4" />
+                <span>View all notifications</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
-
-      {/* Notification Popup */}
-      {showNotifications && (
-        <NotificationDisplay 
-          notifications={notifications} 
-          onClose={closeNotifications} 
-        />
-      )}
     </header>
   );
 };

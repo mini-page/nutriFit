@@ -1,16 +1,15 @@
 
 import React from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, Activity } from 'lucide-react';
+import { Menu, Activity } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
 
 interface MobileMenuProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  mobileDate: string;
 }
 
-export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen, mobileDate }) => {
+export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -26,10 +25,11 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen, mobil
             </div>
             <h1 className="text-xl font-bold">NutriFit</h1>
           </div>
-          {/* No need for additional close button due to SheetContent already having one */}
         </div>
-        <div className="overflow-y-auto h-full">
-          <SidebarNav />
+        <div className="overflow-y-auto h-full pb-16">
+          <div className="pt-2">
+            <SidebarNav hideLogo={true} />
+          </div>
         </div>
       </SheetContent>
     </Sheet>
