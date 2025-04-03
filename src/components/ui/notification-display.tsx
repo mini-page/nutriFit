@@ -22,35 +22,15 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
   handleNotificationClick: (id: number) => void;
 } = ({ notifications, onClose }) => {
   return (
-    <div className="notification-overlay" onClick={onClose}>
-      <style jsx>{`
-        .notification-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 50;
-        }
-        
-        .notification-popup {
-          position: absolute;
-          right: 20px;
-          top: 60px;
-          width: 320px;
-          max-width: calc(100vw - 40px);
-          background: white;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-          z-index: 51;
-        }
-      `}</style>
+    <div 
+      className="fixed top-0 left-0 right-0 bottom-0 z-50"
+      onClick={onClose}
+    >
       <div 
-        className="notification-popup p-4"
+        className="absolute right-4 top-[60px] w-[320px] max-w-[calc(100vw-40px)] bg-white border border-border rounded-lg shadow-lg z-51"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 p-4">
           <h3 className="text-lg font-semibold">Notifications</h3>
           <button 
             className="p-1.5 rounded-full hover:bg-secondary transition-colors"
@@ -60,7 +40,7 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
           </button>
         </div>
         
-        <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+        <div className="space-y-3 max-h-[60vh] overflow-y-auto p-4 pt-0">
           {notifications.length > 0 ? (
             notifications.map((notification) => (
               <div 
@@ -88,7 +68,7 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
         </div>
         
         {notifications.length > 0 && (
-          <div className="mt-4 pt-2 border-t">
+          <div className="mt-4 pt-2 border-t p-4">
             <button 
               className="w-full text-sm text-center text-primary hover:underline"
               onClick={() => {
