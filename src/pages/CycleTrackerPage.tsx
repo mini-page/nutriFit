@@ -1,17 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { format, addDays, differenceInDays, isSameDay, isWithinInterval } from 'date-fns';
-import { Droplet, Calendar as CalendarIcon, AlertCircle, Info, Medal, Heart } from 'lucide-react';
+import { format, addDays, differenceInDays, isSameDay } from 'date-fns';
+import { Droplet, Calendar as CalendarIcon, AlertCircle, Heart, Medal, Info } from 'lucide-react';
 import { toast } from 'sonner';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useIsMobile } from '@/hooks/use-mobile';
+import CycleCalendar from '@/components/cycle-tracker/CycleCalendar';
+import PeriodForm from '@/components/cycle-tracker/PeriodForm';
+import SymptomForm from '@/components/cycle-tracker/SymptomForm';
+import CycleInsights from '@/components/cycle-tracker/CycleInsights';
+import CycleNotAvailableView from '@/components/cycle-tracker/CycleNotAvailableView';
 
 interface Period {
   startDate: Date;
@@ -61,17 +62,13 @@ const CycleTrackerPage = () => {
         setShowTracker(true);
       } else {
         setShowTracker(false);
-        // Only show toast if we're hiding the tracker after it was previously shown
-        if (showTracker) {
-          toast.info('This page is only available for users who set their gender to female or non-binary in settings.');
-        }
       }
     };
     
     // Check initially
     checkUserGender();
     
-    // Calculate streak - in a real app this would be more sophisticated
+    // Calculate streak
     const lastLog = localStorage.getItem('lastCycleLog');
     if (lastLog) {
       const daysSinceLastLog = differenceInDays(new Date(), new Date(lastLog));
@@ -116,22 +113,6 @@ const CycleTrackerPage = () => {
   };
   
   const nextPeriod = calculateNextPeriod();
-  
-  // For calendar date highlight
-  const isDayInPeriod = (day: Date) => {
-    return periods.some(period => 
-      isWithinInterval(day, { start: period.startDate, end: period.endDate })
-    );
-  };
-  
-  const isDayPredictedPeriod = (day: Date) => {
-    if (!nextPeriod) return false;
-    return isWithinInterval(day, { start: nextPeriod.startDate, end: nextPeriod.endDate });
-  };
-  
-  const hasSymptomsOnDay = (day: Date) => {
-    return symptoms.some(symptom => isSameDay(symptom.date, day));
-  };
   
   const handleAddPeriod = () => {
     if (!periodStart) {
@@ -182,30 +163,7 @@ const CycleTrackerPage = () => {
   if (!showTracker) {
     return (
       <MainLayout>
-        <div className="flex flex-col items-center justify-center h-full py-12">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Heart className="h-5 w-5 text-pink-500" />
-                Menstrual Cycle Tracker
-              </CardTitle>
-              <CardDescription>
-                This feature is available for female and non-binary users
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-center mb-6">
-                To access the Menstrual Cycle Tracker, please update your gender in the settings.
-              </p>
-              <Button 
-                className="w-full" 
-                onClick={() => window.location.href = '/settings'}
-              >
-                Go to Settings
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        <CycleNotAvailableView />
       </MainLayout>
     );
   }
@@ -253,21 +211,12 @@ const CycleTrackerPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center pb-0">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                className="rounded-md border"
-                modifiers={{
-                  period: (day) => isDayInPeriod(day),
-                  nextPeriod: (day) => isDayPredictedPeriod(day),
-                  withSymptoms: (day) => hasSymptomsOnDay(day)
-                }}
-                modifiersStyles={{
-                  period: { backgroundColor: 'rgba(239, 68, 68, 0.2)' },
-                  nextPeriod: { backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px dashed rgb(239, 68, 68)' },
-                  withSymptoms: { border: '2px solid rgba(124, 58, 237, 0.6)' }
-                }}
+              <CycleCalendar 
+                periods={periods}
+                nextPeriod={nextPeriod}
+                symptoms={symptoms}
+                date={date}
+                setDate={setDate}
               />
             </CardContent>
             <CardFooter className="border-t pt-6 flex flex-col items-start gap-1">
@@ -297,64 +246,16 @@ const CycleTrackerPage = () => {
                   Track your menstrual cycle for better predictions
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Start Date</label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !periodStart && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {periodStart ? format(periodStart, 'PPP') : <span>Select date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={periodStart}
-                        onSelect={setPeriodStart}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Period Length (days)</label>
-                  <Select value={String(periodLength)} onValueChange={(val) => setPeriodLength(Number(val))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 10 }, (_, i) => i + 1).map((i) => (
-                        <SelectItem key={i} value={String(i)}>{i} days</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Cycle Length (days)</label>
-                  <Select value={String(cycleLength)} onValueChange={(val) => setCycleLength(Number(val))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36].map((i) => (
-                        <SelectItem key={i} value={String(i)}>{i} days</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <Button className="w-full" onClick={handleAddPeriod}>
-                  <Droplet className="mr-2 h-4 w-4" /> Record Period
-                </Button>
+              <CardContent>
+                <PeriodForm 
+                  periodStart={periodStart}
+                  setPeriodStart={setPeriodStart}
+                  periodLength={periodLength}
+                  setPeriodLength={setPeriodLength}
+                  cycleLength={cycleLength}
+                  setCycleLength={setCycleLength}
+                  handleAddPeriod={handleAddPeriod}
+                />
               </CardContent>
             </Card>
             
@@ -369,43 +270,14 @@ const CycleTrackerPage = () => {
                     Track symptoms throughout your cycle
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Symptom Type</label>
-                    <Select value={symptomType} onValueChange={setSymptomType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="cramps">Cramps</SelectItem>
-                        <SelectItem value="headache">Headache</SelectItem>
-                        <SelectItem value="bloating">Bloating</SelectItem>
-                        <SelectItem value="fatigue">Fatigue</SelectItem>
-                        <SelectItem value="mood_swings">Mood Swings</SelectItem>
-                        <SelectItem value="breast_tenderness">Breast Tenderness</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Severity (1-5)</label>
-                    <Select value={String(symptomSeverity)} onValueChange={(val) => setSymptomSeverity(Number(val))}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">1 - Very Mild</SelectItem>
-                        <SelectItem value="2">2 - Mild</SelectItem>
-                        <SelectItem value="3">3 - Moderate</SelectItem>
-                        <SelectItem value="4">4 - Severe</SelectItem>
-                        <SelectItem value="5">5 - Very Severe</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <Button className="w-full" onClick={handleAddSymptom}>
-                    Record Symptom
-                  </Button>
+                <CardContent>
+                  <SymptomForm 
+                    symptomType={symptomType}
+                    setSymptomType={setSymptomType}
+                    symptomSeverity={symptomSeverity}
+                    setSymptomSeverity={setSymptomSeverity}
+                    handleAddSymptom={handleAddSymptom}
+                  />
                 </CardContent>
               </Card>
             )}
@@ -423,91 +295,24 @@ const CycleTrackerPage = () => {
                 Track symptoms throughout your cycle
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Symptom Type</label>
-                <Select value={symptomType} onValueChange={setSymptomType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="cramps">Cramps</SelectItem>
-                    <SelectItem value="headache">Headache</SelectItem>
-                    <SelectItem value="bloating">Bloating</SelectItem>
-                    <SelectItem value="fatigue">Fatigue</SelectItem>
-                    <SelectItem value="mood_swings">Mood Swings</SelectItem>
-                    <SelectItem value="breast_tenderness">Breast Tenderness</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Severity (1-5)</label>
-                <Select value={String(symptomSeverity)} onValueChange={(val) => setSymptomSeverity(Number(val))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 - Very Mild</SelectItem>
-                    <SelectItem value="2">2 - Mild</SelectItem>
-                    <SelectItem value="3">3 - Moderate</SelectItem>
-                    <SelectItem value="4">4 - Severe</SelectItem>
-                    <SelectItem value="5">5 - Very Severe</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <Button className="w-full" onClick={handleAddSymptom}>
-                Record Symptom
-              </Button>
+            <CardContent>
+              <SymptomForm 
+                symptomType={symptomType}
+                setSymptomType={setSymptomType}
+                symptomSeverity={symptomSeverity}
+                setSymptomSeverity={setSymptomSeverity}
+                handleAddSymptom={handleAddSymptom}
+              />
             </CardContent>
           </Card>
         )}
         
         {nextPeriod && (
-          <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Info className="h-5 w-5 text-blue-500" />
-                Cycle Insights
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-4 bg-muted rounded-md">
-                  <h3 className="font-medium mb-2">Next Period Prediction</h3>
-                  <p>Your next period is predicted to start on <strong>{format(nextPeriod.startDate, 'MMMM d, yyyy')}</strong> and last until <strong>{format(nextPeriod.endDate, 'MMMM d, yyyy')}</strong>.</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    That's in {differenceInDays(nextPeriod.startDate, new Date())} days.
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-2">Cycle Summary</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 border rounded-md bg-pink-50">
-                      <span className="text-sm text-muted-foreground">Average Cycle Length</span>
-                      <p className="text-2xl font-bold">{cycleLength} days</p>
-                    </div>
-                    <div className="p-4 border rounded-md bg-purple-50">
-                      <span className="text-sm text-muted-foreground">Average Period Length</span>
-                      <p className="text-2xl font-bold">{periodLength} days</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
-                  <h3 className="font-medium mb-2 text-blue-800 flex items-center gap-2">
-                    <Info className="h-4 w-4" />
-                    Health Tip
-                  </h3>
-                  <p className="text-sm text-blue-700">
-                    Remember to stay hydrated during your period. Drinking plenty of water can help reduce bloating and alleviate cramps.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <CycleInsights 
+            nextPeriod={nextPeriod}
+            cycleLength={cycleLength}
+            periodLength={periodLength}
+          />
         )}
       </div>
     </MainLayout>

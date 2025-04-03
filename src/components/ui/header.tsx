@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Activity, MoreVertical, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -22,12 +22,42 @@ interface HeaderProps {
   userName?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ className, userName = "Umang" }) => {
+const Header: React.FC<HeaderProps> = ({ className }) => {
   const today = new Date();
   const formattedDate = format(today, 'MMM dd, E');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userName, setUserName] = useState("Umang");
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Load user name from localStorage
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      try {
+        const parsedData = JSON.parse(savedUserData);
+        if (parsedData.name) {
+          setUserName(parsedData.name.split(' ')[0]); // Use first name only
+        }
+      } catch (error) {
+        console.error('Failed to parse user data from localStorage', error);
+      }
+    }
+
+    // Listen for profile updates
+    const handleProfileUpdate = (event: any) => {
+      const { userData } = event.detail;
+      if (userData && userData.name) {
+        setUserName(userData.name.split(' ')[0]); // Use first name only
+      }
+    };
+
+    document.addEventListener('user-profile-updated', handleProfileUpdate);
+    
+    return () => {
+      document.removeEventListener('user-profile-updated', handleProfileUpdate);
+    };
+  }, []);
 
   const handleDateClick = () => {
     navigate('/calendar');
@@ -73,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({ className, userName = "Umang" }) => {
 
   return (
     <header className={cn(
-      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-background shadow-sm rounded-b-xl border-b", 
+      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary/5 shadow-sm rounded-b-xl border-b", 
       className
     )}>
       {/* Left section with mobile menu and branding */}

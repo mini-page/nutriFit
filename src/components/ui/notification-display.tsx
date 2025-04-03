@@ -23,8 +23,31 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
 } = ({ notifications, onClose }) => {
   return (
     <div className="notification-overlay" onClick={onClose}>
+      <style jsx>{`
+        .notification-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 50;
+        }
+        
+        .notification-popup {
+          position: absolute;
+          right: 20px;
+          top: 60px;
+          width: 320px;
+          max-width: calc(100vw - 40px);
+          background: white;
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+          z-index: 51;
+        }
+      `}</style>
       <div 
-        className="notification-popup glass-card p-4"
+        className="notification-popup p-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
