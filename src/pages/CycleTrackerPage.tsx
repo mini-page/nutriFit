@@ -1,18 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { format, addDays, differenceInDays, isSameDay } from 'date-fns';
-import { Droplet, Calendar as CalendarIcon, AlertCircle, Heart, Medal, Info } from 'lucide-react';
 import { toast } from 'sonner';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useIsMobile } from '@/hooks/use-mobile';
-import CycleCalendar from '@/components/cycle-tracker/CycleCalendar';
-import PeriodForm from '@/components/cycle-tracker/PeriodForm';
-import SymptomForm from '@/components/cycle-tracker/SymptomForm';
 import CycleInsights from '@/components/cycle-tracker/CycleInsights';
 import CycleNotAvailableView from '@/components/cycle-tracker/CycleNotAvailableView';
+import CycleTrackerHeader from '@/components/cycle-tracker/CycleTrackerHeader';
+import CycleTrackerMainView from '@/components/cycle-tracker/CycleTrackerMainView';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { AlertCircle, Medal } from 'lucide-react';
+import SymptomForm from '@/components/cycle-tracker/SymptomForm';
 
 interface Period {
   startDate: Date;
@@ -96,7 +94,7 @@ const CycleTrackerPage = () => {
     return () => {
       document.removeEventListener('user-profile-updated', handleUserProfileUpdate);
     };
-  }, [showTracker]);
+  }, []);
   
   // Calculate next period based on the most recent period
   const calculateNextPeriod = () => {
@@ -171,118 +169,31 @@ const CycleTrackerPage = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Heart className="h-6 w-6 text-pink-500" />
-              Menstrual Cycle Tracker
-            </h1>
-            {streak > 0 && (
-              <p className="text-sm text-muted-foreground flex items-center mt-1">
-                <Medal className="h-4 w-4 text-yellow-500 mr-1" /> 
-                Current streak: {streak} {streak === 1 ? 'day' : 'days'}
-              </p>
-            )}
-          </div>
-        </div>
+        <CycleTrackerHeader 
+          streak={streak}
+          showPermissionAlert={showPermissionAlert}
+          setShowPermissionAlert={setShowPermissionAlert}
+        />
         
-        {showPermissionAlert && (
-          <Alert className="bg-blue-50 border-blue-200 text-blue-800">
-            <Info className="h-4 w-4 text-blue-800" />
-            <AlertTitle>Information</AlertTitle>
-            <AlertDescription className="flex justify-between items-center">
-              <span>This tracker is only shown to users who have set their gender preference to female or non-binary in settings.</span>
-              <Button variant="outline" size="sm" onClick={() => setShowPermissionAlert(false)}>
-                Dismiss
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CalendarIcon className="h-5 w-5 text-pink-500" />
-                Cycle Calendar
-              </CardTitle>
-              <CardDescription>
-                Track your menstrual cycle and predict upcoming periods
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex justify-center pb-0">
-              <CycleCalendar 
-                periods={periods}
-                nextPeriod={nextPeriod}
-                symptoms={symptoms}
-                date={date}
-                setDate={setDate}
-              />
-            </CardContent>
-            <CardFooter className="border-t pt-6 flex flex-col items-start gap-1">
-              <div className="flex gap-2 items-center text-sm">
-                <div className="w-4 h-4 bg-red-500/20 rounded"></div>
-                <span>Period days</span>
-              </div>
-              <div className="flex gap-2 items-center text-sm">
-                <div className="w-4 h-4 border border-dashed border-red-500 rounded"></div>
-                <span>Predicted period</span>
-              </div>
-              <div className="flex gap-2 items-center text-sm">
-                <div className="w-4 h-4 border-2 border-purple-500/60 rounded"></div>
-                <span>Days with recorded symptoms</span>
-              </div>
-            </CardFooter>
-          </Card>
-          
-          <div className={`space-y-6 ${isMobile ? "order-last" : ""}`}>
-            <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Droplet className="h-5 w-5 text-red-500" />
-                  Record New Period
-                </CardTitle>
-                <CardDescription>
-                  Track your menstrual cycle for better predictions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <PeriodForm 
-                  periodStart={periodStart}
-                  setPeriodStart={setPeriodStart}
-                  periodLength={periodLength}
-                  setPeriodLength={setPeriodLength}
-                  cycleLength={cycleLength}
-                  setCycleLength={setCycleLength}
-                  handleAddPeriod={handleAddPeriod}
-                />
-              </CardContent>
-            </Card>
-            
-            {!isMobile && (
-              <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5 text-purple-500" />
-                    Record Symptoms
-                  </CardTitle>
-                  <CardDescription>
-                    Track symptoms throughout your cycle
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <SymptomForm 
-                    symptomType={symptomType}
-                    setSymptomType={setSymptomType}
-                    symptomSeverity={symptomSeverity}
-                    setSymptomSeverity={setSymptomSeverity}
-                    handleAddSymptom={handleAddSymptom}
-                  />
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
+        <CycleTrackerMainView
+          periods={periods}
+          nextPeriod={nextPeriod}
+          symptoms={symptoms}
+          date={date}
+          setDate={setDate}
+          periodStart={periodStart}
+          setPeriodStart={setPeriodStart}
+          periodLength={periodLength}
+          setPeriodLength={setPeriodLength}
+          cycleLength={cycleLength}
+          setCycleLength={setCycleLength}
+          symptomType={symptomType}
+          setSymptomType={setSymptomType}
+          symptomSeverity={symptomSeverity}
+          setSymptomSeverity={setSymptomSeverity}
+          handleAddPeriod={handleAddPeriod}
+          handleAddSymptom={handleAddSymptom}
+        />
         
         {isMobile && (
           <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">

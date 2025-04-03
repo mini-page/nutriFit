@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import SettingsLayout from '@/components/settings/SettingsLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,11 +11,48 @@ import { toast } from 'sonner';
 
 const SettingsPage = () => {
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system');
+  const [dashboardItems, setDashboardItems] = useState({
+    water: true,
+    nutrition: true,
+    exercise: true,
+    mood: true,
+    goals: true,
+    quickWater: true,
+    quickExercise: true,
+    quickNutrition: true,
+    quickGoals: true,
+    quickSleep: false,
+    quickBudget: false, 
+    quickMood: false,
+    quickCycle: false
+  });
+
+  // Load settings from localStorage on component mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'system';
+    setTheme(savedTheme as 'light' | 'dark' | 'system');
+    
+    const savedDashboardItems = localStorage.getItem('dashboardItems');
+    if (savedDashboardItems) {
+      try {
+        setDashboardItems(JSON.parse(savedDashboardItems));
+      } catch (error) {
+        console.error('Failed to parse dashboard items from localStorage', error);
+      }
+    }
+  }, []);
 
   const handleThemeChange = (value: 'light' | 'dark' | 'system') => {
     setTheme(value);
+    localStorage.setItem('theme', value);
+    document.documentElement.setAttribute('data-theme', value);
     toast.success(`Theme changed to ${value} mode`);
-    // In a real app, this would also update the theme in localStorage or context
+  };
+
+  const handleDashboardItemsChange = (items: Record<string, boolean>) => {
+    setDashboardItems(items);
+    localStorage.setItem('dashboardItems', JSON.stringify(items));
+    toast.success('Dashboard settings updated');
   };
 
   const handleExportData = () => {
@@ -93,7 +130,7 @@ const SettingsPage = () => {
     <MainLayout>
       <SettingsLayout userName="Umang">
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList>
+          <TabsList className="flex overflow-x-auto md:grid md:grid-cols-4 space-x-1 md:space-x-0">
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
@@ -108,6 +145,8 @@ const SettingsPage = () => {
             <AppearanceSettings 
               theme={theme}
               handleThemeChange={handleThemeChange}
+              dashboardItems={dashboardItems}
+              onDashboardItemsChange={handleDashboardItemsChange}
             />
           </TabsContent>
           

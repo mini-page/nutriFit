@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FormLabel } from '@/components/ui/form';
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -11,20 +11,32 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
-import { toast } from 'sonner';
 
 interface AppearanceSettingsProps {
   theme: 'light' | 'dark' | 'system';
   handleThemeChange: (value: 'light' | 'dark' | 'system') => void;
+  dashboardItems: Record<string, boolean>;
+  onDashboardItemsChange: (items: Record<string, boolean>) => void;
 }
 
 const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
   theme,
-  handleThemeChange
+  handleThemeChange,
+  dashboardItems,
+  onDashboardItemsChange
 }) => {
+  
+  // Handle dashboard item toggle
+  const handleDashboardItemChange = (key: string, checked: boolean) => {
+    onDashboardItemsChange({
+      ...dashboardItems,
+      [key]: checked
+    });
+  };
+  
   return (
     <div className="space-y-6">
-      <div className="glass-card p-6">
+      <div className="glass-card p-4 md:p-6">
         <h3 className="text-lg font-medium mb-4">Theme</h3>
         <div className="space-y-6">
           <div>
@@ -118,57 +130,196 @@ const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
         </div>
       </div>
       
-      <div className="glass-card p-6">
+      <div className="glass-card p-4 md:p-6">
         <h3 className="text-lg font-medium mb-4">Customize Dashboard</h3>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Checkbox id="water" defaultChecked />
-            <label
-              htmlFor="water"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Show Water Tracker
-            </label>
+        <p className="text-sm text-muted-foreground mb-4">Choose which trackers and quick actions to display on your dashboard</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-4">
+            <h4 className="font-medium">Trackers</h4>
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="water" 
+                checked={dashboardItems.water} 
+                onCheckedChange={(checked) => handleDashboardItemChange('water', !!checked)} 
+              />
+              <label
+                htmlFor="water"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Show Water Tracker
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="nutrition" 
+                checked={dashboardItems.nutrition} 
+                onCheckedChange={(checked) => handleDashboardItemChange('nutrition', !!checked)} 
+              />
+              <label
+                htmlFor="nutrition"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Show Nutrition Tracker
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="exercise" 
+                checked={dashboardItems.exercise} 
+                onCheckedChange={(checked) => handleDashboardItemChange('exercise', !!checked)} 
+              />
+              <label
+                htmlFor="exercise"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Show Exercise Tracker
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="mood" 
+                checked={dashboardItems.mood} 
+                onCheckedChange={(checked) => handleDashboardItemChange('mood', !!checked)} 
+              />
+              <label
+                htmlFor="mood"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Show Mood Tracker
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="goals" 
+                checked={dashboardItems.goals} 
+                onCheckedChange={(checked) => handleDashboardItemChange('goals', !!checked)} 
+              />
+              <label
+                htmlFor="goals"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Show Goals Tracker
+              </label>
+            </div>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <Checkbox id="nutrition" defaultChecked />
-            <label
-              htmlFor="nutrition"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Show Nutrition Tracker
-            </label>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Checkbox id="exercise" defaultChecked />
-            <label
-              htmlFor="exercise"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Show Exercise Tracker
-            </label>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Checkbox id="mood" defaultChecked />
-            <label
-              htmlFor="mood"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Show Mood Tracker
-            </label>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Checkbox id="goals" defaultChecked />
-            <label
-              htmlFor="goals"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Show Goals Tracker
-            </label>
+          <div className="space-y-4">
+            <h4 className="font-medium">Quick Actions</h4>
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="quick-water" 
+                checked={dashboardItems.quickWater} 
+                onCheckedChange={(checked) => handleDashboardItemChange('quickWater', !!checked)} 
+              />
+              <label
+                htmlFor="quick-water"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Water Quick Action
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="quick-exercise" 
+                checked={dashboardItems.quickExercise} 
+                onCheckedChange={(checked) => handleDashboardItemChange('quickExercise', !!checked)} 
+              />
+              <label
+                htmlFor="quick-exercise"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Exercise Quick Action
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="quick-nutrition" 
+                checked={dashboardItems.quickNutrition} 
+                onCheckedChange={(checked) => handleDashboardItemChange('quickNutrition', !!checked)} 
+              />
+              <label
+                htmlFor="quick-nutrition"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Nutrition Quick Action
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="quick-goals" 
+                checked={dashboardItems.quickGoals} 
+                onCheckedChange={(checked) => handleDashboardItemChange('quickGoals', !!checked)} 
+              />
+              <label
+                htmlFor="quick-goals"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Goals Quick Action
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="quick-sleep" 
+                checked={dashboardItems.quickSleep} 
+                onCheckedChange={(checked) => handleDashboardItemChange('quickSleep', !!checked)} 
+              />
+              <label
+                htmlFor="quick-sleep"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Sleep Quick Action
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="quick-budget" 
+                checked={dashboardItems.quickBudget} 
+                onCheckedChange={(checked) => handleDashboardItemChange('quickBudget', !!checked)} 
+              />
+              <label
+                htmlFor="quick-budget"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Budget Quick Action
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="quick-mood" 
+                checked={dashboardItems.quickMood} 
+                onCheckedChange={(checked) => handleDashboardItemChange('quickMood', !!checked)} 
+              />
+              <label
+                htmlFor="quick-mood"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Mood Quick Action
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="quick-cycle" 
+                checked={dashboardItems.quickCycle} 
+                onCheckedChange={(checked) => handleDashboardItemChange('quickCycle', !!checked)} 
+              />
+              <label
+                htmlFor="quick-cycle"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Cycle Tracker Quick Action
+              </label>
+            </div>
           </div>
         </div>
       </div>

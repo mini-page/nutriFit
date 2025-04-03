@@ -1,12 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ProfileForm from '@/components/profile/ProfileForm';
-import PhysicalDetailsForm from '@/components/profile/PhysicalDetailsForm';
-import PreferencesForm from '@/components/profile/PreferencesForm';
+import UserProfileCard from '@/components/profile/UserProfileCard';
 
 interface UserData {
   name: string;
@@ -67,42 +62,12 @@ const UserProfileSettings = () => {
   
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Personal Information</CardTitle>
-          <CardDescription>
-            Update your personal details and preferences
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <ProfileForm 
-            userData={userData}
-            handleInputChange={handleInputChange}
-            handleSelectChange={handleSelectChange}
-          />
-          
-          <Tabs defaultValue="physical">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="physical">Physical Details</TabsTrigger>
-              <TabsTrigger value="preferences">Preferences</TabsTrigger>
-            </TabsList>
-            <TabsContent value="physical" className="space-y-4">
-              <PhysicalDetailsForm 
-                userData={userData}
-                handleInputChange={handleInputChange}
-                handleSelectChange={handleSelectChange}
-              />
-            </TabsContent>
-            <TabsContent value="preferences" className="space-y-4">
-              <PreferencesForm userData={userData} />
-            </TabsContent>
-          </Tabs>
-          
-          <Button onClick={handleSaveProfile} className="mt-4">
-            Save Changes
-          </Button>
-        </CardContent>
-      </Card>
+      <UserProfileCard
+        userData={userData}
+        handleInputChange={handleInputChange}
+        handleSelectChange={handleSelectChange}
+        handleSaveProfile={handleSaveProfile}
+      />
     </div>
   );
 };

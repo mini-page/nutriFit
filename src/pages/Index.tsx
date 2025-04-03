@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import WaterTracker from '@/components/ui/water-tracker';
@@ -14,6 +15,7 @@ import {
   PopoverTrigger 
 } from '@/components/ui/popover';
 import { toast } from 'sonner';
+import DashboardQuickActions from '@/components/dashboard/DashboardQuickActions';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -23,6 +25,33 @@ const Index = () => {
     exerciseProgress: '63%',
     sleepQuality: 'Good'
   });
+  const [dashboardItems, setDashboardItems] = useState({
+    water: true,
+    nutrition: true,
+    exercise: true,
+    mood: true,
+    goals: true,
+    quickWater: true,
+    quickExercise: true,
+    quickNutrition: true,
+    quickGoals: true,
+    quickSleep: false,
+    quickBudget: false,
+    quickMood: false,
+    quickCycle: false
+  });
+
+  // Load dashboard settings from localStorage
+  useEffect(() => {
+    const savedDashboardItems = localStorage.getItem('dashboardItems');
+    if (savedDashboardItems) {
+      try {
+        setDashboardItems(JSON.parse(savedDashboardItems));
+      } catch (error) {
+        console.error('Failed to parse dashboard items from localStorage', error);
+      }
+    }
+  }, []);
 
   // Calculate date ranges for week selection
   const today = new Date();
@@ -69,28 +98,16 @@ const Index = () => {
     }
   };
 
-  // Quick action handlers
-  const handleQuickAction = (action: string) => {
-    switch(action) {
-      case 'exercise':
-        navigate('/exercise');
-        toast.success('Redirecting to log exercise');
-        break;
-      case 'water':
-        navigate('/water');
-        toast.success('Redirecting to add water');
-        break;
-      case 'goal':
-        navigate('/goals');
-        toast.success('Redirecting to set goals');
-        break;
-      case 'meal':
-        navigate('/nutrition');
-        toast.success('Redirecting to log meal');
-        break;
-      default:
-        break;
-    }
+  // Map dashboard items to quick action items
+  const quickActionItems = {
+    water: dashboardItems.quickWater,
+    exercise: dashboardItems.quickExercise,
+    goals: dashboardItems.quickGoals,
+    nutrition: dashboardItems.quickNutrition,
+    sleep: dashboardItems.quickSleep,
+    budget: dashboardItems.quickBudget,
+    mood: dashboardItems.quickMood,
+    cycle: dashboardItems.quickCycle
   };
 
   useEffect(() => {
@@ -176,55 +193,13 @@ const Index = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <WaterTracker className="animate-on-mount opacity-0" />
-        <CalorieTracker className="animate-on-mount opacity-0" />
-        <ExerciseTracker className="animate-on-mount opacity-0" />
-        <MoodTracker className="animate-on-mount opacity-0" />
-        <DailyGoal className="animate-on-mount opacity-0" />
+        {dashboardItems.water && <WaterTracker className="animate-on-mount opacity-0" />}
+        {dashboardItems.nutrition && <CalorieTracker className="animate-on-mount opacity-0" />}
+        {dashboardItems.exercise && <ExerciseTracker className="animate-on-mount opacity-0" />}
+        {dashboardItems.mood && <MoodTracker className="animate-on-mount opacity-0" />}
+        {dashboardItems.goals && <DailyGoal className="animate-on-mount opacity-0" />}
         
-        <div className="glass-card p-5 animate-on-mount opacity-0">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-medium flex items-center gap-2">
-              <Activity className="h-5 w-5 text-primary" />
-              <span>Quick Actions</span>
-            </h3>
-            <span className="category-pill bg-secondary dark:bg-secondary/30 text-muted-foreground">
-              <Activity className="h-3.5 w-3.5" />
-              Tools
-            </span>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-3 mt-4">
-            <button 
-              className="p-3 bg-secondary dark:bg-secondary/20 rounded-xl hover:bg-secondary/70 dark:hover:bg-secondary/30 transition-colors flex flex-col items-center justify-center"
-              onClick={() => handleQuickAction('exercise')}
-            >
-              <Activity className="h-5 w-5 mb-2 text-primary" />
-              <span className="text-sm">Log Exercise</span>
-            </button>
-            <button 
-              className="p-3 bg-secondary dark:bg-secondary/20 rounded-xl hover:bg-secondary/70 dark:hover:bg-secondary/30 transition-colors flex flex-col items-center justify-center"
-              onClick={() => handleQuickAction('water')}
-            >
-              <Droplet className="h-5 w-5 mb-2 text-water" />
-              <span className="text-sm">Add Water</span>
-            </button>
-            <button 
-              className="p-3 bg-secondary dark:bg-secondary/20 rounded-xl hover:bg-secondary/70 dark:hover:bg-secondary/30 transition-colors flex flex-col items-center justify-center"
-              onClick={() => handleQuickAction('goal')}
-            >
-              <TrendingUp className="h-5 w-5 mb-2 text-goal" />
-              <span className="text-sm">Set Goal</span>
-            </button>
-            <button 
-              className="p-3 bg-secondary dark:bg-secondary/20 rounded-xl hover:bg-secondary/70 dark:hover:bg-secondary/30 transition-colors flex flex-col items-center justify-center"
-              onClick={() => handleQuickAction('meal')}
-            >
-              <Activity className="h-5 w-5 mb-2 text-calories" />
-              <span className="text-sm">Log Meal</span>
-            </button>
-          </div>
-        </div>
+        <DashboardQuickActions visibleActions={quickActionItems} />
       </div>
     </MainLayout>
   );
