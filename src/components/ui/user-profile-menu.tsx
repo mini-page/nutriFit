@@ -45,6 +45,9 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ userName, onCl
         <DropdownMenuItem onClick={() => handleNavigation('/calendar')}>
           Calendar
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleNavigation('/journal')}>
+          Journal
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,7 +1,21 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Droplet, Flame, Activity, SmilePlus, Target, Calendar, Settings, Moon } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  Droplet, 
+  Flame, 
+  Activity, 
+  SmilePlus, 
+  Target, 
+  Calendar, 
+  Settings, 
+  Moon, 
+  DollarSign,
+  Clock,
+  CheckSquare,
+  BookOpen
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
@@ -45,9 +59,6 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
     console.warn('SidebarNav rendered outside Router context, defaulting active state to homepage');
   }
 
-  const today = new Date();
-  const formattedDate = format(today, 'E dd MMM yyyy');
-
   const navItems = [
     { icon: <LayoutDashboard className="h-5 w-5" />, label: 'Dashboard', href: '/' },
     { icon: <Droplet className="h-5 w-5" />, label: 'Water Tracker', href: '/water' },
@@ -55,6 +66,10 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
     { icon: <Activity className="h-5 w-5" />, label: 'Exercise', href: '/exercise' },
     { icon: <SmilePlus className="h-5 w-5" />, label: 'Mood', href: '/mood' },
     { icon: <Moon className="h-5 w-5" />, label: 'Sleep', href: '/sleep' },
+    { icon: <DollarSign className="h-5 w-5" />, label: 'Budget', href: '/budget' },
+    { icon: <Clock className="h-5 w-5" />, label: 'Pomodoro', href: '/pomodoro' },
+    { icon: <CheckSquare className="h-5 w-5" />, label: 'Habits', href: '/habits' },
+    { icon: <BookOpen className="h-5 w-5" />, label: 'Journal', href: '/journal' },
     { icon: <Target className="h-5 w-5" />, label: 'Goals', href: '/goals' },
     { icon: <Calendar className="h-5 w-5" />, label: 'Calendar', href: '/calendar' },
   ];
@@ -70,18 +85,6 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
               </span>
               NutriFit
             </h1>
-            <p 
-              className="text-muted-foreground text-sm mt-1 cursor-pointer hover:text-foreground transition-colors md:hidden"
-              onClick={() => {
-                try {
-                  window.location.href = '/calendar';
-                } catch (e) {
-                  console.error(e);
-                }
-              }}
-            >
-              {formattedDate}
-            </p>
           </div>
           <div className="mt-4 border-t border-border pt-4 mx-6 mb-4"></div>
         </>

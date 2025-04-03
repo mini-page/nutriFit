@@ -7,6 +7,7 @@ import { MobileMenu } from '@/components/ui/mobile-menu';
 import { UserProfileMenu } from '@/components/ui/user-profile-menu';
 import { NotificationButton, Notification } from '@/components/ui/notification-button';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +27,11 @@ const Header: React.FC<HeaderProps> = ({ className, userName = "Umang" }) => {
   const formattedDate = format(today, 'MMM dd, E');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const handleDateClick = () => {
+    navigate('/calendar');
+  };
 
   // Notification data
   const notifications: Notification[] = [
@@ -93,7 +99,10 @@ const Header: React.FC<HeaderProps> = ({ className, userName = "Umang" }) => {
               </>
             )}
           </h1>
-          <p className="text-muted-foreground text-xs">
+          <p 
+            className="text-muted-foreground text-xs cursor-pointer hover:text-foreground transition-colors"
+            onClick={handleDateClick}
+          >
             {formattedDate}
           </p>
         </div>
@@ -117,7 +126,7 @@ const Header: React.FC<HeaderProps> = ({ className, userName = "Umang" }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => window.location.href = '/settings'}>
+              <DropdownMenuItem onClick={() => navigate('/settings')}>
                 Profile Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />

@@ -15,6 +15,11 @@ import GoalsPage from "./pages/GoalsPage";
 import CalendarPage from "./pages/CalendarPage";
 import SettingsPage from "./pages/SettingsPage";
 import SleepPage from "./pages/SleepPage";
+import BudgetPage from "./pages/BudgetPage";
+import PomodoroPage from "./pages/PomodoroPage";
+import HabitsPage from "./pages/HabitsPage";
+import JournalPage from "./pages/JournalPage";
+import CycleTrackerPage from "./pages/CycleTrackerPage";
 import "./App.css";
 import { useState } from "react";
 
@@ -38,6 +43,11 @@ const App = () => {
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/sleep" element={<SleepPage />} />
+            <Route path="/budget" element={<BudgetPage />} />
+            <Route path="/pomodoro" element={<PomodoroPage />} />
+            <Route path="/habits" element={<HabitsPage />} />
+            <Route path="/journal" element={<JournalPage />} />
+            <Route path="/cycle-tracker" element={<CycleTrackerPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppearanceSettings from '@/components/settings/AppearanceSettings';
 import NotificationSettings from '@/components/settings/NotificationSettings';
 import DataSettings from '@/components/settings/DataSettings';
+import UserProfileSettings from '@/components/settings/UserProfileSettings';
 import { toast } from 'sonner';
 
 const SettingsPage = () => {
@@ -91,12 +92,17 @@ const SettingsPage = () => {
   return (
     <MainLayout>
       <SettingsLayout userName="Umang">
-        <Tabs defaultValue="appearance" className="space-y-4">
+        <Tabs defaultValue="profile" className="space-y-4">
           <TabsList>
+            <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="data">Data & Privacy</TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="profile" className="space-y-4">
+            <UserProfileSettings />
+          </TabsContent>
           
           <TabsContent value="appearance" className="space-y-4">
             <AppearanceSettings 
