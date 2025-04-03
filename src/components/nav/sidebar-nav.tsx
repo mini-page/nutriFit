@@ -14,10 +14,10 @@ import {
   DollarSign,
   Clock,
   CheckSquare,
-  BookOpen
+  BookOpen,
+  Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -60,18 +60,27 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
   }
 
   const navItems = [
-    { icon: <LayoutDashboard className="h-5 w-5" />, label: 'Dashboard', href: '/' },
-    { icon: <Droplet className="h-5 w-5" />, label: 'Water Tracker', href: '/water' },
-    { icon: <Flame className="h-5 w-5" />, label: 'Nutrition', href: '/nutrition' },
-    { icon: <Activity className="h-5 w-5" />, label: 'Exercise', href: '/exercise' },
-    { icon: <SmilePlus className="h-5 w-5" />, label: 'Mood', href: '/mood' },
-    { icon: <Moon className="h-5 w-5" />, label: 'Sleep', href: '/sleep' },
-    { icon: <DollarSign className="h-5 w-5" />, label: 'Budget', href: '/budget' },
-    { icon: <Clock className="h-5 w-5" />, label: 'Pomodoro', href: '/pomodoro' },
-    { icon: <CheckSquare className="h-5 w-5" />, label: 'Habits', href: '/habits' },
-    { icon: <BookOpen className="h-5 w-5" />, label: 'Journal', href: '/journal' },
-    { icon: <Target className="h-5 w-5" />, label: 'Goals', href: '/goals' },
-    { icon: <Calendar className="h-5 w-5" />, label: 'Calendar', href: '/calendar' },
+    { icon: <LayoutDashboard className="h-5 w-5 text-blue-500" />, label: 'Dashboard', href: '/' },
+    
+    // Daily Health Tracking Section
+    { icon: <Droplet className="h-5 w-5 text-cyan-500" />, label: 'Water Tracker', href: '/water' },
+    { icon: <Flame className="h-5 w-5 text-orange-500" />, label: 'Nutrition', href: '/nutrition' },
+    { icon: <Activity className="h-5 w-5 text-green-500" />, label: 'Exercise', href: '/exercise' },
+    { icon: <Moon className="h-5 w-5 text-indigo-500" />, label: 'Sleep', href: '/sleep' },
+    
+    // Mental & Emotional Tracking
+    { icon: <SmilePlus className="h-5 w-5 text-yellow-500" />, label: 'Mood', href: '/mood' },
+    { icon: <BookOpen className="h-5 w-5 text-emerald-500" />, label: 'Journal', href: '/journal' },
+    { icon: <Heart className="h-5 w-5 text-pink-500" />, label: 'Cycle Tracker', href: '/cycle-tracker' },
+    
+    // Productivity & Goals
+    { icon: <Clock className="h-5 w-5 text-red-500" />, label: 'Pomodoro', href: '/pomodoro' },
+    { icon: <CheckSquare className="h-5 w-5 text-purple-500" />, label: 'Habits', href: '/habits' },
+    { icon: <Target className="h-5 w-5 text-blue-600" />, label: 'Goals', href: '/goals' },
+    { icon: <DollarSign className="h-5 w-5 text-green-600" />, label: 'Budget', href: '/budget' },
+    
+    // Planning
+    { icon: <Calendar className="h-5 w-5 text-violet-500" />, label: 'Calendar', href: '/calendar' },
   ];
 
   return (
@@ -104,9 +113,9 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
         </div>
       </div>
 
-      <div className="mt-auto border-t border-border pt-3 px-3 pb-6 bg-secondary/30">
+      <div className="mt-auto border-t border-border pt-3 px-3 pb-6 bg-primary/5">
         <NavItem
-          icon={<Settings className="h-5 w-5" />}
+          icon={<Settings className="h-5 w-5 text-gray-500" />}
           label="Settings"
           href="/settings"
           active={pathname === '/settings'}

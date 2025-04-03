@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,19 @@ const UserProfileSettings = () => {
     activityLevel: 'moderate'
   });
   
+  // Load user data from localStorage on component mount
+  useEffect(() => {
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      try {
+        const parsedData = JSON.parse(savedUserData);
+        setUserData(parsedData);
+      } catch (error) {
+        console.error('Failed to parse user data from localStorage', error);
+      }
+    }
+  }, []);
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData(prev => ({ ...prev, [name]: value }));
@@ -45,14 +58,17 @@ const UserProfileSettings = () => {
   };
   
   const handleSaveProfile = () => {
-    // In a real app, this would send the data to a server
-    toast.success('Profile settings saved successfully');
+    // Store user data in localStorage
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('userGender', userData.gender);
     
     // Publish an event that other components can listen to
     const event = new CustomEvent('user-profile-updated', { 
       detail: { userData } 
     });
     document.dispatchEvent(event);
+    
+    toast.success('Profile settings saved successfully');
   };
   
   return (
@@ -171,7 +187,6 @@ const UserProfileSettings = () => {
                   Customize which trackers are shown in your dashboard based on your needs.
                 </p>
                 
-                {/* This is where we conditionally show the menstrual cycle option based on the gender */}
                 {(userData.gender === 'female' || userData.gender === 'non-binary') && (
                   <div className="flex items-center space-x-4 rounded-lg border p-4">
                     <div className="flex-1 space-y-1">

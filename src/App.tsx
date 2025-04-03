@@ -21,11 +21,32 @@ import HabitsPage from "./pages/HabitsPage";
 import JournalPage from "./pages/JournalPage";
 import CycleTrackerPage from "./pages/CycleTrackerPage";
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const App = () => {
   // Create a QueryClient instance with useState to ensure stability across renders
   const [queryClient] = useState(() => new QueryClient());
+
+  // Set up theme preferences from localStorage on app load
+  useEffect(() => {
+    const theme = localStorage.getItem('theme') || 'system';
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Initialize user data if not present
+    if (!localStorage.getItem('userData')) {
+      const defaultUserData = {
+        name: 'Umang Gupta',
+        email: 'umang@example.com',
+        age: '20',
+        gender: 'male',
+        height: '171',
+        weight: '68',
+        activityLevel: 'moderate'
+      };
+      localStorage.setItem('userData', JSON.stringify(defaultUserData));
+      localStorage.setItem('userGender', 'male');
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

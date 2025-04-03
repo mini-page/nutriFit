@@ -1,15 +1,17 @@
+
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { format, addDays, differenceInDays, isSameDay, isWithinInterval } from 'date-fns';
-import { Droplet, Calendar as CalendarIcon, AlertCircle, Info } from 'lucide-react';
+import { Droplet, Calendar as CalendarIcon, AlertCircle, Info, Medal, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Period {
   startDate: Date;
@@ -23,6 +25,7 @@ interface Symptom {
 }
 
 const CycleTrackerPage = () => {
+  const isMobile = useIsMobile();
   const [showPermissionAlert, setShowPermissionAlert] = useState(true);
   const [periods, setPeriods] = useState<Period[]>([
     {
@@ -45,25 +48,50 @@ const CycleTrackerPage = () => {
   const [cycleLength, setCycleLength] = useState(28);
   const [symptomType, setSymptomType] = useState('cramps');
   const [symptomSeverity, setSymptomSeverity] = useState(1);
+  const [showTracker, setShowTracker] = useState(false);
+  const [streak, setStreak] = useState(0);
   
   // Check if the user has permission to view this page
   useEffect(() => {
     const checkUserGender = () => {
-      // In a real app, this would retrieve gender from user settings
-      // For now, we'll just use a mock gender value
-      const gender = localStorage.getItem('userGender') || 'female';
+      // Get gender from localStorage
+      const gender = localStorage.getItem('userGender') || '';
       
-      if (gender !== 'female' && gender !== 'non-binary') {
-        toast.error('This page is only available for users who have set their gender to female or non-binary in settings.');
-        // Normally would redirect, but we'll keep the component mounted for demo purposes
+      if (gender === 'female' || gender === 'non-binary') {
+        setShowTracker(true);
+      } else {
+        setShowTracker(false);
+        // Only show toast if we're hiding the tracker after it was previously shown
+        if (showTracker) {
+          toast.info('This page is only available for users who set their gender to female or non-binary in settings.');
+        }
       }
     };
     
+    // Check initially
     checkUserGender();
     
+    // Calculate streak - in a real app this would be more sophisticated
+    const lastLog = localStorage.getItem('lastCycleLog');
+    if (lastLog) {
+      const daysSinceLastLog = differenceInDays(new Date(), new Date(lastLog));
+      if (daysSinceLastLog <= 1) {
+        const currentStreak = Number(localStorage.getItem('cycleStreak') || '0');
+        setStreak(currentStreak);
+      }
+    }
+    
+    // Listen for updates
     const handleUserProfileUpdate = (e: any) => {
       const { gender } = e.detail.userData;
       localStorage.setItem('userGender', gender);
+      
+      if (gender === 'female' || gender === 'non-binary') {
+        setShowTracker(true);
+      } else {
+        setShowTracker(false);
+        toast.info('This page is only available for users who set their gender to female or non-binary in settings.');
+      }
     };
     
     document.addEventListener('user-profile-updated', handleUserProfileUpdate);
@@ -71,7 +99,7 @@ const CycleTrackerPage = () => {
     return () => {
       document.removeEventListener('user-profile-updated', handleUserProfileUpdate);
     };
-  }, []);
+  }, [showTracker]);
   
   // Calculate next period based on the most recent period
   const calculateNextPeriod = () => {
@@ -118,7 +146,21 @@ const CycleTrackerPage = () => {
     
     setPeriods([...periods, newPeriod]);
     setPeriodStart(undefined);
-    toast.success('Period recorded successfully');
+    
+    // Update streak for gamification
+    const currentStreak = Number(localStorage.getItem('cycleStreak') || '0');
+    const newStreak = currentStreak + 1;
+    localStorage.setItem('cycleStreak', String(newStreak));
+    localStorage.setItem('lastCycleLog', new Date().toISOString());
+    setStreak(newStreak);
+    
+    if (newStreak % 5 === 0) {
+      toast.success(`🏆 Achievement unlocked: ${newStreak} days streak!`, {
+        icon: <Medal className="h-5 w-5 text-yellow-500" />
+      });
+    } else {
+      toast.success('Period recorded successfully');
+    }
   };
   
   const handleAddSymptom = () => {
@@ -137,10 +179,54 @@ const CycleTrackerPage = () => {
     toast.success('Symptom recorded successfully');
   };
   
+  if (!showTracker) {
+    return (
+      <MainLayout>
+        <div className="flex flex-col items-center justify-center h-full py-12">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="h-5 w-5 text-pink-500" />
+                Menstrual Cycle Tracker
+              </CardTitle>
+              <CardDescription>
+                This feature is available for female and non-binary users
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-center mb-6">
+                To access the Menstrual Cycle Tracker, please update your gender in the settings.
+              </p>
+              <Button 
+                className="w-full" 
+                onClick={() => window.location.href = '/settings'}
+              >
+                Go to Settings
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </MainLayout>
+    );
+  }
+  
   return (
     <MainLayout>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold">Menstrual Cycle Tracker</h1>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Heart className="h-6 w-6 text-pink-500" />
+              Menstrual Cycle Tracker
+            </h1>
+            {streak > 0 && (
+              <p className="text-sm text-muted-foreground flex items-center mt-1">
+                <Medal className="h-4 w-4 text-yellow-500 mr-1" /> 
+                Current streak: {streak} {streak === 1 ? 'day' : 'days'}
+              </p>
+            )}
+          </div>
+        </div>
         
         {showPermissionAlert && (
           <Alert className="bg-blue-50 border-blue-200 text-blue-800">
@@ -156,9 +242,12 @@ const CycleTrackerPage = () => {
         )}
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
+          <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
             <CardHeader>
-              <CardTitle>Cycle Calendar</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <CalendarIcon className="h-5 w-5 text-pink-500" />
+                Cycle Calendar
+              </CardTitle>
               <CardDescription>
                 Track your menstrual cycle and predict upcoming periods
               </CardDescription>
@@ -197,10 +286,13 @@ const CycleTrackerPage = () => {
             </CardFooter>
           </Card>
           
-          <div className="space-y-6">
-            <Card>
+          <div className={`space-y-6 ${isMobile ? "order-last" : ""}`}>
+            <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
               <CardHeader>
-                <CardTitle>Record New Period</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Droplet className="h-5 w-5 text-red-500" />
+                  Record New Period
+                </CardTitle>
                 <CardDescription>
                   Track your menstrual cycle for better predictions
                 </CardDescription>
@@ -266,82 +358,119 @@ const CycleTrackerPage = () => {
               </CardContent>
             </Card>
             
-            <Card>
-              <CardHeader>
-                <CardTitle>Record Symptoms</CardTitle>
-                <CardDescription>
-                  Track symptoms throughout your cycle
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Date</label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className="w-full justify-start text-left font-normal"
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, 'PPP') : <span>Select date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Symptom Type</label>
-                  <Select value={symptomType} onValueChange={setSymptomType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cramps">Cramps</SelectItem>
-                      <SelectItem value="headache">Headache</SelectItem>
-                      <SelectItem value="bloating">Bloating</SelectItem>
-                      <SelectItem value="fatigue">Fatigue</SelectItem>
-                      <SelectItem value="mood_swings">Mood Swings</SelectItem>
-                      <SelectItem value="breast_tenderness">Breast Tenderness</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Severity (1-5)</label>
-                  <Select value={String(symptomSeverity)} onValueChange={(val) => setSymptomSeverity(Number(val))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 - Very Mild</SelectItem>
-                      <SelectItem value="2">2 - Mild</SelectItem>
-                      <SelectItem value="3">3 - Moderate</SelectItem>
-                      <SelectItem value="4">4 - Severe</SelectItem>
-                      <SelectItem value="5">5 - Very Severe</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <Button className="w-full" onClick={handleAddSymptom}>
-                  Record Symptom
-                </Button>
-              </CardContent>
-            </Card>
+            {!isMobile && (
+              <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertCircle className="h-5 w-5 text-purple-500" />
+                    Record Symptoms
+                  </CardTitle>
+                  <CardDescription>
+                    Track symptoms throughout your cycle
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Symptom Type</label>
+                    <Select value={symptomType} onValueChange={setSymptomType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cramps">Cramps</SelectItem>
+                        <SelectItem value="headache">Headache</SelectItem>
+                        <SelectItem value="bloating">Bloating</SelectItem>
+                        <SelectItem value="fatigue">Fatigue</SelectItem>
+                        <SelectItem value="mood_swings">Mood Swings</SelectItem>
+                        <SelectItem value="breast_tenderness">Breast Tenderness</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Severity (1-5)</label>
+                    <Select value={String(symptomSeverity)} onValueChange={(val) => setSymptomSeverity(Number(val))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 - Very Mild</SelectItem>
+                        <SelectItem value="2">2 - Mild</SelectItem>
+                        <SelectItem value="3">3 - Moderate</SelectItem>
+                        <SelectItem value="4">4 - Severe</SelectItem>
+                        <SelectItem value="5">5 - Very Severe</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button className="w-full" onClick={handleAddSymptom}>
+                    Record Symptom
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
         
-        {nextPeriod && (
-          <Card>
+        {isMobile && (
+          <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
             <CardHeader>
-              <CardTitle>Cycle Insights</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-purple-500" />
+                Record Symptoms
+              </CardTitle>
+              <CardDescription>
+                Track symptoms throughout your cycle
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Symptom Type</label>
+                <Select value={symptomType} onValueChange={setSymptomType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cramps">Cramps</SelectItem>
+                    <SelectItem value="headache">Headache</SelectItem>
+                    <SelectItem value="bloating">Bloating</SelectItem>
+                    <SelectItem value="fatigue">Fatigue</SelectItem>
+                    <SelectItem value="mood_swings">Mood Swings</SelectItem>
+                    <SelectItem value="breast_tenderness">Breast Tenderness</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Severity (1-5)</label>
+                <Select value={String(symptomSeverity)} onValueChange={(val) => setSymptomSeverity(Number(val))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 - Very Mild</SelectItem>
+                    <SelectItem value="2">2 - Mild</SelectItem>
+                    <SelectItem value="3">3 - Moderate</SelectItem>
+                    <SelectItem value="4">4 - Severe</SelectItem>
+                    <SelectItem value="5">5 - Very Severe</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <Button className="w-full" onClick={handleAddSymptom}>
+                Record Symptom
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+        
+        {nextPeriod && (
+          <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5 text-blue-500" />
+                Cycle Insights
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -356,11 +485,11 @@ const CycleTrackerPage = () => {
                 <div>
                   <h3 className="font-medium mb-2">Cycle Summary</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 border rounded-md">
+                    <div className="p-4 border rounded-md bg-pink-50">
                       <span className="text-sm text-muted-foreground">Average Cycle Length</span>
                       <p className="text-2xl font-bold">{cycleLength} days</p>
                     </div>
-                    <div className="p-4 border rounded-md">
+                    <div className="p-4 border rounded-md bg-purple-50">
                       <span className="text-sm text-muted-foreground">Average Period Length</span>
                       <p className="text-2xl font-bold">{periodLength} days</p>
                     </div>
