@@ -9,9 +9,26 @@ import DataSettings from '@/components/settings/DataSettings';
 import UserProfileSettings from '@/components/settings/UserProfileSettings';
 import { toast } from 'sonner';
 
+// Define the dashboard items type for better type safety
+interface DashboardItems {
+  water: boolean;
+  nutrition: boolean;
+  exercise: boolean;
+  mood: boolean;
+  goals: boolean;
+  quickWater: boolean;
+  quickExercise: boolean;
+  quickNutrition: boolean;
+  quickGoals: boolean;
+  quickSleep: boolean;
+  quickBudget: boolean;
+  quickMood: boolean;
+  quickCycle: boolean;
+}
+
 const SettingsPage = () => {
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system');
-  const [dashboardItems, setDashboardItems] = useState({
+  const [dashboardItems, setDashboardItems] = useState<DashboardItems>({
     water: true,
     nutrition: true,
     exercise: true,
@@ -35,7 +52,12 @@ const SettingsPage = () => {
     const savedDashboardItems = localStorage.getItem('dashboardItems');
     if (savedDashboardItems) {
       try {
-        setDashboardItems(JSON.parse(savedDashboardItems));
+        const parsedItems = JSON.parse(savedDashboardItems);
+        // Ensure all required properties exist in the loaded object
+        setDashboardItems(prev => ({
+          ...prev,
+          ...parsedItems
+        }));
       } catch (error) {
         console.error('Failed to parse dashboard items from localStorage', error);
       }
@@ -49,9 +71,13 @@ const SettingsPage = () => {
     toast.success(`Theme changed to ${value} mode`);
   };
 
-  const handleDashboardItemsChange = (items: Record<string, boolean>) => {
-    setDashboardItems(items);
-    localStorage.setItem('dashboardItems', JSON.stringify(items));
+  const handleDashboardItemsChange = (items: Partial<DashboardItems>) => {
+    // Ensure we're preserving all properties by merging with current state
+    setDashboardItems(prev => {
+      const updatedItems = { ...prev, ...items };
+      localStorage.setItem('dashboardItems', JSON.stringify(updatedItems));
+      return updatedItems;
+    });
     toast.success('Dashboard settings updated');
   };
 

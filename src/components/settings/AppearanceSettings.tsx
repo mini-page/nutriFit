@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FormLabel } from '@/components/ui/form';
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -12,11 +11,27 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
 
+interface DashboardItems {
+  water: boolean;
+  nutrition: boolean;
+  exercise: boolean;
+  mood: boolean;
+  goals: boolean;
+  quickWater: boolean;
+  quickExercise: boolean;
+  quickNutrition: boolean;
+  quickGoals: boolean;
+  quickSleep: boolean;
+  quickBudget: boolean;
+  quickMood: boolean;
+  quickCycle: boolean;
+}
+
 interface AppearanceSettingsProps {
   theme: 'light' | 'dark' | 'system';
   handleThemeChange: (value: 'light' | 'dark' | 'system') => void;
-  dashboardItems: Record<string, boolean>;
-  onDashboardItemsChange: (items: Record<string, boolean>) => void;
+  dashboardItems: DashboardItems;
+  onDashboardItemsChange: (items: Partial<DashboardItems>) => void;
 }
 
 const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
@@ -26,10 +41,8 @@ const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
   onDashboardItemsChange
 }) => {
   
-  // Handle dashboard item toggle
-  const handleDashboardItemChange = (key: string, checked: boolean) => {
+  const handleDashboardItemChange = (key: keyof DashboardItems, checked: boolean) => {
     onDashboardItemsChange({
-      ...dashboardItems,
       [key]: checked
     });
   };
