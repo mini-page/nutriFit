@@ -1,11 +1,11 @@
 
-# NutriFit - Your Daily Fitness Companion
+# Trackify - Your Daily Tracking Companion
 
-![NutriFit Dashboard](https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=1200&q=80)
+![Trackify Dashboard](./public/Dashboard_coll.png)
 
 ## 🌟 Overview
 
-NutriFit is a comprehensive health and fitness tracking application designed to help users monitor and improve their wellness journey. The application provides an intuitive dashboard that tracks water intake, nutrition, exercise, mood, sleep patterns, and personal goals.
+Trackify is a comprehensive health and fitness tracking application designed to help users monitor and improve their wellness journey. The application provides an intuitive dashboard that tracks water intake, nutrition, exercise, mood, sleep patterns, and personal goals.
 
 ## ✨ Features
 
@@ -18,13 +18,18 @@ NutriFit is a comprehensive health and fitness tracking application designed to 
 - **Goal Setting**: Set and track personalized fitness and wellness goals
 - **Calendar View**: Plan and visualize your fitness journey
 
+- **and many more  coming sooooonnnnnn.....**
+
 ## 🖥️ Screenshots
 
 ### Dashboard Overview
-![Dashboard](https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80)
+![Dashboard](./public/Dashboard.png)
 
-### Goal Tracking
-![Goals Tracker](https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80)
+### Trackers Card
+![Trackers](./public/Trackers.png)
+
+### Setting View
+![Settings](./public/settings.png)
 
 ## 🛠️ Technologies Used
 
@@ -45,10 +50,10 @@ NutriFit is a comprehensive health and fitness tracking application designed to 
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/mini-page/trackify.git
 
 # Navigate to the project directory
-cd nutrifit
+cd trackify
 
 # Install dependencies
 npm install
@@ -57,14 +62,14 @@ npm install
 npm run dev
 ```
 
-## 📱 Responsive Design
+## 📱 **Responsive Design**
 
-NutriFit is fully responsive and works seamlessly across desktop, tablet, and mobile devices.
+Trackify ensures a seamless experience across all devices! Whether you're on a **desktop**, **tablet**, or **mobile**, Trackify adjusts beautifully to any screen size, providing a smooth, responsive interface that looks great on all platforms. 📱💻📲
 
-## 👤 Created By
+## 👤 **Created By**
 
-Developed with 💖 by Umang Gupta
+This project was lovingly crafted with 💖 by **Umang**, also known as **mini-page** and **Raghav**. From sketching the wireframes to writing the code, every line is a labor of passion and creativity. ✨🚀
 
-## 📄 License
+## 📄 **License**
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Trackify is open source and proudly licensed under the **MIT License**. Feel free to use, modify, and share — for more details, check out the LICENSE file. Let’s keep the open-source spirit alive! 🙌🔓
