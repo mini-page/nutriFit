@@ -1,74 +1,62 @@
 
 import React, { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
-import { X, BellRing, InfoIcon } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface NotificationStripeProps {
   message: string;
   type?: 'info' | 'success' | 'warning' | 'error';
-  autoDismiss?: boolean;
-  dismissDuration?: number;
-  className?: string;
+  duration?: number; // in milliseconds, if not provided, notification won't auto-dismiss
+  onClose?: () => void;
 }
 
-const NotificationStripe: React.FC<NotificationStripeProps> = ({
+export const NotificationStripe: React.FC<NotificationStripeProps> = ({
   message,
   type = 'info',
-  autoDismiss = true,
-  dismissDuration = 5000,
-  className
+  duration,
+  onClose
 }) => {
-  const [visible, setVisible] = useState(true);
-
+  const [isVisible, setIsVisible] = useState(true);
+  const [isClosing, setIsClosing] = useState(false);
+  
+  const getBgColor = () => {
+    switch (type) {
+      case 'success': return 'bg-green-500';
+      case 'warning': return 'bg-yellow-500';
+      case 'error': return 'bg-red-500';
+      default: return 'bg-primary';
+    }
+  };
+  
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      if (onClose) onClose();
+    }, 300); // Wait for animation to complete
+  };
+  
   useEffect(() => {
-    if (autoDismiss && visible) {
+    if (duration) {
       const timer = setTimeout(() => {
-        setVisible(false);
-      }, dismissDuration);
-
+        handleClose();
+      }, duration);
+      
       return () => clearTimeout(timer);
     }
-  }, [autoDismiss, dismissDuration, visible]);
-
-  if (!visible) return null;
-
-  const bgColorClass = {
-    info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
-    success: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
-    warning: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800',
-    error: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
-  }[type];
-
-  const iconColorClass = {
-    info: 'text-blue-500 dark:text-blue-400',
-    success: 'text-green-500 dark:text-green-400',
-    warning: 'text-amber-500 dark:text-amber-400',
-    error: 'text-red-500 dark:text-red-400',
-  }[type];
-
-  const IconComponent = type === 'info' ? InfoIcon : BellRing;
-
+  }, [duration]);
+  
+  if (!isVisible) return null;
+  
   return (
-    <div 
-      className={cn(
-        'w-full py-2 px-4 flex items-center justify-between border-b transition-all',
-        bgColorClass,
-        className
-      )}
-    >
-      <div className="flex items-center">
-        <IconComponent className={cn('h-4 w-4 mr-2', iconColorClass)} />
-        <p className="text-sm">{message}</p>
-      </div>
-      <button
-        onClick={() => setVisible(false)}
-        className="text-muted-foreground hover:text-foreground"
-        aria-label="Dismiss notification"
+    <div className={`notification-stripe ${getBgColor()} ${isClosing ? 'slide-up' : ''}`}>
+      <div className="flex-1 text-center text-sm md:text-base">{message}</div>
+      <button 
+        onClick={handleClose}
+        className="ml-2 p-1 rounded-full hover:bg-white/10 transition-colors"
+        aria-label="Close notification"
       >
         <X className="h-4 w-4" />
       </button>
     </div>
   );
 };
-
-export default NotificationStripe;

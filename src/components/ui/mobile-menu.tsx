@@ -23,7 +23,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => 
             <div className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
               <Activity className="h-5 w-5" />
             </div>
-            <h1 className="text-xl font-bold">NutriFit</h1>
+            <h1 className="text-xl font-bold">Trackify</h1>
           </div>
         </div>
         <div className="overflow-y-auto h-full pb-16">

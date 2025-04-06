@@ -9,6 +9,7 @@ import DataSettings from '@/components/settings/DataSettings';
 import UserProfileSettings from '@/components/settings/UserProfileSettings';
 import AboutUsSettings from '@/components/settings/AboutUsSettings';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Define the dashboard items type for better type safety
 interface DashboardItems {
@@ -22,7 +23,7 @@ interface DashboardItems {
   quickNutrition: boolean;
   quickGoals: boolean;
   quickSleep: boolean;
-  quickBudget: boolean;
+  quickBudget: boolean; 
   quickMood: boolean;
   quickCycle: boolean;
 }
@@ -44,6 +45,7 @@ const SettingsPage = () => {
     quickMood: false,
     quickCycle: false
   });
+  const isMobile = useIsMobile();
 
   // Load settings from localStorage on component mount
   useEffect(() => {
@@ -157,12 +159,12 @@ const SettingsPage = () => {
     <MainLayout>
       <SettingsLayout userName="Umang">
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className="flex w-full overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-5 space-x-1 md:space-x-0">
+          <TabsList className={`grid ${isMobile ? 'grid-cols-3 gap-1 pb-1 overflow-x-auto' : 'md:grid-cols-5'} w-full`}>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="data">Data</TabsTrigger>
-            <TabsTrigger value="about">About Us</TabsTrigger>
+            <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
           
           <TabsContent value="profile" className="space-y-4">
