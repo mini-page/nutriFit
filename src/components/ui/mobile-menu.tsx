@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Activity } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
@@ -11,6 +11,19 @@ interface MobileMenuProps {
 }
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => {
+  // Fix body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -28,7 +41,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => 
               <h1 className="text-xl font-bold">Trackify</h1>
             </div>
           </div>
-          <ScrollArea className="flex-1 h-[calc(100vh-4rem)]">
+          <ScrollArea className="flex-1 h-[calc(100vh-4rem)] overflow-y-auto">
             <div className="pt-2">
               <SidebarNav hideLogo={true} />
             </div>

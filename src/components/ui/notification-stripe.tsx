@@ -5,14 +5,14 @@ import { X } from 'lucide-react';
 interface NotificationStripeProps {
   message: string;
   type?: 'info' | 'success' | 'warning' | 'error';
-  duration?: number; // in milliseconds, if not provided, notification won't auto-dismiss
+  duration?: number; // in milliseconds, defaults to 5000ms (5 seconds)
   onClose?: () => void;
 }
 
 export const NotificationStripe: React.FC<NotificationStripeProps> = ({
   message,
   type = 'info',
-  duration,
+  duration = 5000,
   onClose
 }) => {
   const [isVisible, setIsVisible] = useState(true);

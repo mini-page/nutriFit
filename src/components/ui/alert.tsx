@@ -1,6 +1,7 @@
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-
+import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
@@ -19,17 +20,55 @@ const alertVariants = cva(
   }
 )
 
+interface AlertProps extends React.HTMLAttributes<HTMLDivElement>,
+  VariantProps<typeof alertVariants> {
+  onClose?: () => void;
+  autoClose?: boolean;
+  autoCloseDelay?: number;
+}
+
 const Alert = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
->(({ className, variant, ...props }, ref) => (
-  <div
-    ref={ref}
-    role="alert"
-    className={cn(alertVariants({ variant }), className)}
-    {...props}
-  />
-))
+  AlertProps
+>(({ className, variant, children, onClose, autoClose = true, autoCloseDelay = 5000, ...props }, ref) => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  React.useEffect(() => {
+    if (autoClose && isVisible) {
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+        if (onClose) onClose();
+      }, autoCloseDelay);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [autoClose, autoCloseDelay, isVisible, onClose]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div
+      ref={ref}
+      role="alert"
+      className={cn(alertVariants({ variant }), className, "pr-10")}
+      {...props}
+    >
+      {children}
+      {onClose && (
+        <button 
+          className="absolute top-3 right-3 p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+          onClick={() => {
+            setIsVisible(false);
+            onClose();
+          }}
+          aria-label="Close alert"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      )}
+    </div>
+  )
+})
 Alert.displayName = "Alert"
 
 const AlertTitle = React.forwardRef<
