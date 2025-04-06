@@ -7,6 +7,7 @@ import AppearanceSettings from '@/components/settings/AppearanceSettings';
 import NotificationSettings from '@/components/settings/NotificationSettings';
 import DataSettings from '@/components/settings/DataSettings';
 import UserProfileSettings from '@/components/settings/UserProfileSettings';
+import AboutUsSettings from '@/components/settings/AboutUsSettings';
 import { toast } from 'sonner';
 
 // Define the dashboard items type for better type safety
@@ -105,7 +106,7 @@ const SettingsPage = () => {
     const dataStr = JSON.stringify(userData, null, 2);
     const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
     
-    const exportFileDefaultName = "nutrifit-data.json";
+    const exportFileDefaultName = "trackify-data.json";
     
     const linkElement = document.createElement("a");
     linkElement.setAttribute("href", dataUri);
@@ -156,11 +157,12 @@ const SettingsPage = () => {
     <MainLayout>
       <SettingsLayout userName="Umang">
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className="flex overflow-x-auto md:grid md:grid-cols-4 space-x-1 md:space-x-0">
+          <TabsList className="flex w-full overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-5 space-x-1 md:space-x-0">
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="data">Data & Privacy</TabsTrigger>
+            <TabsTrigger value="data">Data</TabsTrigger>
+            <TabsTrigger value="about">About Us</TabsTrigger>
           </TabsList>
           
           <TabsContent value="profile" className="space-y-4">
@@ -185,6 +187,10 @@ const SettingsPage = () => {
               handleExportData={handleExportData}
               handleImportData={handleImportData}
             />
+          </TabsContent>
+          
+          <TabsContent value="about" className="space-y-4">
+            <AboutUsSettings />
           </TabsContent>
         </Tabs>
       </SettingsLayout>

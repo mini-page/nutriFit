@@ -125,7 +125,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
                 <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
                   <Activity className="h-5 w-5" />
                 </span>
-                NutriFit
+                Trackify
               </>
             )}
           </h1>

@@ -123,7 +123,8 @@ const Index = () => {
   return (
     <MainLayout>
       <div className="mb-6 animate-on-mount opacity-0">
-        <p className="text-muted-foreground">Track your fitness journey and stay on top of your health goals.</p>
+        <h1 className="text-2xl font-bold mb-1">Trackify Dashboard</h1>
+        <p className="text-muted-foreground">Track your life, simplify your journey</p>
       </div>
       
       <div className="glass-card p-4 mb-8 animate-on-mount opacity-0">
@@ -160,7 +161,7 @@ const Index = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center">
+          <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center no-hover">
             <div className="h-12 w-12 rounded-full bg-water/10 flex items-center justify-center mr-4">
               <Droplet className="h-6 w-6 text-water" />
             </div>
@@ -170,7 +171,7 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center">
+          <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center no-hover">
             <div className="h-12 w-12 rounded-full bg-calories/10 flex items-center justify-center mr-4">
               <Activity className="h-6 w-6 text-calories" />
             </div>
@@ -180,7 +181,7 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center">
+          <div className="bg-secondary/50 dark:bg-secondary/20 rounded-xl p-4 flex items-center no-hover">
             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
               <Moon className="h-6 w-6 text-primary" />
             </div>
@@ -193,11 +194,11 @@ const Index = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dashboardItems.water && <WaterTracker className="animate-on-mount opacity-0" />}
-        {dashboardItems.nutrition && <CalorieTracker className="animate-on-mount opacity-0" />}
-        {dashboardItems.exercise && <ExerciseTracker className="animate-on-mount opacity-0" />}
-        {dashboardItems.mood && <MoodTracker className="animate-on-mount opacity-0" />}
-        {dashboardItems.goals && <DailyGoal className="animate-on-mount opacity-0" />}
+        {dashboardItems.water && <WaterTracker className="animate-on-mount opacity-0 no-hover" />}
+        {dashboardItems.nutrition && <CalorieTracker className="animate-on-mount opacity-0 no-hover" />}
+        {dashboardItems.exercise && <ExerciseTracker className="animate-on-mount opacity-0 no-hover" />}
+        {dashboardItems.mood && <MoodTracker className="animate-on-mount opacity-0 no-hover" />}
+        {dashboardItems.goals && <DailyGoal className="animate-on-mount opacity-0 no-hover" />}
         
         <DashboardQuickActions visibleActions={quickActionItems} />
       </div>

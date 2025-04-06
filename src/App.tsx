@@ -20,12 +20,14 @@ import PomodoroPage from "./pages/PomodoroPage";
 import HabitsPage from "./pages/HabitsPage";
 import JournalPage from "./pages/JournalPage";
 import CycleTrackerPage from "./pages/CycleTrackerPage";
+import NotificationStripe from "./components/ui/notification-stripe";
 import "./App.css";
 import { useState, useEffect } from "react";
 
 const App = () => {
   // Create a QueryClient instance with useState to ensure stability across renders
   const [queryClient] = useState(() => new QueryClient());
+  const [showNotification, setShowNotification] = useState(true);
 
   // Set up theme preferences from localStorage on app load
   useEffect(() => {
@@ -53,6 +55,12 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        {showNotification && (
+          <NotificationStripe 
+            message="Welcome to Trackify - Track your life, simplify your journey!" 
+            type="success"
+          />
+        )}
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />

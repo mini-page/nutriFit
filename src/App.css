@@ -1,118 +1,162 @@
 
-#root {
-  width: 100%;
-  height: 100%;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.animate-on-mount {
-  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.animate-enter {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-}
-
-/* Uniform card styling for tracker pages */
-.glass-card {
-  transform: none;
-  transition: all 0.3s ease;
-}
-
-/* Remove vertical lift on odd cards */
-.glass-card:nth-child(odd) {
-  transform: none;
-}
-
-/* Enhance hover effect with shadow darkening instead of lift */
-.glass-card:hover {
-  transform: none;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
-}
-
-.dark .glass-card:hover {
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    
+    --radius: 0.75rem;
+    
+    --water: 199 89% 48%;
+    --water-dark: 200 98% 39%;
+    --water-light: 198 93% 95%;
+    
+    --calories: 21 90% 48%;
+    --calories-dark: 21 90% 40%;
+    --calories-light: 21 90% 95%;
+    
+    --sidebar: 0 0% 100%;
+    --sidebar-border: 240 5.9% 90%;
+    --sidebar-foreground: 240, 10%, 4%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-ring: 240 5.9% 10%;
   }
-  50% {
-    background-position: 100% 50%;
+  
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+    
+    --water: 199 89% 60%;
+    --water-dark: 200 98% 39%;
+    --water-light: 198 50% 25%;
+    
+    --calories: 21 90% 60%;
+    --calories-dark: 21 90% 40%;
+    --calories-light: 21 30% 25%;
+    
+    --sidebar: 222.2 84% 4.9%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-ring: 224.3 76.3% 48%;
   }
-  100% {
-    background-position: 0% 50%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  .category-pill {
+    @apply text-xs rounded-full px-2 py-0.5 flex items-center gap-1;
+  }
+  
+  .glass-card {
+    @apply bg-card/50 border border-border rounded-xl backdrop-blur-sm transition-all no-hover;
+  }
+  
+  .no-hover {
+    /* Specifically remove any hover scaling effects */
+    @apply transform-none hover:transform-none;
   }
 }
 
-.water-wave {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 10px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' class='shape-fill'%3E%3C/path%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' opacity='.5' class='shape-fill'%3E%3C/path%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' class='shape-fill'%3E%3C/path%3E%3C/svg%3E") no-repeat;
-  background-size: cover;
-  animation: wave 10s ease-in-out infinite;
-}
-
-/* Dark mode support for SVG colors in water wave */
-.dark .water-wave .shape-fill {
-  fill: rgba(255, 255, 255, 0.1);
-}
-
-/* Additional dark mode adjustments */
-.dark .card-highlight {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Smooth transitions between light and dark modes */
-*, *::before, *::after {
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-}
-
-/* Media query to fix mood tracker on small screens */
-@media (max-width: 640px) {
-  .mood-tracker-emoji {
-    font-size: 1.25rem;
-    padding: 0.5rem;
-  }
-}
-
-/* Notification popup overlay */
-.notification-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  z-index: 40;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 80px;
-}
-
-.notification-popup {
-  width: 350px;
-  max-width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  border-radius: 12px;
-  animation: scaleIn 0.2s ease-out;
-}
-
-@keyframes scaleIn {
+/* Animate items when they mount */
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
+  }
+}
+
+.animate-on-mount {
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+.animate-enter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fix for mobile sidebar scroll */
+@media (max-width: 768px) {
+  [data-sidebar="sidebar"] [data-sidebar="content"] {
+    height: calc(100vh - 64px);
+    overflow: auto;
+    scrollbar-width: thin;
+  }
+  
+  [data-sidebar="sidebar"] [data-sidebar="group"] {
+    overflow: visible;
+    scrollbar-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .glass-card {
+    @apply rounded-lg p-4;
   }
 }

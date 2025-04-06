@@ -19,7 +19,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({
           <Settings className="h-6 w-6 text-primary" />
           Settings
         </h2>
-        <p className="text-muted-foreground">Customize your NutriFit experience</p>
+        <p className="text-muted-foreground">Customize your Trackify experience</p>
       </div>
       
       <div className="mb-6 p-4 rounded-lg bg-secondary flex items-center">
