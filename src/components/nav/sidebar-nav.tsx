@@ -18,6 +18,7 @@ import {
   Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -81,97 +82,103 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
   ];
 
   return (
-    <div className="w-60 h-screen sticky top-0 flex flex-col border-r border-border pt-6 bg-background/80 backdrop-blur-md">
+    <div className="w-60 h-screen sticky top-0 flex flex-col border-r border-border bg-background/80 backdrop-blur-md">
       {!hideLogo && (
-        <>
-          <div className="px-6 mb-2">
-            <h1 className="text-2xl font-bold flex items-center">
-              <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
-                <Activity className="h-5 w-5" />
-              </span>
-              NutriFit
-            </h1>
-          </div>
-          <div className="mt-4 border-t border-border pt-4 mx-6 mb-4 bg-primary/5 rounded-t-xl"></div>
-        </>
+        <div className="px-6 mb-2 pt-6">
+          <h1 className="text-2xl font-bold flex items-center">
+            <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
+              <Activity className="h-5 w-5" />
+            </span>
+            Trackify
+          </h1>
+          <div className="mt-4 border-t border-border pt-4 mx-0 mb-4 bg-primary/5 rounded-t-xl"></div>
+        </div>
       )}
       
-      <div className="px-3 flex-1 overflow-auto">
-        <div className="space-y-6">
-          {/* Dashboard */}
-          <div>
-            <NavItem
-              icon={<LayoutDashboard className="h-5 w-5 text-blue-500" />}
-              label="Dashboard"
-              href="/"
-              active={pathname === '/'}
-            />
-          </div>
+      <ScrollArea className="flex-1">
+        <div className="px-3 pb-6">
+          <div className="space-y-6">
+            {/* Dashboard */}
+            <div>
+              <NavItem
+                icon={<LayoutDashboard className="h-5 w-5 text-blue-500" />}
+                label="Dashboard"
+                href="/"
+                active={pathname === '/'}
+              />
+            </div>
 
-          {/* Health Tracking Section */}
-          <div>
-            <div className="px-4 py-1">
-              <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Health</h3>
+            {/* Health Tracking Section */}
+            <div>
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Health</h3>
+              </div>
+              <div className="space-y-1">
+                {healthNavItems.map((item) => (
+                  <NavItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.label}
+                    href={item.href}
+                    active={pathname === item.href}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="space-y-1">
-              {healthNavItems.map((item) => (
+            
+            {/* Mental & Emotional Tracking */}
+            <div>
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Well-being</h3>
+              </div>
+              <div className="space-y-1">
+                {wellbeingNavItems.map((item) => (
+                  <NavItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.label}
+                    href={item.href}
+                    active={pathname === item.href}
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {/* Productivity & Goals */}
+            <div>
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Productivity</h3>
+              </div>
+              <div className="space-y-1">
+                {productivityNavItems.map((item) => (
+                  <NavItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.label}
+                    href={item.href}
+                    active={pathname === item.href}
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {/* Settings at the bottom */}
+            <div>
+              <div className="mt-3 px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Preferences</h3>
+              </div>
+              <div className="space-y-1">
                 <NavItem
-                  key={item.href}
-                  icon={item.icon}
-                  label={item.label}
-                  href={item.href}
-                  active={pathname === item.href}
+                  icon={<Settings className="h-5 w-5 text-gray-500" />}
+                  label="Settings"
+                  href="/settings"
+                  active={pathname === '/settings'}
                 />
-              ))}
-            </div>
-          </div>
-          
-          {/* Mental & Emotional Tracking */}
-          <div>
-            <div className="px-4 py-1">
-              <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Well-being</h3>
-            </div>
-            <div className="space-y-1">
-              {wellbeingNavItems.map((item) => (
-                <NavItem
-                  key={item.href}
-                  icon={item.icon}
-                  label={item.label}
-                  href={item.href}
-                  active={pathname === item.href}
-                />
-              ))}
-            </div>
-          </div>
-          
-          {/* Productivity & Goals */}
-          <div>
-            <div className="px-4 py-1">
-              <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Productivity</h3>
-            </div>
-            <div className="space-y-1">
-              {productivityNavItems.map((item) => (
-                <NavItem
-                  key={item.href}
-                  icon={item.icon}
-                  label={item.label}
-                  href={item.href}
-                  active={pathname === item.href}
-                />
-              ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="mt-auto border-t border-border pt-3 px-3 pb-6 bg-primary/5">
-        <NavItem
-          icon={<Settings className="h-5 w-5 text-gray-500" />}
-          label="Settings"
-          href="/settings"
-          active={pathname === '/settings'}
-        />
-      </div>
+      </ScrollArea>
     </div>
   );
 };

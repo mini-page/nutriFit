@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import WaterTracker from '@/components/ui/water-tracker';
@@ -8,7 +7,7 @@ import MoodTracker from '@/components/ui/mood-tracker';
 import DailyGoal from '@/components/ui/daily-goal';
 import { Activity, ChevronDown, TrendingUp, Droplet, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { startOfWeek, endOfWeek, format, eachDayOfInterval } from 'date-fns';
+import { startOfWeek, endOfWeek, format } from 'date-fns';
 import { 
   Popover,
   PopoverContent,
@@ -16,6 +15,7 @@ import {
 } from '@/components/ui/popover';
 import { toast } from 'sonner';
 import DashboardQuickActions from '@/components/dashboard/DashboardQuickActions';
+import DashboardActionableCards from '@/components/dashboard/DashboardActionableCards';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -38,34 +38,41 @@ const Index = () => {
     quickSleep: false,
     quickBudget: false,
     quickMood: false,
-    quickCycle: false
+    quickCycle: false,
+    healthScore: true,
+    sleepQuality: true,
+    workout: true,
+    calories: false, 
+    moodTracker: false,
+    activeGoals: true,
+    journalEntry: false,
+    habitsTracker: false
   });
 
-  // Load dashboard settings from localStorage
   useEffect(() => {
     const savedDashboardItems = localStorage.getItem('dashboardItems');
     if (savedDashboardItems) {
       try {
-        setDashboardItems(JSON.parse(savedDashboardItems));
+        setDashboardItems(prev => ({
+          ...prev,
+          ...JSON.parse(savedDashboardItems)
+        }));
       } catch (error) {
         console.error('Failed to parse dashboard items from localStorage', error);
       }
     }
   }, []);
 
-  // Calculate date ranges for week selection
   const today = new Date();
   const thisWeekStart = startOfWeek(today, { weekStartsOn: 1 });
   const thisWeekEnd = endOfWeek(today, { weekStartsOn: 1 });
   const lastWeekStart = startOfWeek(new Date(today.setDate(today.getDate() - 7)), { weekStartsOn: 1 });
   const lastWeekEnd = endOfWeek(new Date(today.setDate(today.getDate() - 7)), { weekStartsOn: 1 });
 
-  // Format date ranges for display
   const formatDateRange = (start: Date, end: Date) => {
     return `${format(start, 'MMM d')} - ${format(end, 'MMM d')}`;
   };
 
-  // Weekly data options
   const weekOptions = [
     { 
       label: 'This Week', 
@@ -87,7 +94,6 @@ const Index = () => {
     }
   ];
 
-  // Find currently selected week data
   const currentWeekOption = weekOptions.find(opt => opt.value === selectedWeek) || weekOptions[0];
 
   const handleWeekChange = (value: 'current' | 'last' | 'lastTwoWeeks') => {
@@ -98,7 +104,6 @@ const Index = () => {
     }
   };
 
-  // Map dashboard items to quick action items
   const quickActionItems = {
     water: dashboardItems.quickWater,
     exercise: dashboardItems.quickExercise,
@@ -110,8 +115,18 @@ const Index = () => {
     cycle: dashboardItems.quickCycle
   };
 
+  const actionableCardItems = {
+    healthScore: dashboardItems.healthScore,
+    sleepQuality: dashboardItems.sleepQuality,
+    workout: dashboardItems.workout,
+    calories: dashboardItems.calories,
+    moodTracker: dashboardItems.moodTracker,
+    activeGoals: dashboardItems.activeGoals,
+    journalEntry: dashboardItems.journalEntry,
+    habitsTracker: dashboardItems.habitsTracker
+  };
+
   useEffect(() => {
-    // Add animation classes to elements when they mount
     const sections = document.querySelectorAll('.animate-on-mount');
     sections.forEach((section, index) => {
       setTimeout(() => {
@@ -192,6 +207,8 @@ const Index = () => {
           </div>
         </div>
       </div>
+      
+      <DashboardActionableCards visibleCards={actionableCardItems} />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {dashboardItems.water && <WaterTracker className="animate-on-mount opacity-0 no-hover" />}

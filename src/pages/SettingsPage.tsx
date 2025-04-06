@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import SettingsLayout from '@/components/settings/SettingsLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import AppearanceSettings from '@/components/settings/AppearanceSettings';
 import NotificationSettings from '@/components/settings/NotificationSettings';
 import DataSettings from '@/components/settings/DataSettings';
@@ -26,6 +27,15 @@ interface DashboardItems {
   quickBudget: boolean; 
   quickMood: boolean;
   quickCycle: boolean;
+  // New actionable card settings
+  healthScore: boolean;
+  sleepQuality: boolean;
+  workout: boolean;
+  calories: boolean;
+  moodTracker: boolean;
+  activeGoals: boolean;
+  journalEntry: boolean;
+  habitsTracker: boolean;
 }
 
 const SettingsPage = () => {
@@ -43,7 +53,16 @@ const SettingsPage = () => {
     quickSleep: false,
     quickBudget: false, 
     quickMood: false,
-    quickCycle: false
+    quickCycle: false,
+    // New actionable card defaults
+    healthScore: true,
+    sleepQuality: true,
+    workout: true,
+    calories: false,
+    moodTracker: false,
+    activeGoals: true,
+    journalEntry: false,
+    habitsTracker: false
   });
   const isMobile = useIsMobile();
 
@@ -159,41 +178,45 @@ const SettingsPage = () => {
     <MainLayout>
       <SettingsLayout userName="Umang">
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className={`grid ${isMobile ? 'grid-cols-3 gap-1 pb-1 overflow-x-auto' : 'md:grid-cols-5'} w-full`}>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="appearance">Appearance</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="data">Data</TabsTrigger>
-            <TabsTrigger value="about">About</TabsTrigger>
+          <TabsList className={`grid ${isMobile ? 'grid-cols-5 overflow-x-auto pb-1' : 'grid-cols-5'} w-full`}>
+            <TabsTrigger value="profile" className="text-xs md:text-sm">Profile</TabsTrigger>
+            <TabsTrigger value="appearance" className="text-xs md:text-sm">Theme</TabsTrigger>
+            <TabsTrigger value="notifications" className="text-xs md:text-sm">Alerts</TabsTrigger>
+            <TabsTrigger value="data" className="text-xs md:text-sm">Data</TabsTrigger>
+            <TabsTrigger value="about" className="text-xs md:text-sm">About</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="profile" className="space-y-4">
-            <UserProfileSettings />
-          </TabsContent>
-          
-          <TabsContent value="appearance" className="space-y-4">
-            <AppearanceSettings 
-              theme={theme}
-              handleThemeChange={handleThemeChange}
-              dashboardItems={dashboardItems}
-              onDashboardItemsChange={handleDashboardItemsChange}
-            />
-          </TabsContent>
-          
-          <TabsContent value="notifications" className="space-y-4">
-            <NotificationSettings />
-          </TabsContent>
-          
-          <TabsContent value="data" className="space-y-4">
-            <DataSettings 
-              handleExportData={handleExportData}
-              handleImportData={handleImportData}
-            />
-          </TabsContent>
-          
-          <TabsContent value="about" className="space-y-4">
-            <AboutUsSettings />
-          </TabsContent>
+          <ScrollArea className={isMobile ? "h-[calc(100vh-15rem)]" : ""}>
+            <div className="pr-4">
+              <TabsContent value="profile" className="space-y-4 mt-0">
+                <UserProfileSettings />
+              </TabsContent>
+              
+              <TabsContent value="appearance" className="space-y-4 mt-0">
+                <AppearanceSettings 
+                  theme={theme}
+                  handleThemeChange={handleThemeChange}
+                  dashboardItems={dashboardItems}
+                  onDashboardItemsChange={handleDashboardItemsChange}
+                />
+              </TabsContent>
+              
+              <TabsContent value="notifications" className="space-y-4 mt-0">
+                <NotificationSettings />
+              </TabsContent>
+              
+              <TabsContent value="data" className="space-y-4 mt-0">
+                <DataSettings 
+                  handleExportData={handleExportData}
+                  handleImportData={handleImportData}
+                />
+              </TabsContent>
+              
+              <TabsContent value="about" className="space-y-4 mt-0">
+                <AboutUsSettings />
+              </TabsContent>
+            </div>
+          </ScrollArea>
         </Tabs>
       </SettingsLayout>
     </MainLayout>
