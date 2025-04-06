@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Instagram, Github, Linkedin, Send, Snapchat, Youtube } from 'lucide-react';
+import { Instagram, Github, Linkedin, Send, Image, Youtube } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 import {
   Accordion,
@@ -15,7 +15,7 @@ const AboutUsSettings = () => {
     { name: 'Github', icon: Github, link: 'https://github.com/mini-page', username: 'mini-page' },
     { name: 'LinkedIn', icon: Linkedin, link: 'https://linkedin.com/in/umang-gupta', username: 'Umang Gupta' },
     { name: 'Telegram', icon: Send, link: 'https://t.me/raghav5711', username: '@raghav5711' },
-    { name: 'Snapchat', icon: Snapchat, link: 'https://snapchat.com/add/raghav5711143', username: '@raghav5711143' },
+    { name: 'Snapchat', icon: Image, link: 'https://snapchat.com/add/raghav5711143', username: '@raghav5711143' },
     { name: 'YouTube', icon: Youtube, link: '#', username: 'Umang Gupta' },
   ];
   
