@@ -31,7 +31,7 @@ const Alert = React.forwardRef<
   HTMLDivElement,
   AlertProps
 >(({ className, variant, children, onClose, autoClose = true, autoCloseDelay = 5000, ...props }, ref) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = React.useState(true);
 
   React.useEffect(() => {
     if (autoClose && isVisible) {
