@@ -204,7 +204,7 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
   return (
     <div className="glass-card p-5 mb-6">
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-6">
           <CollapsibleTrigger asChild className="w-full flex items-center justify-between">
             <button className="flex items-center justify-between w-full text-left">
               <div className="flex items-center gap-2">

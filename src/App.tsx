@@ -31,7 +31,7 @@ const App = () => {
   useEffect(() => {
     const theme = localStorage.getItem('theme') || 'system';
     document.documentElement.setAttribute('data-theme', theme);
-    
+
     // Initialize user data if not present
     if (!localStorage.getItem('userData')) {
       const defaultUserData = {
@@ -46,7 +46,7 @@ const App = () => {
       localStorage.setItem('userData', JSON.stringify(defaultUserData));
       localStorage.setItem('userGender', 'male');
     }
-    
+
     // Initialize dashboard items if not present
     if (!localStorage.getItem('dashboardItems')) {
       const defaultDashboardItems = {
@@ -66,7 +66,7 @@ const App = () => {
         healthScore: true,
         sleepQuality: true,
         workout: true,
-        calories: false, 
+        calories: false,
         moodTracker: false,
         activeGoals: true,
         journalEntry: false,
