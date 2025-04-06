@@ -128,12 +128,12 @@
   /* Keep hover effects for other cards */
   .glass-card:not(.no-hover):hover {
     @apply bg-white/80 border-white/30 shadow-xl;
-    transform: translateY(-5px);
+    transform: translateY(-2px);
   }
   
   .dark .glass-card:not(.no-hover):hover {
     @apply bg-black/50 border-white/20 shadow-xl;
-    transform: translateY(-5px);
+    transform: translateY(-2px);
   }
   
   .category-pill {
@@ -194,7 +194,7 @@
     transform: translateX(0) translateY(0);
   }
   50% {
-    transform: translateX(-25px) translateY(-5px);
+    transform: translateX(-25px) translateY(-2px);
   }
 }
 

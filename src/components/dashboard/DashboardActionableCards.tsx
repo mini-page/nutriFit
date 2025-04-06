@@ -209,7 +209,7 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
             <button className="flex items-center justify-between w-full text-left">
               <div className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-primary" />
-                <span className="text-lg font-medium">Actionable Insights</span>
+                <span className="text-lg font-medium">Insights</span>
               </div>
               {isOpen ? 
                 <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 

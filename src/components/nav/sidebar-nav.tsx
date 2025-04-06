@@ -91,7 +91,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
             </span>
             Trackify
           </h1>
-          <div className="mt-4 border-t border-border pt-4 mx-0 mb-4 bg-primary/5 rounded-t-xl"></div>
+          <div className="mt-4 mx-0 mb-4"></div>
         </div>
       )}
       

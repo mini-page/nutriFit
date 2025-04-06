@@ -10,7 +10,7 @@ interface MainLayoutProps {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
-  const [userName, setUserName] = useState("Umang");
+  const [userName, setUserName] = useState("Life Tracker!");
 
   useEffect(() => {
     // Load user data from localStorage on component mount

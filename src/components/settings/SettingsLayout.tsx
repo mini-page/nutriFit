@@ -25,12 +25,12 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({
         <p className="text-sm md:text-base text-muted-foreground">Customize your Trackify experience</p>
       </div>
       
-      <div className="mb-4 md:mb-6 p-3 md:p-4 rounded-lg bg-secondary flex items-center">
+      {/* <div className="mb-4 md:mb-6 p-3 md:p-4 rounded-lg bg-secondary flex items-center">
         <div className="flex-1">
           <p className="font-medium text-foreground text-sm md:text-base">Welcome, {userName}</p>
           <p className="text-xs md:text-sm text-muted-foreground">Premium Plan</p>
         </div>
-      </div>
+      </div> */}
       
       {children}
     </div>

@@ -13,7 +13,7 @@ const AboutUsSettings = () => {
   const socialLinks = [
     { name: 'Instagram', icon: Instagram, link: 'https://instagram.com/ug_5711', username: '@ug_5711' },
     { name: 'Github', icon: Github, link: 'https://github.com/mini-page', username: 'mini-page' },
-    { name: 'LinkedIn', icon: Linkedin, link: 'https://linkedin.com/in/umang-gupta', username: 'Umang Gupta' },
+    { name: 'LinkedIn', icon: Linkedin, link: 'https://www.linkedin.com/in/umanggupta5711', username: 'umanggupta5711' },
     { name: 'Telegram', icon: Send, link: 'https://t.me/raghav5711', username: '@raghav5711' },
     { name: 'Snapchat', icon: Image, link: 'https://snapchat.com/add/raghav5711143', username: '@raghav5711143' },
     { name: 'YouTube', icon: Youtube, link: '#', username: 'Umang Gupta' },
@@ -47,7 +47,7 @@ const AboutUsSettings = () => {
       <div className="glass-card p-4 md:p-6">
         <h3 className="text-lg font-medium mb-4">About Trackify</h3>
         <p className="text-muted-foreground mb-6">
-          Hello, I'm Umang, also known as Raghav. As a student, my mission is to help others lead healthier, more organized lives. 
+          Hello, I'm <strong>Umang</strong>, also known as Raghav & <strong>mini-page</strong>. As a student, my mission is to help others lead healthier, more organized lives. 
           I am dedicated to building simple yet effective tools that guide users through their daily routines, 
           ensuring they stay on the right track and live a balanced life. With Trackify, we aim to bring simplicity 
           and effectiveness to your daily tracking needs.

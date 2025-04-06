@@ -15,11 +15,11 @@ interface UserData {
 
 const UserProfileSettings = () => {
   const [userData, setUserData] = useState<UserData>({
-    name: 'Umang Gupta',
-    email: 'umang@example.com',
+    name: 'Guest',
+    email: 'guestEmail@example.com',
     age: '20',
     gender: 'male',
-    height: '171',
+    height: '175',
     weight: '68',
     activityLevel: 'moderate'
   });

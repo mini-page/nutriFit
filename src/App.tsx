@@ -35,8 +35,8 @@ const App = () => {
     // Initialize user data if not present
     if (!localStorage.getItem('userData')) {
       const defaultUserData = {
-        name: 'Umang Gupta',
-        email: 'umang@example.com',
+        name: 'Guest',
+        email: 'email@example.com',
         age: '20',
         gender: 'male',
         height: '171',
