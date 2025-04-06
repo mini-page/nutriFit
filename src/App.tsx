@@ -20,7 +20,7 @@ import PomodoroPage from "./pages/PomodoroPage";
 import HabitsPage from "./pages/HabitsPage";
 import JournalPage from "./pages/JournalPage";
 import CycleTrackerPage from "./pages/CycleTrackerPage";
-import NotificationStripe from "./components/ui/notification-stripe";
+import { NotificationStripe } from "./components/ui/notification-stripe";
 import "./App.css";
 import { useState, useEffect } from "react";
 
