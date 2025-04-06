@@ -46,6 +46,35 @@ const App = () => {
       localStorage.setItem('userData', JSON.stringify(defaultUserData));
       localStorage.setItem('userGender', 'male');
     }
+    
+    // Initialize dashboard items if not present
+    if (!localStorage.getItem('dashboardItems')) {
+      const defaultDashboardItems = {
+        water: true,
+        nutrition: true,
+        exercise: true,
+        mood: true,
+        goals: true,
+        quickWater: true,
+        quickExercise: true,
+        quickNutrition: true,
+        quickGoals: true,
+        quickSleep: false,
+        quickBudget: false,
+        quickMood: false,
+        quickCycle: false,
+        healthScore: true,
+        sleepQuality: true,
+        workout: true,
+        calories: false, 
+        moodTracker: false,
+        activeGoals: true,
+        journalEntry: false,
+        habitsTracker: false,
+        weeklyProgress: true
+      };
+      localStorage.setItem('dashboardItems', JSON.stringify(defaultDashboardItems));
+    }
   }, []);
 
   return (

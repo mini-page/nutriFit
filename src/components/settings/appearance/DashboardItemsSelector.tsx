@@ -26,6 +26,7 @@ interface DashboardItems {
   activeGoals: boolean;
   journalEntry: boolean;
   habitsTracker: boolean;
+  weeklyProgress: boolean;
 }
 
 interface DashboardItemsSelectorProps {
@@ -39,10 +40,9 @@ const DashboardItemsSelector: React.FC<DashboardItemsSelectorProps> = ({
 }) => {
   return (
     <Tabs defaultValue="trackers" className="w-full">
-      <TabsList className="w-full grid grid-cols-3 mb-4">
+      <TabsList className="w-full grid grid-cols-2 mb-4">
         <TabsTrigger value="trackers">Trackers</TabsTrigger>
-        <TabsTrigger value="actions">Quick Actions</TabsTrigger>
-        <TabsTrigger value="cards">Actionable Cards</TabsTrigger>
+        <TabsTrigger value="insights">Actionable Insights</TabsTrigger>
       </TabsList>
       
       <ScrollArea className="h-[300px] pr-4">
@@ -85,8 +85,19 @@ const DashboardItemsSelector: React.FC<DashboardItemsSelectorProps> = ({
           </div>
         </TabsContent>
         
-        <TabsContent value="actions" className="mt-0">
-          <div className="space-y-3">
+        <TabsContent value="insights" className="mt-0">
+          <h4 className="text-sm font-medium mb-3">Weekly Progress</h4>
+          <div className="space-y-3 mb-5">
+            <CheckboxItem 
+              id="weekly-progress" 
+              label="Show Weekly Progress"
+              checked={dashboardItems.weeklyProgress}
+              onChange={(checked) => onDashboardItemChange('weeklyProgress', checked)}
+            />
+          </div>
+          
+          <h4 className="text-sm font-medium mb-3">Quick Actions</h4>
+          <div className="space-y-3 mb-5">
             <CheckboxItem 
               id="quick-water" 
               label="Water Quick Action"
@@ -143,9 +154,8 @@ const DashboardItemsSelector: React.FC<DashboardItemsSelectorProps> = ({
               onChange={(checked) => onDashboardItemChange('quickCycle', checked)}
             />
           </div>
-        </TabsContent>
-        
-        <TabsContent value="cards" className="mt-0">
+          
+          <h4 className="text-sm font-medium mb-3">Insight Cards</h4>
           <div className="space-y-3">
             <CheckboxItem 
               id="health-score" 

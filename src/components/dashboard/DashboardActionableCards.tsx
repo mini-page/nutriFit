@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { 
@@ -10,16 +10,34 @@ import {
   Dumbbell, 
   Utensils, 
   Target, 
-  BookOpen 
+  BookOpen,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import ActionableCard from './ActionableCard';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import WeeklyProgressStats from './WeeklyProgressStats';
+import WeeklyProgressSelector from './WeeklyProgressSelector';
 
 interface DashboardActionableCardsProps {
   visibleCards: Record<string, boolean>;
+  weeklyData: {
+    waterProgress: string;
+    exerciseProgress: string;
+    sleepQuality: string;
+  };
+  selectedWeek: 'current' | 'last' | 'lastTwoWeeks';
+  onWeekChange: (value: 'current' | 'last' | 'lastTwoWeeks') => void;
 }
 
-const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({ visibleCards }) => {
+const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({ 
+  visibleCards, 
+  weeklyData, 
+  selectedWeek,
+  onWeekChange 
+}) => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(true);
   
   const handleCardAction = (action: string) => {
     switch(action) {
@@ -54,6 +72,18 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({ vis
       case 'health':
         navigate('/');
         toast.success('Checking health stats');
+        break;
+      case 'water':
+        navigate('/water');
+        toast.success('Redirecting to water page');
+        break;
+      case 'budget':
+        navigate('/budget');
+        toast.success('Redirecting to budget page');
+        break;
+      case 'cycle':
+        navigate('/cycle-tracker');
+        toast.success('Redirecting to cycle tracker');
         break;
       default:
         break;
@@ -133,42 +163,101 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({ vis
       color: 'rose', 
       actionLabel: 'Check Habits', 
       visible: visibleCards.habitsTracker 
+    },
+    // Quick action cards that were previously in DashboardQuickActions
+    { 
+      id: 'water', 
+      title: 'Water', 
+      value: '5/8 Glasses', 
+      icon: Activity, 
+      color: 'water', 
+      actionLabel: 'Add Water', 
+      visible: visibleCards.quickWater 
+    },
+    { 
+      id: 'budget', 
+      title: 'Budget', 
+      value: '$1,200 Left', 
+      icon: Activity, 
+      color: 'green', 
+      actionLabel: 'Check Budget', 
+      visible: visibleCards.quickBudget 
+    },
+    { 
+      id: 'cycle', 
+      title: 'Cycle', 
+      value: 'Day 14', 
+      icon: Activity, 
+      color: 'rose', 
+      actionLabel: 'Track Cycle', 
+      visible: visibleCards.quickCycle 
     }
   ];
   
   // Filter only visible cards
   const visibleActionCards = cards.filter(card => card.visible);
   
-  if (visibleActionCards.length === 0) {
+  if (visibleActionCards.length === 0 && !visibleCards.weeklyProgress) {
     return null;
   }
   
   return (
     <div className="glass-card p-5 mb-6">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-medium flex items-center gap-2">
-          <Target className="h-5 w-5 text-primary" />
-          <span>Actionable Insights</span>
-        </h3>
-        <span className="category-pill bg-secondary dark:bg-secondary/30 text-muted-foreground">
-          <Activity className="h-3.5 w-3.5" />
-          Insights
-        </span>
-      </div>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-        {visibleActionCards.map(card => (
-          <ActionableCard
-            key={card.id}
-            title={card.title}
-            value={card.value}
-            icon={card.icon}
-            color={card.color}
-            actionLabel={card.actionLabel}
-            onClick={() => handleCardAction(card.id)}
-          />
-        ))}
-      </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+        <div className="flex items-center justify-between mb-3">
+          <CollapsibleTrigger asChild className="w-full flex items-center justify-between">
+            <button className="flex items-center justify-between w-full text-left">
+              <div className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
+                <span className="text-lg font-medium">Actionable Insights</span>
+              </div>
+              {isOpen ? 
+                <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              }
+            </button>
+          </CollapsibleTrigger>
+        </div>
+        
+        <CollapsibleContent>
+          {visibleCards.weeklyProgress && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-md font-medium flex items-center gap-2">
+                  <Activity className="h-4 w-4 text-primary" />
+                  <span>Weekly Progress</span>
+                </h3>
+                <WeeklyProgressSelector 
+                  selectedWeek={selectedWeek}
+                  onWeekChange={onWeekChange}
+                />
+              </div>
+              
+              <WeeklyProgressStats 
+                waterProgress={weeklyData.waterProgress}
+                exerciseProgress={weeklyData.exerciseProgress}
+                sleepQuality={weeklyData.sleepQuality}
+              />
+            </div>
+          )}
+          
+          {visibleActionCards.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              {visibleActionCards.map(card => (
+                <ActionableCard
+                  key={card.id}
+                  title={card.title}
+                  value={card.value}
+                  icon={card.icon}
+                  color={card.color}
+                  actionLabel={card.actionLabel}
+                  onClick={() => handleCardAction(card.id)}
+                />
+              ))}
+            </div>
+          )}
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };

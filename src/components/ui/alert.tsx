@@ -30,7 +30,7 @@ interface AlertProps extends React.HTMLAttributes<HTMLDivElement>,
 const Alert = React.forwardRef<
   HTMLDivElement,
   AlertProps
->(({ className, variant, children, onClose, autoClose = true, autoCloseDelay = 5000, ...props }, ref) => {
+>(({ className, variant, children, onClose, autoClose = true, autoCloseDelay = 3000, ...props }, ref) => {
   const [isVisible, setIsVisible] = React.useState(true);
 
   React.useEffect(() => {
@@ -54,18 +54,16 @@ const Alert = React.forwardRef<
       {...props}
     >
       {children}
-      {onClose && (
-        <button 
-          className="absolute top-3 right-3 p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-          onClick={() => {
-            setIsVisible(false);
-            onClose();
-          }}
-          aria-label="Close alert"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      )}
+      <button 
+        className="absolute top-3 right-3 p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+        onClick={() => {
+          setIsVisible(false);
+          if (onClose) onClose();
+        }}
+        aria-label="Close alert"
+      >
+        <X className="h-4 w-4" />
+      </button>
     </div>
   )
 })

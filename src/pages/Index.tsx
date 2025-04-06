@@ -6,11 +6,9 @@ import CalorieTracker from '@/components/ui/calorie-tracker';
 import ExerciseTracker from '@/components/ui/exercise-tracker';
 import MoodTracker from '@/components/ui/mood-tracker';
 import DailyGoal from '@/components/ui/daily-goal';
-import { TrendingUp } from 'lucide-react';
-import DashboardQuickActions from '@/components/dashboard/DashboardQuickActions';
 import DashboardActionableCards from '@/components/dashboard/DashboardActionableCards';
-import WeeklyProgressSelector from '@/components/dashboard/WeeklyProgressSelector';
-import WeeklyProgressStats from '@/components/dashboard/WeeklyProgressStats';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { X } from 'lucide-react';
 
 const Index = () => {
   const [selectedWeek, setSelectedWeek] = useState<'current' | 'last' | 'lastTwoWeeks'>('current');
@@ -21,11 +19,14 @@ const Index = () => {
   });
   
   const [dashboardItems, setDashboardItems] = useState({
+    // Trackers
     water: true,
     nutrition: true,
     exercise: true,
     mood: true,
     goals: true,
+    
+    // Quick actions (now part of actionable insights)
     quickWater: true,
     quickExercise: true,
     quickNutrition: true,
@@ -34,6 +35,8 @@ const Index = () => {
     quickBudget: false,
     quickMood: false,
     quickCycle: false,
+    
+    // Actionable cards
     healthScore: true,
     sleepQuality: true,
     workout: true,
@@ -41,7 +44,10 @@ const Index = () => {
     moodTracker: false,
     activeGoals: true,
     journalEntry: false,
-    habitsTracker: false
+    habitsTracker: false,
+    
+    // Weekly progress (now part of actionable insights)
+    weeklyProgress: true
   });
 
   useEffect(() => {
@@ -74,28 +80,6 @@ const Index = () => {
     }
   };
 
-  const quickActionItems = {
-    water: dashboardItems.quickWater,
-    exercise: dashboardItems.quickExercise,
-    goals: dashboardItems.quickGoals,
-    nutrition: dashboardItems.quickNutrition,
-    sleep: dashboardItems.quickSleep,
-    budget: dashboardItems.quickBudget,
-    mood: dashboardItems.quickMood,
-    cycle: dashboardItems.quickCycle
-  };
-
-  const actionableCardItems = {
-    healthScore: dashboardItems.healthScore,
-    sleepQuality: dashboardItems.sleepQuality,
-    workout: dashboardItems.workout,
-    calories: dashboardItems.calories,
-    moodTracker: dashboardItems.moodTracker,
-    activeGoals: dashboardItems.activeGoals,
-    journalEntry: dashboardItems.journalEntry,
-    habitsTracker: dashboardItems.habitsTracker
-  };
-
   useEffect(() => {
     const sections = document.querySelectorAll('.animate-on-mount');
     sections.forEach((section, index) => {
@@ -105,6 +89,27 @@ const Index = () => {
     });
   }, []);
 
+  // Create a consolidated object for actionable cards and quick actions
+  const actionableInsightItems = {
+    healthScore: dashboardItems.healthScore,
+    sleepQuality: dashboardItems.sleepQuality,
+    workout: dashboardItems.workout,
+    calories: dashboardItems.calories,
+    moodTracker: dashboardItems.moodTracker,
+    activeGoals: dashboardItems.activeGoals,
+    journalEntry: dashboardItems.journalEntry,
+    habitsTracker: dashboardItems.habitsTracker,
+    quickWater: dashboardItems.quickWater,
+    quickExercise: dashboardItems.quickExercise,
+    quickNutrition: dashboardItems.quickNutrition,
+    quickGoals: dashboardItems.quickGoals,
+    quickSleep: dashboardItems.quickSleep,
+    quickBudget: dashboardItems.quickBudget,
+    quickMood: dashboardItems.quickMood,
+    quickCycle: dashboardItems.quickCycle,
+    weeklyProgress: dashboardItems.weeklyProgress
+  };
+
   return (
     <MainLayout>
       <div className="mb-6 animate-on-mount opacity-0">
@@ -112,26 +117,12 @@ const Index = () => {
         <p className="text-muted-foreground">Track your life, simplify your journey</p>
       </div>
       
-      <div className="glass-card p-4 mb-8 animate-on-mount opacity-0">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-medium flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <span>Weekly Progress</span>
-          </h3>
-          <WeeklyProgressSelector 
-            selectedWeek={selectedWeek}
-            onWeekChange={handleWeekChange}
-          />
-        </div>
-        
-        <WeeklyProgressStats 
-          waterProgress={weeklyData.waterProgress}
-          exerciseProgress={weeklyData.exerciseProgress}
-          sleepQuality={weeklyData.sleepQuality}
-        />
-      </div>
-      
-      <DashboardActionableCards visibleCards={actionableCardItems} />
+      <DashboardActionableCards 
+        visibleCards={actionableInsightItems} 
+        weeklyData={weeklyData}
+        selectedWeek={selectedWeek}
+        onWeekChange={handleWeekChange}
+      />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {dashboardItems.water && <WaterTracker className="animate-on-mount opacity-0 no-hover" />}
@@ -139,8 +130,6 @@ const Index = () => {
         {dashboardItems.exercise && <ExerciseTracker className="animate-on-mount opacity-0 no-hover" />}
         {dashboardItems.mood && <MoodTracker className="animate-on-mount opacity-0 no-hover" />}
         {dashboardItems.goals && <DailyGoal className="animate-on-mount opacity-0 no-hover" />}
-        
-        <DashboardQuickActions visibleActions={quickActionItems} />
       </div>
     </MainLayout>
   );
