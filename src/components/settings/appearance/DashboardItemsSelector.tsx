@@ -26,7 +26,6 @@ interface DashboardItems {
   activeGoals: boolean;
   journalEntry: boolean;
   habitsTracker: boolean;
-  weeklyProgress: boolean;
 }
 
 interface DashboardItemsSelectorProps {
@@ -86,16 +85,6 @@ const DashboardItemsSelector: React.FC<DashboardItemsSelectorProps> = ({
         </TabsContent>
         
         <TabsContent value="insights" className="mt-0">
-          <h4 className="text-sm font-medium mb-3">Weekly Progress</h4>
-          <div className="space-y-3 mb-5">
-            <CheckboxItem 
-              id="weekly-progress" 
-              label="Show Weekly Progress"
-              checked={dashboardItems.weeklyProgress}
-              onChange={(checked) => onDashboardItemChange('weeklyProgress', checked)}
-            />
-          </div>
-          
           <h4 className="text-sm font-medium mb-3">Quick Actions</h4>
           <div className="space-y-3 mb-5">
             <CheckboxItem 

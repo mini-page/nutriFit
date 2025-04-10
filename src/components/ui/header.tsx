@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Activity, MoreVertical, Bell } from 'lucide-react';
+import { Activity, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { MobileMenu } from '@/components/ui/mobile-menu';
@@ -8,14 +8,6 @@ import { UserProfileMenu } from '@/components/ui/user-profile-menu';
 import { NotificationButton, Notification } from '@/components/ui/notification-button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useNavigate } from 'react-router-dom';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   className?: string;
@@ -140,56 +132,9 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
       
       {/* Right section with notifications and profile */}
       <div className="flex items-center gap-3">
-        {/* Desktop: Show notification button and profile separately */}
-        {!isMobile && (
-          <>
-            <NotificationButton notifications={notifications} />
-            <UserProfileMenu userName={userName} />
-          </>
-        )}
-
-        {/* Mobile: Combined dropdown menu */}
-        {isMobile && (
-          <DropdownMenu>
-            <DropdownMenuTrigger className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-              <MoreVertical className="h-5 w-5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigate('/settings')}>
-                Profile Settings
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              
-              <DropdownMenuLabel className="flex items-center justify-between">
-                <span>Notifications</span>
-                {unreadCount > 0 && (
-                  <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
-                    {unreadCount}
-                  </span>
-                )}
-              </DropdownMenuLabel>
-              
-              {notifications.slice(0, 2).map(notification => (
-                <DropdownMenuItem key={notification.id} className="flex flex-col items-start">
-                  <div className="flex w-full justify-between">
-                    <span className="font-medium">{notification.title}</span>
-                    {notification.unread && <span className="w-2 h-2 bg-primary rounded-full" />}
-                  </div>
-                  <span className="text-xs text-muted-foreground">{notification.time}</span>
-                </DropdownMenuItem>
-              ))}
-              
-              <DropdownMenuItem className="text-primary" onClick={() => {
-                const event = new Event('view-all-notifications');
-                document.dispatchEvent(event);
-              }}>
-                <Bell className="mr-2 h-4 w-4" />
-                <span>View all notifications</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+        {/* Show notification button and profile for both mobile and desktop */}
+        <NotificationButton notifications={notifications} />
+        <UserProfileMenu userName={userName} />
       </div>
     </header>
   );

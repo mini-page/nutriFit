@@ -16,25 +16,13 @@ import {
 } from 'lucide-react';
 import ActionableCard from './ActionableCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import WeeklyProgressStats from './WeeklyProgressStats';
-import WeeklyProgressSelector from './WeeklyProgressSelector';
 
 interface DashboardActionableCardsProps {
   visibleCards: Record<string, boolean>;
-  weeklyData: {
-    waterProgress: string;
-    exerciseProgress: string;
-    sleepQuality: string;
-  };
-  selectedWeek: 'current' | 'last' | 'lastTwoWeeks';
-  onWeekChange: (value: 'current' | 'last' | 'lastTwoWeeks') => void;
 }
 
 const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({ 
-  visibleCards, 
-  weeklyData, 
-  selectedWeek,
-  onWeekChange 
+  visibleCards
 }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
@@ -197,7 +185,7 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
   // Filter only visible cards
   const visibleActionCards = cards.filter(card => card.visible);
   
-  if (visibleActionCards.length === 0 && !visibleCards.weeklyProgress) {
+  if (visibleActionCards.length === 0) {
     return null;
   }
   
@@ -220,27 +208,6 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
         </div>
         
         <CollapsibleContent>
-          {visibleCards.weeklyProgress && (
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-md font-medium flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-primary" />
-                  <span>Weekly Progress</span>
-                </h3>
-                <WeeklyProgressSelector 
-                  selectedWeek={selectedWeek}
-                  onWeekChange={onWeekChange}
-                />
-              </div>
-              
-              <WeeklyProgressStats 
-                waterProgress={weeklyData.waterProgress}
-                exerciseProgress={weeklyData.exerciseProgress}
-                sleepQuality={weeklyData.sleepQuality}
-              />
-            </div>
-          )}
-          
           {visibleActionCards.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
               {visibleActionCards.map(card => (

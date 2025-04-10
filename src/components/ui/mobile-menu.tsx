@@ -1,9 +1,10 @@
 
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Activity } from 'lucide-react';
+import { Menu, Activity, User } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { UserProfileMenu } from '@/components/ui/user-profile-menu';
 
 interface MobileMenuProps {
   isOpen: boolean;

@@ -11,13 +11,6 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { X } from 'lucide-react';
 
 const Index = () => {
-  const [selectedWeek, setSelectedWeek] = useState<'current' | 'last' | 'lastTwoWeeks'>('current');
-  const [weeklyData, setWeeklyData] = useState({
-    waterProgress: '87%',
-    exerciseProgress: '63%',
-    sleepQuality: 'Good'
-  });
-  
   const [dashboardItems, setDashboardItems] = useState({
     // Trackers
     water: true,
@@ -44,10 +37,7 @@ const Index = () => {
     moodTracker: false,
     activeGoals: true,
     journalEntry: false,
-    habitsTracker: false,
-    
-    // Weekly progress (now part of actionable insights)
-    weeklyProgress: true
+    habitsTracker: false
   });
 
   useEffect(() => {
@@ -63,22 +53,6 @@ const Index = () => {
       }
     }
   }, []);
-
-  const handleWeekChange = (value: 'current' | 'last' | 'lastTwoWeeks') => {
-    setSelectedWeek(value);
-    // This would typically fetch the actual data for the selected week
-    // For now we'll use mock data from our selector component
-    const weekOptions = [
-      { value: 'current', data: { waterProgress: '87%', exerciseProgress: '63%', sleepQuality: 'Good' } },
-      { value: 'last', data: { waterProgress: '72%', exerciseProgress: '55%', sleepQuality: 'Fair' } },
-      { value: 'lastTwoWeeks', data: { waterProgress: '79%', exerciseProgress: '58%', sleepQuality: 'Good' } }
-    ];
-    
-    const selectedOption = weekOptions.find(opt => opt.value === value);
-    if (selectedOption) {
-      setWeeklyData(selectedOption.data);
-    }
-  };
 
   useEffect(() => {
     const sections = document.querySelectorAll('.animate-on-mount');
@@ -106,8 +80,7 @@ const Index = () => {
     quickSleep: dashboardItems.quickSleep,
     quickBudget: dashboardItems.quickBudget,
     quickMood: dashboardItems.quickMood,
-    quickCycle: dashboardItems.quickCycle,
-    weeklyProgress: dashboardItems.weeklyProgress
+    quickCycle: dashboardItems.quickCycle
   };
 
   return (
@@ -117,12 +90,7 @@ const Index = () => {
         <p className="text-muted-foreground">Track your life, simplify your journey</p>
       </div>
       
-      <DashboardActionableCards 
-        visibleCards={actionableInsightItems} 
-        weeklyData={weeklyData}
-        selectedWeek={selectedWeek}
-        onWeekChange={handleWeekChange}
-      />
+      <DashboardActionableCards visibleCards={actionableInsightItems} />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {dashboardItems.water && <WaterTracker className="animate-on-mount opacity-0 no-hover" />}
