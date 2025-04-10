@@ -63,7 +63,8 @@ const SettingsPage = () => {
     moodTracker: false,
     activeGoals: true,
     journalEntry: false,
-    habitsTracker: false
+    habitsTracker: false,
+    weeklyProgress: true // Set default for weeklyProgress to true
   });
   const isMobile = useIsMobile();
 
