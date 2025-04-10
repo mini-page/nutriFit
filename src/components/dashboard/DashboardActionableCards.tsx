@@ -269,18 +269,18 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
   }
   
   return (
-    <div className="glass-card p-5 mb-6">
+    <div className="glass-card p-5 mb-6 bg-[#0a1622]">
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
         <div className="flex items-center justify-between mb-6">
           <CollapsibleTrigger asChild className="w-full flex items-center justify-between">
             <button className="flex items-center justify-between w-full text-left">
               <div className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                <span className="text-lg font-medium">Actionable Insights</span>
+                <Target className="h-5 w-5 text-blue-400" />
+                <span className="text-lg font-medium text-white">Actionable Insights</span>
               </div>
               {isOpen ? 
-                <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                <ChevronUp className="h-4 w-4 text-gray-400" /> : 
+                <ChevronDown className="h-4 w-4 text-gray-400" />
               }
             </button>
           </CollapsibleTrigger>
@@ -290,8 +290,8 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
           {visibleCards.weeklyProgress && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-md font-medium flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-primary" />
+                <h3 className="text-md font-medium flex items-center gap-2 text-white">
+                  <Activity className="h-4 w-4 text-blue-400" />
                   <span>Weekly Progress</span>
                 </h3>
                 <WeeklyProgressSelector 
@@ -310,8 +310,8 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
           
           {visibleQuickActionCards.length > 0 && (
             <>
-              <h3 className="text-md font-medium flex items-center gap-2 mb-3">
-                <Activity className="h-4 w-4 text-primary" />
+              <h3 className="text-md font-medium flex items-center gap-2 mb-3 text-white">
+                <Activity className="h-4 w-4 text-blue-400" />
                 <span>Quick Actions</span>
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
@@ -333,8 +333,8 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
           
           {visibleInsightCards.length > 0 && (
             <>
-              <h3 className="text-md font-medium flex items-center gap-2 mb-3">
-                <Target className="h-4 w-4 text-primary" />
+              <h3 className="text-md font-medium flex items-center gap-2 mb-3 text-white">
+                <Target className="h-4 w-4 text-blue-400" />
                 <span>Insights</span>
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

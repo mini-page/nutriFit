@@ -7,8 +7,6 @@ import ExerciseTracker from '@/components/ui/exercise-tracker';
 import MoodTracker from '@/components/ui/mood-tracker';
 import DailyGoal from '@/components/ui/daily-goal';
 import DashboardActionableCards from '@/components/dashboard/DashboardActionableCards';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { X } from 'lucide-react';
 
 const Index = () => {
   const [selectedWeek, setSelectedWeek] = useState<'current' | 'last' | 'lastTwoWeeks'>('current');
@@ -113,8 +111,8 @@ const Index = () => {
   return (
     <MainLayout>
       <div className="mb-6 animate-on-mount opacity-0">
-        <h1 className="text-2xl font-bold mb-1">Trackify Dashboard</h1>
-        <p className="text-muted-foreground">Track your life, simplify your journey</p>
+        <h1 className="text-2xl font-bold mb-1 text-white">Trackify Dashboard</h1>
+        <p className="text-gray-400">Track your life, simplify your journey</p>
       </div>
       
       <DashboardActionableCards 
