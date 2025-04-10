@@ -31,20 +31,20 @@ const Index = () => {
     quickExercise: true,
     quickNutrition: true,
     quickGoals: true,
-    quickSleep: false,
-    quickBudget: false,
-    quickMood: false,
-    quickCycle: false,
+    quickSleep: true,
+    quickBudget: true,
+    quickMood: true,
+    quickCycle: true,
     
     // Actionable cards
     healthScore: true,
     sleepQuality: true,
     workout: true,
-    calories: false, 
-    moodTracker: false,
+    calories: true, 
+    moodTracker: true,
     activeGoals: true,
-    journalEntry: false,
-    habitsTracker: false,
+    journalEntry: true,
+    habitsTracker: true,
     
     // Weekly progress (now part of actionable insights)
     weeklyProgress: true

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Header from '@/components/ui/header';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useLocation } from 'react-router-dom';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -11,6 +12,8 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
   const [userName, setUserName] = useState("Life Tracker!");
+  const location = useLocation();
+  const isDashboard = location.pathname === '/';
 
   useEffect(() => {
     // Load user data from localStorage on component mount

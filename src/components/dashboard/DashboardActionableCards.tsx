@@ -12,7 +12,10 @@ import {
   Target, 
   BookOpen,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Droplet,
+  DollarSign,
+  Clock
 } from 'lucide-react';
 import ActionableCard from './ActionableCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -85,13 +88,17 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
         navigate('/cycle-tracker');
         toast.success('Redirecting to cycle tracker');
         break;
+      case 'pomodoro':
+        navigate('/pomodoro');
+        toast.success('Redirecting to pomodoro timer');
+        break;
       default:
         break;
     }
   };
   
   // Define all available cards
-  const cards = [
+  const insightCards = [
     { 
       id: 'health', 
       title: 'Health Score', 
@@ -164,40 +171,100 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
       actionLabel: 'Check Habits', 
       visible: visibleCards.habitsTracker 
     },
-    // Quick action cards that were previously in DashboardQuickActions
+  ];
+  
+  // Quick action cards
+  const quickActionCards = [
     { 
       id: 'water', 
       title: 'Water', 
       value: '5/8 Glasses', 
-      icon: Activity, 
-      color: 'water', 
+      icon: Droplet, 
+      color: 'cyan', 
       actionLabel: 'Add Water', 
       visible: visibleCards.quickWater 
+    },
+    { 
+      id: 'nutrition', 
+      title: 'Nutrition', 
+      value: '1,200/2,000 kcal', 
+      icon: Utensils, 
+      color: 'orange', 
+      actionLabel: 'Log Meal', 
+      visible: visibleCards.quickNutrition 
+    },
+    { 
+      id: 'exercise', 
+      title: 'Exercise', 
+      value: '30 min Today', 
+      icon: Dumbbell, 
+      color: 'green', 
+      actionLabel: 'Log Exercise', 
+      visible: visibleCards.quickExercise 
+    },
+    { 
+      id: 'mood', 
+      title: 'Mood', 
+      value: 'How are you?', 
+      icon: BrainCircuit, 
+      color: 'yellow', 
+      actionLabel: 'Log Mood', 
+      visible: visibleCards.quickMood 
+    },
+    { 
+      id: 'sleep', 
+      title: 'Sleep', 
+      value: '7h 30m', 
+      icon: Bed, 
+      color: 'indigo', 
+      actionLabel: 'Log Sleep', 
+      visible: visibleCards.quickSleep 
     },
     { 
       id: 'budget', 
       title: 'Budget', 
       value: '$1,200 Left', 
-      icon: Activity, 
+      icon: DollarSign, 
       color: 'green', 
       actionLabel: 'Check Budget', 
       visible: visibleCards.quickBudget 
     },
     { 
+      id: 'pomodoro', 
+      title: 'Pomodoro', 
+      value: 'Start Focus', 
+      icon: Clock, 
+      color: 'red', 
+      actionLabel: 'Start Timer', 
+      visible: true
+    },
+    { 
       id: 'cycle', 
       title: 'Cycle', 
       value: 'Day 14', 
-      icon: Activity, 
+      icon: Heart, 
       color: 'rose', 
       actionLabel: 'Track Cycle', 
       visible: visibleCards.quickCycle 
+    },
+    { 
+      id: 'goals', 
+      title: 'Goals', 
+      value: '2/3 Completed', 
+      icon: Target, 
+      color: 'blue', 
+      actionLabel: 'View Goals', 
+      visible: visibleCards.quickGoals 
     }
   ];
   
   // Filter only visible cards
-  const visibleActionCards = cards.filter(card => card.visible);
+  const visibleInsightCards = insightCards.filter(card => card.visible);
+  const visibleQuickActionCards = quickActionCards.filter(card => card.visible);
   
-  if (visibleActionCards.length === 0 && !visibleCards.weeklyProgress) {
+  if (visibleInsightCards.length === 0 && 
+      visibleQuickActionCards.length === 0 && 
+      !visibleCards.weeklyProgress) {
     return null;
   }
   
@@ -209,7 +276,7 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
             <button className="flex items-center justify-between w-full text-left">
               <div className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-primary" />
-                <span className="text-lg font-medium">Insights</span>
+                <span className="text-lg font-medium">Actionable Insights</span>
               </div>
               {isOpen ? 
                 <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
@@ -241,20 +308,49 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
             </div>
           )}
           
-          {visibleActionCards.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-              {visibleActionCards.map(card => (
-                <ActionableCard
-                  key={card.id}
-                  title={card.title}
-                  value={card.value}
-                  icon={card.icon}
-                  color={card.color}
-                  actionLabel={card.actionLabel}
-                  onClick={() => handleCardAction(card.id)}
-                />
-              ))}
-            </div>
+          {visibleQuickActionCards.length > 0 && (
+            <>
+              <h3 className="text-md font-medium flex items-center gap-2 mb-3">
+                <Activity className="h-4 w-4 text-primary" />
+                <span>Quick Actions</span>
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
+                {visibleQuickActionCards.map(card => (
+                  <ActionableCard
+                    key={card.id}
+                    title={card.title}
+                    value={card.value}
+                    icon={card.icon}
+                    color={card.color}
+                    actionLabel={card.actionLabel}
+                    onClick={() => handleCardAction(card.id)}
+                    size="small"
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          
+          {visibleInsightCards.length > 0 && (
+            <>
+              <h3 className="text-md font-medium flex items-center gap-2 mb-3">
+                <Target className="h-4 w-4 text-primary" />
+                <span>Insights</span>
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {visibleInsightCards.map(card => (
+                  <ActionableCard
+                    key={card.id}
+                    title={card.title}
+                    value={card.value}
+                    icon={card.icon}
+                    color={card.color}
+                    actionLabel={card.actionLabel}
+                    onClick={() => handleCardAction(card.id)}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </CollapsibleContent>
       </Collapsible>

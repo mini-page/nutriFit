@@ -2,6 +2,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
+
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
@@ -20,32 +21,30 @@ const alertVariants = cva(
   }
 )
 
-interface AlertProps extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof alertVariants> {
-  onClose?: () => void;
-  autoClose?: boolean;
-  autoCloseDelay?: number;
-}
-
 const Alert = React.forwardRef<
   HTMLDivElement,
-  AlertProps
->(({ className, variant, children, onClose, autoClose = true, autoCloseDelay = 3000, ...props }, ref) => {
-  const [isVisible, setIsVisible] = React.useState(true);
-
+  React.HTMLAttributes<HTMLDivElement> & 
+  VariantProps<typeof alertVariants> & 
+  { 
+    dismissible?: boolean;
+    autoDismiss?: boolean;
+    dismissTimeout?: number;
+  }
+>(({ className, variant, dismissible = true, autoDismiss = true, dismissTimeout = 3000, ...props }, ref) => {
+  const [visible, setVisible] = React.useState(true);
+  
   React.useEffect(() => {
-    if (autoClose && isVisible) {
+    if (autoDismiss && visible) {
       const timer = setTimeout(() => {
-        setIsVisible(false);
-        if (onClose) onClose();
-      }, autoCloseDelay);
+        setVisible(false);
+      }, dismissTimeout);
       
       return () => clearTimeout(timer);
     }
-  }, [autoClose, autoCloseDelay, isVisible, onClose]);
-
-  if (!isVisible) return null;
-
+  }, [autoDismiss, dismissTimeout, visible]);
+  
+  if (!visible) return null;
+  
   return (
     <div
       ref={ref}
@@ -53,17 +52,17 @@ const Alert = React.forwardRef<
       className={cn(alertVariants({ variant }), className, "pr-10")}
       {...props}
     >
-      {children}
-      <button 
-        className="absolute top-3 right-3 p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-        onClick={() => {
-          setIsVisible(false);
-          if (onClose) onClose();
-        }}
-        aria-label="Close alert"
-      >
-        <X className="h-4 w-4" />
-      </button>
+      {dismissible && (
+        <button 
+          onClick={() => setVisible(false)}
+          className="absolute right-4 top-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          aria-label="Close alert"
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </button>
+      )}
+      {props.children}
     </div>
   )
 })

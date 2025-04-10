@@ -29,13 +29,27 @@ const App = () => {
 
   // Set up theme preferences from localStorage on app load
   useEffect(() => {
-    const theme = localStorage.getItem('theme') || 'system';
-    document.documentElement.setAttribute('data-theme', theme);
-
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const storageTheme = localStorage.getItem('theme') || 'system';
+    
+    const setThemeClass = () => {
+      if (storageTheme === 'dark' || (storageTheme === 'system' && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    };
+    
+    setThemeClass();
+    document.documentElement.setAttribute('data-theme', storageTheme);
+    
+    // Listen for theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setThemeClass);
+    
     // Initialize user data if not present
     if (!localStorage.getItem('userData')) {
       const defaultUserData = {
-        name: 'Guest',
+        name: 'Umang',
         email: 'email@example.com',
         age: '20',
         gender: 'male',
@@ -59,22 +73,26 @@ const App = () => {
         quickExercise: true,
         quickNutrition: true,
         quickGoals: true,
-        quickSleep: false,
-        quickBudget: false,
-        quickMood: false,
-        quickCycle: false,
+        quickSleep: true,
+        quickBudget: true,
+        quickMood: true,
+        quickCycle: true,
         healthScore: true,
         sleepQuality: true,
         workout: true,
-        calories: false,
-        moodTracker: false,
+        calories: true,
+        moodTracker: true,
         activeGoals: true,
-        journalEntry: false,
-        habitsTracker: false,
+        journalEntry: true,
+        habitsTracker: true,
         weeklyProgress: true
       };
       localStorage.setItem('dashboardItems', JSON.stringify(defaultDashboardItems));
     }
+    
+    return () => {
+      window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', setThemeClass);
+    };
   }, []);
 
   return (
