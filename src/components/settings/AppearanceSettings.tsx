@@ -27,7 +27,6 @@ interface DashboardItems {
   activeGoals: boolean;
   journalEntry: boolean;
   habitsTracker: boolean;
-  weeklyProgress: boolean;
 }
 
 interface AppearanceSettingsProps {

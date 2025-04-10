@@ -103,7 +103,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    overflow-x: hidden;
   }
   
   .category-pill {
@@ -143,46 +142,21 @@
 }
 
 /* Fix for mobile sidebar scroll */
-.mobile-sidebar-content {
-  height: calc(100vh - 4rem);
-  overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-}
-
-.mobile-sidebar-content::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
-}
-
-/* Media query for better mobile layout */
 @media (max-width: 768px) {
-  .glass-card {
-    @apply rounded-lg p-4;
+  [data-sidebar="sidebar"] [data-sidebar="content"] {
+    height: calc(100vh - 64px);
+    overflow: auto;
+    scrollbar-width: thin;
+  }
+  
+  [data-sidebar="sidebar"] [data-sidebar="group"] {
+    overflow: visible;
+    scrollbar-width: none;
   }
 }
 
-/* Clean scrollbar for desktop */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+@media (max-width: 640px) {
+  .glass-card {
+    @apply rounded-lg p-4;
+  }
 }

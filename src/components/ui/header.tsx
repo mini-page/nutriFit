@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { Activity, Bell, ArrowLeft, User } from 'lucide-react';
+import { Activity, MoreVertical, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { MobileMenu } from '@/components/ui/mobile-menu';
 import { UserProfileMenu } from '@/components/ui/user-profile-menu';
 import { NotificationButton, Notification } from '@/components/ui/notification-button';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
   className?: string;
@@ -30,8 +29,6 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   const [userName, setUserName] = useState("Umang");
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const location = useLocation();
-  const isDashboard = location.pathname === '/';
 
   useEffect(() => {
     // Load user name from localStorage
@@ -61,10 +58,6 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
       document.removeEventListener('user-profile-updated', handleProfileUpdate);
     };
   }, []);
-
-  const handleBackToDashboard = () => {
-    navigate('/');
-  };
 
   const handleDateClick = () => {
     navigate('/calendar');
@@ -110,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
   return (
     <header className={cn(
-      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary text-primary-foreground rounded-b-xl", 
+      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary/5 shadow-sm rounded-b-xl border-b", 
       className
     )}>
       {/* Left section with mobile menu and branding */}
@@ -122,19 +115,6 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           />
         )}
         
-        {/* Back button for non-dashboard pages */}
-        {!isDashboard && !isMobile && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="mr-2 text-primary-foreground hover:bg-white/20 hover:text-white"
-            onClick={handleBackToDashboard}
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Dashboard
-          </Button>
-        )}
-        
         {/* App logo and greeting */}
         <div className="flex flex-col">
           <h1 className="text-xl font-bold flex items-center">
@@ -142,7 +122,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
               <span>Hello, {userName}</span>
             ) : (
               <>
-                <span className="bg-white text-primary rounded-lg p-1 mr-2">
+                <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
                   <Activity className="h-5 w-5" />
                 </span>
                 Trackify
@@ -150,7 +130,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             )}
           </h1>
           <p 
-            className="text-primary-foreground/80 text-xs cursor-pointer hover:text-primary-foreground transition-colors"
+            className="text-muted-foreground text-xs cursor-pointer hover:text-foreground transition-colors"
             onClick={handleDateClick}
           >
             {formattedDate}
@@ -168,12 +148,47 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           </>
         )}
 
-        {/* Mobile: User profile icon instead of 3-dot menu */}
+        {/* Mobile: Combined dropdown menu */}
         {isMobile && (
-          <div className="flex items-center gap-2">
-            <NotificationButton notifications={notifications} />
-            <UserProfileMenu userName={userName} />
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+              <MoreVertical className="h-5 w-5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => navigate('/settings')}>
+                Profile Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuLabel className="flex items-center justify-between">
+                <span>Notifications</span>
+                {unreadCount > 0 && (
+                  <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                    {unreadCount}
+                  </span>
+                )}
+              </DropdownMenuLabel>
+              
+              {notifications.slice(0, 2).map(notification => (
+                <DropdownMenuItem key={notification.id} className="flex flex-col items-start">
+                  <div className="flex w-full justify-between">
+                    <span className="font-medium">{notification.title}</span>
+                    {notification.unread && <span className="w-2 h-2 bg-primary rounded-full" />}
+                  </div>
+                  <span className="text-xs text-muted-foreground">{notification.time}</span>
+                </DropdownMenuItem>
+              ))}
+              
+              <DropdownMenuItem className="text-primary" onClick={() => {
+                const event = new Event('view-all-notifications');
+                document.dispatchEvent(event);
+              }}>
+                <Bell className="mr-2 h-4 w-4" />
+                <span>View all notifications</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </header>

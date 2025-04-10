@@ -36,7 +36,6 @@ interface DashboardItems {
   activeGoals: boolean;
   journalEntry: boolean;
   habitsTracker: boolean;
-  weeklyProgress: boolean; // Add the missing weeklyProgress property
 }
 
 const SettingsPage = () => {
@@ -63,8 +62,7 @@ const SettingsPage = () => {
     moodTracker: false,
     activeGoals: true,
     journalEntry: false,
-    habitsTracker: false,
-    weeklyProgress: true // Set default for weeklyProgress to true
+    habitsTracker: false
   });
   const isMobile = useIsMobile();
 

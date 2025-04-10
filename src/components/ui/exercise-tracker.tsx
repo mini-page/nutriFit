@@ -3,129 +3,121 @@ import React, { useState } from 'react';
 import { Activity, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface ExerciseLog {
-  id: number;
-  type: string;
-  duration: number;
-}
-
 interface ExerciseTrackerProps {
   className?: string;
 }
 
+interface Exercise {
+  id: string;
+  name: string;
+  duration: number;
+}
+
 const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ className }) => {
-  const [totalMinutes, setTotalMinutes] = useState(45);
-  const [exercises, setExercises] = useState<ExerciseLog[]>([
-    { id: 1, type: 'Running', duration: 30 },
-    { id: 2, type: 'Push-ups', duration: 15 }
+  const [exercises, setExercises] = useState<Exercise[]>([
+    { id: '1', name: 'Running', duration: 30 },
+    { id: '2', name: 'Push-ups', duration: 15 }
   ]);
   const [showAdd, setShowAdd] = useState(false);
-  const [newExercise, setNewExercise] = useState({ type: '', duration: '' });
+  const [newExercise, setNewExercise] = useState('');
+  const [newDuration, setNewDuration] = useState('');
+  
+  const totalMinutes = exercises.reduce((acc, exercise) => acc + exercise.duration, 0);
 
   const addExercise = () => {
-    if (newExercise.type.trim() !== '' && newExercise.duration.trim() !== '') {
-      const duration = parseInt(newExercise.duration);
-      
+    if (newExercise.trim() !== '' && newDuration.trim() !== '') {
+      const duration = parseInt(newDuration);
       if (!isNaN(duration) && duration > 0) {
-        const newId = exercises.length > 0 ? Math.max(...exercises.map(e => e.id)) + 1 : 1;
-        
         setExercises(prev => [
-          ...prev,
+          ...prev, 
           { 
-            id: newId, 
-            type: newExercise.type, 
-            duration: duration 
+            id: Date.now().toString(), 
+            name: newExercise, 
+            duration 
           }
         ]);
-        
-        setTotalMinutes(prev => prev + duration);
-        
-        // Reset form
-        setNewExercise({ type: '', duration: '' });
+        setNewExercise('');
+        setNewDuration('');
         setShowAdd(false);
       }
     }
   };
 
-  const removeExercise = (id: number) => {
-    const exerciseToRemove = exercises.find(e => e.id === id);
-    if (exerciseToRemove) {
-      setTotalMinutes(prev => prev - exerciseToRemove.duration);
-      setExercises(exercises.filter(e => e.id !== id));
-    }
+  const removeExercise = (id: string) => {
+    setExercises(prev => prev.filter(exercise => exercise.id !== id));
   };
 
   return (
-    <div className={cn("glass-card p-5 bg-[#0a1622] text-white", className)}>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <Activity className="h-6 w-6 text-green-400" />
-          <h3 className="text-xl font-medium">Exercise Log</h3>
-        </div>
-        <span className="px-3 py-1 rounded-full text-sm bg-[#1e3a2a] flex items-center gap-1">
-          <Activity className="h-3.5 w-3.5 text-green-400" />
-          <span className="font-medium">Fitness</span>
+    <div className={cn("glass-card p-5", className)}>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-lg font-medium flex items-center gap-2">
+          <Activity className="h-5 w-5 text-exercise" />
+          <span>Exercise Log</span>
+        </h3>
+        <span className="category-pill bg-exercise-light text-exercise-dark">
+          <Activity className="h-3.5 w-3.5" />
+          Fitness
         </span>
       </div>
       
-      <div>
-        <div className="flex justify-between items-start mb-4">
+      <div className="mt-3">
+        <div className="flex justify-between items-center mb-4">
           <div>
-            <div className="text-6xl font-bold text-green-500">{totalMinutes}</div>
-            <div className="text-gray-400">minutes today</div>
+            <span className="text-3xl font-bold text-exercise-dark">{totalMinutes}</span>
+            <span className="text-muted-foreground text-sm ml-1">minutes today</span>
           </div>
           <button 
             onClick={() => setShowAdd(!showAdd)}
-            className="w-12 h-12 rounded-full bg-[#1e3a2a] text-green-400 flex items-center justify-center hover:bg-green-700 transition-colors"
+            className="p-2 rounded-full bg-exercise-light text-exercise-dark hover:bg-exercise hover:text-white transition-colors"
           >
-            <Plus className="h-6 w-6" />
+            <Plus className="h-5 w-5" />
           </button>
         </div>
-
-        <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
+        
+        <div className="space-y-2 max-h-[200px] overflow-auto pr-1">
           {exercises.map(exercise => (
             <div 
-              key={exercise.id}
-              className="p-3 rounded-xl bg-[#1e3a2a]/50 flex justify-between items-center"
+              key={exercise.id} 
+              className="flex items-center justify-between p-2 bg-exercise-light/50 rounded-lg"
             >
               <div>
-                <div className="font-medium text-green-400">{exercise.type}</div>
-                <div className="text-sm text-gray-400">{exercise.duration} minutes</div>
+                <p className="font-medium text-exercise-dark">{exercise.name}</p>
+                <p className="text-sm text-muted-foreground">{exercise.duration} minutes</p>
               </div>
               <button 
                 onClick={() => removeExercise(exercise.id)}
-                className="p-1.5 rounded-full hover:bg-[#2a4a3a] text-gray-400"
+                className="p-1 rounded-full hover:bg-exercise-light transition-colors"
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4 text-muted-foreground" />
               </button>
             </div>
           ))}
         </div>
         
         {showAdd && (
-          <div className="mt-4 animate-fade-in space-y-2">
-            <input
-              type="text"
-              value={newExercise.type}
-              onChange={(e) => setNewExercise({...newExercise, type: e.target.value})}
-              placeholder="Exercise type"
-              className="flex h-10 w-full rounded-md border border-[#1e3a2a] bg-[#1a1a1a] px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-green-500"
-            />
-            <div className="flex gap-2">
+          <div className="mt-4 animate-fade-in">
+            <div className="grid grid-cols-2 gap-2 mb-2">
+              <input
+                type="text"
+                value={newExercise}
+                onChange={(e) => setNewExercise(e.target.value)}
+                placeholder="Exercise name"
+                className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              />
               <input
                 type="number"
-                value={newExercise.duration}
-                onChange={(e) => setNewExercise({...newExercise, duration: e.target.value})}
+                value={newDuration}
+                onChange={(e) => setNewDuration(e.target.value)}
                 placeholder="Minutes"
-                className="flex h-10 w-full rounded-md border border-[#1e3a2a] bg-[#1a1a1a] px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-green-500"
+                className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <button 
-                onClick={addExercise}
-                className="rounded-md px-4 py-2 bg-green-500 text-white hover:bg-green-600 transition-colors"
-              >
-                Add
-              </button>
             </div>
+            <button 
+              onClick={addExercise}
+              className="w-full rounded-md py-2 px-3 bg-exercise text-white hover:bg-exercise-dark transition-colors"
+            >
+              Add Exercise
+            </button>
           </div>
         )}
       </div>

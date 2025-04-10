@@ -12,7 +12,6 @@ interface ActionableCardProps {
   actionLabel: string;
   onClick: () => void;
   className?: string;
-  size?: string;
 }
 
 const ActionableCard: React.FC<ActionableCardProps> = ({
@@ -22,8 +21,7 @@ const ActionableCard: React.FC<ActionableCardProps> = ({
   color,
   actionLabel,
   onClick,
-  className,
-  size
+  className
 }) => {
   // Map of color strings to Tailwind classes
   const colorClasses: Record<string, { bg: string, text: string, border: string }> = {
@@ -50,8 +48,7 @@ const ActionableCard: React.FC<ActionableCardProps> = ({
         colorClass.bg,
         "border",
         colorClass.border,
-        className,
-        size === "small" ? "p-2 text-sm" : ""
+        className
       )}
     >
       <div className="flex items-center mb-3">

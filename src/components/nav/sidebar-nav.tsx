@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Droplet, 
@@ -15,12 +15,10 @@ import {
   Clock,
   CheckSquare,
   BookOpen,
-  Heart,
-  ArrowLeft
+  Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -53,7 +51,6 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active }) => {
 
 const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
   // Safely check if we can use useLocation
-  const navigate = useNavigate();
   let pathname = '/';
   try {
     const location = useLocation();
@@ -62,8 +59,6 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
     // If useLocation throws an error, we're outside of Router context
     console.warn('SidebarNav rendered outside Router context, defaulting active state to homepage');
   }
-  
-  const isDashboard = pathname === '/';
 
   const healthNavItems = [
     { icon: <Droplet className="h-5 w-5 text-cyan-500" />, label: 'Water Tracker', href: '/water' },
@@ -100,106 +95,90 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
         </div>
       )}
       
-      {!isDashboard && !hideLogo && (
-        <div className="px-6 mb-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full flex items-center justify-center"
-            onClick={() => navigate('/')}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Button>
-        </div>
-      )}
-      
-      <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full pb-8">
-          <div className="px-3 pb-6">
-            <div className="space-y-6">
-              {/* Dashboard */}
-              <div>
-                <NavItem
-                  icon={<LayoutDashboard className="h-5 w-5 text-blue-500" />}
-                  label="Dashboard"
-                  href="/"
-                  active={pathname === '/'}
-                />
-              </div>
+      <ScrollArea className="flex-1">
+        <div className="px-3 pb-6">
+          <div className="space-y-6">
+            {/* Dashboard */}
+            <div>
+              <NavItem
+                icon={<LayoutDashboard className="h-5 w-5 text-blue-500" />}
+                label="Dashboard"
+                href="/"
+                active={pathname === '/'}
+              />
+            </div>
 
-              {/* Health Tracking Section */}
-              <div>
-                <div className="px-4 py-1">
-                  <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Health</h3>
-                </div>
-                <div className="space-y-1">
-                  {healthNavItems.map((item) => (
-                    <NavItem
-                      key={item.href}
-                      icon={item.icon}
-                      label={item.label}
-                      href={item.href}
-                      active={pathname === item.href}
-                    />
-                  ))}
-                </div>
+            {/* Health Tracking Section */}
+            <div>
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Health</h3>
               </div>
-              
-              {/* Mental & Emotional Tracking */}
-              <div>
-                <div className="px-4 py-1">
-                  <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Well-being</h3>
-                </div>
-                <div className="space-y-1">
-                  {wellbeingNavItems.map((item) => (
-                    <NavItem
-                      key={item.href}
-                      icon={item.icon}
-                      label={item.label}
-                      href={item.href}
-                      active={pathname === item.href}
-                    />
-                  ))}
-                </div>
-              </div>
-              
-              {/* Productivity & Goals */}
-              <div>
-                <div className="px-4 py-1">
-                  <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Productivity</h3>
-                </div>
-                <div className="space-y-1">
-                  {productivityNavItems.map((item) => (
-                    <NavItem
-                      key={item.href}
-                      icon={item.icon}
-                      label={item.label}
-                      href={item.href}
-                      active={pathname === item.href}
-                    />
-                  ))}
-                </div>
-              </div>
-              
-              {/* Settings at the bottom */}
-              <div>
-                <div className="mt-3 px-4 py-1">
-                  <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Preferences</h3>
-                </div>
-                <div className="space-y-1">
+              <div className="space-y-1">
+                {healthNavItems.map((item) => (
                   <NavItem
-                    icon={<Settings className="h-5 w-5 text-gray-500" />}
-                    label="Settings"
-                    href="/settings"
-                    active={pathname === '/settings'}
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.label}
+                    href={item.href}
+                    active={pathname === item.href}
                   />
-                </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Mental & Emotional Tracking */}
+            <div>
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Well-being</h3>
+              </div>
+              <div className="space-y-1">
+                {wellbeingNavItems.map((item) => (
+                  <NavItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.label}
+                    href={item.href}
+                    active={pathname === item.href}
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {/* Productivity & Goals */}
+            <div>
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Productivity</h3>
+              </div>
+              <div className="space-y-1">
+                {productivityNavItems.map((item) => (
+                  <NavItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.label}
+                    href={item.href}
+                    active={pathname === item.href}
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {/* Settings at the bottom */}
+            <div>
+              <div className="mt-3 px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Preferences</h3>
+              </div>
+              <div className="space-y-1">
+                <NavItem
+                  icon={<Settings className="h-5 w-5 text-gray-500" />}
+                  label="Settings"
+                  href="/settings"
+                  active={pathname === '/settings'}
+                />
               </div>
             </div>
           </div>
-        </ScrollArea>
-      </div>
+        </div>
+      </ScrollArea>
     </div>
   );
 };

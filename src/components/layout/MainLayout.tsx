@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Header from '@/components/ui/header';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useLocation, Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -13,8 +11,6 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
   const [userName, setUserName] = useState("Life Tracker!");
-  const location = useLocation();
-  const isDashboard = location.pathname === '/';
 
   useEffect(() => {
     // Load user data from localStorage on component mount
@@ -50,27 +46,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen flex bg-[#060d15]">
+    <div className="min-h-screen flex">
       {!isMobile && <SidebarNav hideLogo={false} />}
       
       <div className="flex-1 flex flex-col">
         <div className="flex items-center">
           <Header userName={userName} />
         </div>
-
         <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
-          {!isDashboard && (
-            <div className="mb-4">
-              <Link 
-                to="/" 
-                className="inline-flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back to Dashboard</span>
-              </Link>
-            </div>
-          )}
-          
           {children}
         </main>
       </div>
