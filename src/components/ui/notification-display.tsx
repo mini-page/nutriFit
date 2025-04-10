@@ -16,18 +16,24 @@ export interface Notification {
 interface NotificationDisplayProps {
   notifications: Notification[];
   onClose: () => void;
+  isMobile?: boolean;
 }
 
 export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
   handleNotificationClick: (id: number) => void;
-} = ({ notifications, onClose }) => {
+} = ({ notifications, onClose, isMobile = false }) => {
   return (
     <div 
       className="fixed top-0 left-0 right-0 bottom-0 z-50"
       onClick={onClose}
     >
       <div 
-        className="absolute right-4 top-[60px] w-[320px] max-w-[calc(100vw-40px)] bg-white border border-border rounded-lg shadow-lg z-51"
+        className={cn(
+          "absolute bg-white border border-border rounded-lg shadow-lg z-51",
+          isMobile 
+            ? "left-4 top-[60px] w-[calc(100vw-32px)]" 
+            : "right-4 top-[60px] w-[320px] max-w-[calc(100vw-40px)]"
+        )}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4 p-4">

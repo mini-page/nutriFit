@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Bell } from 'lucide-react';
 import { NotificationDisplay } from '@/components/ui/notification-display';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export type Notification = {
   id: number;
@@ -14,13 +15,22 @@ export type Notification = {
 
 interface NotificationButtonProps {
   notifications: Notification[];
+  onMenuClose?: () => void;
 }
 
-export const NotificationButton: React.FC<NotificationButtonProps> = ({ notifications }) => {
+export const NotificationButton: React.FC<NotificationButtonProps> = ({ 
+  notifications,
+  onMenuClose
+}) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const unreadCount = notifications.filter(n => n.unread).length;
+  const isMobile = useIsMobile();
 
   const toggleNotifications = () => {
+    // If we're on mobile and there's an onMenuClose handler, close the menu
+    if (isMobile && onMenuClose) {
+      onMenuClose();
+    }
     setShowNotifications(!showNotifications);
   };
 
@@ -44,7 +54,8 @@ export const NotificationButton: React.FC<NotificationButtonProps> = ({ notifica
       {showNotifications && (
         <NotificationDisplay 
           notifications={notifications} 
-          onClose={closeNotifications} 
+          onClose={closeNotifications}
+          isMobile={isMobile}
         />
       )}
     </>

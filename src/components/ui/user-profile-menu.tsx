@@ -15,8 +15,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
-import { Notification } from '@/components/ui/notification-button';
+import { Notification, NotificationButton } from '@/components/ui/notification-button';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface UserProfileMenuProps {
   userName?: string;
@@ -33,6 +34,8 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
   const [userName, setUserName] = useState(propUserName || "Umang");
   const hasNotifications = notifications && notifications.length > 0;
   const unreadCount = notifications ? notifications.filter(n => n.unread).length : 0;
+  const isMobile = useIsMobile();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     // If prop is provided, use it
@@ -72,6 +75,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
   const handleNavigation = (path: string) => {
     navigate(path);
     if (onClose) onClose();
+    setIsMenuOpen(false);
   };
 
   const handleNotificationClick = (id: number) => {
@@ -79,8 +83,17 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
     // In a real app, would mark notification as read in state/database
   };
 
+  const handleMenuOpenChange = (open: boolean) => {
+    setIsMenuOpen(open);
+  };
+
+  // Function to close the menu (for notification button to use)
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isMenuOpen} onOpenChange={handleMenuOpenChange}>
       <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-white/10 transition-colors">
         <div className="bg-white text-primary rounded-full p-1">
           <User className="h-4 w-4" />
@@ -97,7 +110,21 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
           <span>Profile Settings</span>
         </DropdownMenuItem>
 
-        {hasNotifications && (
+        {isMobile && notifications && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild className="p-0">
+              <div className="w-full">
+                <NotificationButton 
+                  notifications={notifications} 
+                  onMenuClose={closeMenu}
+                />
+              </div>
+            </DropdownMenuItem>
+          </>
+        )}
+
+        {hasNotifications && !isMobile && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

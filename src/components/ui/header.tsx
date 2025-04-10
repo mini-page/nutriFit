@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
   return (
     <header className={cn(
-      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary text-primary-foreground sticky top-0 z-10 shadow-md", 
+      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary text-primary-foreground sticky top-0 z-10 shadow-md rounded-b-xl", 
       className
     )}>
       {/* Left section with mobile menu and branding */}
