@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Droplet, Plus, Minus, X } from 'lucide-react';
+import { Droplet, Plus, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface WaterTrackerProps {
