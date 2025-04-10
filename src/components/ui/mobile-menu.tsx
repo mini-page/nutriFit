@@ -28,15 +28,15 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <button className="p-2 text-muted-foreground hover:text-foreground focus:outline-none">
+        <button className="p-2 text-primary-foreground hover:text-primary-foreground/80 focus:outline-none">
           <Menu className="h-5 w-5" />
         </button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-72">
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between border-b p-4 bg-secondary/30 rounded-b-xl">
+          <div className="flex items-center justify-between border-b p-4 bg-primary text-primary-foreground rounded-b-xl">
             <div className="flex items-center">
-              <div className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
+              <div className="bg-white text-primary rounded-lg p-1 mr-2">
                 <Activity className="h-5 w-5" />
               </div>
               <h1 className="text-xl font-bold">Trackify</h1>

@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
   return (
     <header className={cn(
-      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary/5 shadow-sm rounded-b-xl border-b", 
+      "w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary text-primary-foreground sticky top-0 z-10 shadow-md", 
       className
     )}>
       {/* Left section with mobile menu and branding */}
@@ -114,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
               <span>Hello, {userName}</span>
             ) : (
               <>
-                <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
+                <span className="bg-white text-primary rounded-lg p-1 mr-2">
                   <Activity className="h-5 w-5" />
                 </span>
                 Trackify
@@ -122,7 +122,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             )}
           </h1>
           <p 
-            className="text-muted-foreground text-xs cursor-pointer hover:text-foreground transition-colors"
+            className="text-primary-foreground/80 text-xs cursor-pointer hover:text-primary-foreground transition-colors"
             onClick={handleDateClick}
           >
             {formattedDate}
@@ -133,8 +133,8 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
       {/* Right section with notifications and profile */}
       <div className="flex items-center gap-3">
         {/* Show notification button and profile for both mobile and desktop */}
-        <NotificationButton notifications={notifications} />
-        <UserProfileMenu userName={userName} />
+        {!isMobile && <NotificationButton notifications={notifications} />}
+        <UserProfileMenu userName={userName} notifications={isMobile ? notifications : undefined} />
       </div>
     </header>
   );
