@@ -119,6 +119,10 @@
   }
 }
 
+.custom-header-class {
+  margin-top: 0.5rem;
+}
+
 /* Animate items when they mount */
 @keyframes fadeIn {
   from {
