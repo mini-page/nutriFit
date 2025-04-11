@@ -3,4 +3,5 @@
 export interface SymptomDetails {
   type: string;
   severity: number;
+  notes?: string;
 }

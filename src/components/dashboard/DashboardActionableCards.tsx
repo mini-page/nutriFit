@@ -210,7 +210,15 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
           </CollapsibleTrigger>
         </div>
         
-        <DashboardItemsSelector />
+        <DashboardItemsSelector 
+          dashboardItems={visibleCards} 
+          onDashboardItemChange={(key, checked) => {
+            // This is a placeholder for when you want to implement
+            // the onDashboardItemChange functionality
+            console.log(key, checked);
+          }} 
+        />
+        
         <CollapsibleContent>
           {visibleActionCards.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">

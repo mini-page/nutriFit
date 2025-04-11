@@ -8,6 +8,7 @@ import PeriodForm from '@/components/cycle-tracker/PeriodForm';
 import SymptomForm from '@/components/cycle-tracker/SymptomForm';
 import { Droplet, AlertCircle } from 'lucide-react';
 import CyclePredictions from '@/components/cycle-tracker/CyclePredictions';
+import { SymptomDetails } from './SymptomDetailsTypes';
 
 interface Period {
   startDate: Date;
@@ -36,6 +37,8 @@ interface CycleTrackerMainViewProps {
   setSymptomType: (type: string) => void;
   symptomSeverity: number;
   setSymptomSeverity: (severity: number) => void;
+  symptomDetails: SymptomDetails;
+  setSymptomDetails: (details: SymptomDetails) => void;
   handleAddPeriod: () => void;
   handleAddSymptom: () => void;
 }
@@ -56,6 +59,8 @@ const CycleTrackerMainView: React.FC<CycleTrackerMainViewProps> = ({
   setSymptomType,
   symptomSeverity,
   setSymptomSeverity,
+  symptomDetails,
+  setSymptomDetails,
   handleAddPeriod,
   handleAddSymptom
 }) => {
@@ -146,6 +151,8 @@ const CycleTrackerMainView: React.FC<CycleTrackerMainViewProps> = ({
                 setSymptomType={setSymptomType}
                 symptomSeverity={symptomSeverity}
                 setSymptomSeverity={setSymptomSeverity}
+                symptomDetails={symptomDetails}
+                setSymptomDetails={setSymptomDetails}
                 handleAddSymptom={handleAddSymptom}
               />
             </CardContent>

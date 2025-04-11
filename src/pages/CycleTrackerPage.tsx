@@ -1,17 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
-import { format, addDays, differenceInDays, isSameDay } from 'date-fns';
-import { toast } from 'sonner';
-import { useIsMobile } from '@/hooks/use-mobile';
-import CycleInsights from '@/components/cycle-tracker/CycleInsights';
-import CycleNotAvailableView from '@/components/cycle-tracker/CycleNotAvailableView';
 import CycleTrackerHeader from '@/components/cycle-tracker/CycleTrackerHeader';
 import CycleTrackerMainView from '@/components/cycle-tracker/CycleTrackerMainView';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { AlertCircle, Medal } from 'lucide-react';
-import SymptomForm from '@/components/cycle-tracker/SymptomForm';
+import CycleNotAvailableView from '@/components/cycle-tracker/CycleNotAvailableView';
+import { addDays, subMonths, isWithinInterval, format, parseISO } from 'date-fns';
+import { toast } from 'sonner';
 import { SymptomDetails } from '@/components/cycle-tracker/SymptomDetailsTypes';
 
+// Define interfaces for the cycle tracker data
 interface Period {
   startDate: Date;
   endDate: Date;
@@ -24,133 +21,191 @@ interface Symptom {
 }
 
 const CycleTrackerPage = () => {
-  const isMobile = useIsMobile();
-  const [showPermissionAlert, setShowPermissionAlert] = useState(true);
-  const [periods, setPeriods] = useState<Period[]>([
-    {
-      startDate: new Date(2023, 3, 1),
-      endDate: new Date(2023, 3, 6)
-    },
-    {
-      startDate: new Date(2023, 3, 29),
-      endDate: new Date(2023, 4, 4)
-    }
-  ]);
-  const [symptoms, setSymptoms] = useState<Symptom[]>([
-    { date: new Date(2023, 3, 1), type: 'cramps', severity: 3 },
-    { date: new Date(2023, 3, 2), type: 'headache', severity: 2 },
-    { date: new Date(2023, 3, 30), type: 'cramps', severity: 2 }
-  ]);
+  // Get gender from localStorage
+  const [gender, setGender] = useState<string>('female');
   const [date, setDate] = useState<Date>(new Date());
-  const [periodStart, setPeriodStart] = useState<Date | undefined>(undefined);
+  
+  // Period tracking state
+  const [periods, setPeriods] = useState<Period[]>([]);
+  const [periodStart, setPeriodStart] = useState<Date | undefined>(new Date());
   const [periodLength, setPeriodLength] = useState(5);
   const [cycleLength, setCycleLength] = useState(28);
-  const [symptomType, setSymptomType] = useState('cramps');
-  const [symptomSeverity, setSymptomSeverity] = useState(1);
-  const [showTracker, setShowTracker] = useState(false);
-  const [streak, setStreak] = useState(0);
   
+  // Symptom tracking state
+  const [symptoms, setSymptoms] = useState<Symptom[]>([]);
+  const [symptomType, setSymptomType] = useState('cramps');
+  const [symptomSeverity, setSymptomSeverity] = useState(3);
+  const [symptomDetails, setSymptomDetails] = useState<SymptomDetails>({
+    type: 'cramps',
+    severity: 3
+  });
+  
+  // Calculate next period
+  const [nextPeriod, setNextPeriod] = useState<Period | null>(null);
+  
+  // Load user gender from localStorage
   useEffect(() => {
-    const checkUserGender = () => {
-      const gender = localStorage.getItem('userGender') || '';
-      
-      if (gender === 'female' || gender === 'non-binary') {
-        setShowTracker(true);
-      } else {
-        setShowTracker(false);
-      }
-    };
+    const savedGender = localStorage.getItem('userGender');
+    if (savedGender) {
+      setGender(savedGender);
+    }
     
-    checkUserGender();
-    
-    const lastLog = localStorage.getItem('lastCycleLog');
-    if (lastLog) {
-      const daysSinceLastLog = differenceInDays(new Date(), new Date(lastLog));
-      if (daysSinceLastLog <= 1) {
-        const currentStreak = Number(localStorage.getItem('cycleStreak') || '0');
-        setStreak(currentStreak);
+    // Load saved period and symptom data
+    const savedPeriods = localStorage.getItem('periods');
+    if (savedPeriods) {
+      try {
+        // Parse dates from JSON
+        const parsedPeriods = JSON.parse(savedPeriods, (key, value) => {
+          if (key === 'startDate' || key === 'endDate') {
+            return parseISO(value);
+          }
+          return value;
+        });
+        setPeriods(parsedPeriods);
+      } catch (error) {
+        console.error('Failed to parse saved periods:', error);
       }
     }
     
-    const handleUserProfileUpdate = (e: any) => {
-      const { gender } = e.detail.userData;
-      localStorage.setItem('userGender', gender);
-      
-      if (gender === 'female' || gender === 'non-binary') {
-        setShowTracker(true);
-      } else {
-        setShowTracker(false);
-        toast.info('This page is only available for users who set their gender to female or non-binary in settings.');
+    const savedSymptoms = localStorage.getItem('symptoms');
+    if (savedSymptoms) {
+      try {
+        // Parse dates from JSON
+        const parsedSymptoms = JSON.parse(savedSymptoms, (key, value) => {
+          if (key === 'date') {
+            return parseISO(value);
+          }
+          return value;
+        });
+        setSymptoms(parsedSymptoms);
+      } catch (error) {
+        console.error('Failed to parse saved symptoms:', error);
       }
-    };
+    }
     
-    document.addEventListener('user-profile-updated', handleUserProfileUpdate);
+    const savedCycleLength = localStorage.getItem('cycleLength');
+    if (savedCycleLength) {
+      setCycleLength(Number(savedCycleLength));
+    }
     
-    return () => {
-      document.removeEventListener('user-profile-updated', handleUserProfileUpdate);
-    };
   }, []);
   
+  // Calculate next period when periods or cycle length changes
+  useEffect(() => {
+    calculateNextPeriod();
+    // Save periods to localStorage
+    if (periods.length > 0) {
+      localStorage.setItem('periods', JSON.stringify(periods, (key, value) => {
+        if (value instanceof Date) {
+          return value.toISOString();
+        }
+        return value;
+      }));
+    }
+    
+    // Save cycle length to localStorage
+    localStorage.setItem('cycleLength', String(cycleLength));
+  }, [periods, cycleLength]);
+  
+  // Save symptoms to localStorage when they change
+  useEffect(() => {
+    if (symptoms.length > 0) {
+      localStorage.setItem('symptoms', JSON.stringify(symptoms, (key, value) => {
+        if (value instanceof Date) {
+          return value.toISOString();
+        }
+        return value;
+      }));
+    }
+  }, [symptoms]);
+  
   const calculateNextPeriod = () => {
-    if (periods.length === 0) return null;
+    if (periods.length === 0) {
+      setNextPeriod(null);
+      return;
+    }
     
-    const sortedPeriods = [...periods].sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
+    // Sort periods by start date (newest first)
+    const sortedPeriods = [...periods].sort((a, b) => 
+      b.startDate.getTime() - a.startDate.getTime()
+    );
+    
     const lastPeriod = sortedPeriods[0];
-    
     const nextStartDate = addDays(lastPeriod.startDate, cycleLength);
     const nextEndDate = addDays(nextStartDate, periodLength - 1);
     
-    return { startDate: nextStartDate, endDate: nextEndDate };
+    setNextPeriod({
+      startDate: nextStartDate,
+      endDate: nextEndDate
+    });
   };
-  
-  const nextPeriod = calculateNextPeriod();
   
   const handleAddPeriod = () => {
     if (!periodStart) {
-      toast.error('Please select a start date');
+      toast.error('Please select a period start date');
       return;
     }
     
+    // Calculate the end date based on period length
+    const endDate = addDays(periodStart, periodLength - 1);
+    
+    // Create new period
     const newPeriod = {
       startDate: periodStart,
-      endDate: addDays(periodStart, periodLength - 1)
+      endDate: endDate
     };
     
-    setPeriods([...periods, newPeriod]);
-    setPeriodStart(undefined);
+    // Check for overlapping periods
+    const hasOverlap = periods.some(period => 
+      (periodStart >= period.startDate && periodStart <= period.endDate) ||
+      (endDate >= period.startDate && endDate <= period.endDate)
+    );
     
-    const currentStreak = Number(localStorage.getItem('cycleStreak') || '0');
-    const newStreak = currentStreak + 1;
-    localStorage.setItem('cycleStreak', String(newStreak));
-    localStorage.setItem('lastCycleLog', new Date().toISOString());
-    setStreak(newStreak);
-    
-    if (newStreak % 5 === 0) {
-      toast.success(`🏆 Achievement unlocked: ${newStreak} days streak!`, {
-        icon: <Medal className="h-5 w-5 text-yellow-500" />
-      });
-    } else {
-      toast.success('Period recorded successfully');
+    if (hasOverlap) {
+      toast.error('This period overlaps with an existing one');
+      return;
     }
+    
+    // Add the new period and recalculate
+    const updatedPeriods = [...periods, newPeriod];
+    setPeriods(updatedPeriods);
+    calculateNextPeriod();
+    
+    toast.success('Period recorded successfully');
   };
   
   const handleAddSymptom = () => {
-    if (!date) {
-      toast.error('Please select a date');
-      return;
-    }
-    
-    const newSymptom = {
-      date,
-      type: symptomType,
-      severity: symptomSeverity
+    // Create new symptom with current date
+    const newSymptom: Symptom = {
+      date: date,
+      type: symptomDetails.type,
+      severity: symptomDetails.severity
     };
     
-    setSymptoms([...symptoms, newSymptom]);
-    toast.success('Symptom recorded successfully');
+    // Check for duplicate (same date and type)
+    const duplicateSymptom = symptoms.find(
+      s => format(s.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd') && 
+          s.type === symptomType
+    );
+    
+    if (duplicateSymptom) {
+      // Update existing symptom instead of adding a new one
+      const updatedSymptoms = symptoms.map(s => 
+        format(s.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd') && s.type === symptomType
+          ? newSymptom
+          : s
+      );
+      setSymptoms(updatedSymptoms);
+      toast.success('Symptom updated successfully');
+    } else {
+      // Add new symptom
+      setSymptoms([...symptoms, newSymptom]);
+      toast.success('Symptom recorded successfully');
+    }
   };
   
-  if (!showTracker) {
+  // Check if user is female to display the cycle tracker
+  if (gender.toLowerCase() !== 'female') {
     return (
       <MainLayout>
         <CycleNotAvailableView />
@@ -160,13 +215,13 @@ const CycleTrackerPage = () => {
   
   return (
     <MainLayout>
-      <div className="space-y-6">
-        <CycleTrackerHeader 
-          streak={streak}
-          showPermissionAlert={showPermissionAlert}
-          setShowPermissionAlert={setShowPermissionAlert}
-        />
-        
+      <CycleTrackerHeader
+        lastPeriod={periods.length > 0 ? periods[periods.length - 1] : null}
+        nextPeriod={nextPeriod}
+        cycleLength={cycleLength}
+      />
+      
+      <div className="mt-6">
         <CycleTrackerMainView
           periods={periods}
           nextPeriod={nextPeriod}
@@ -183,41 +238,11 @@ const CycleTrackerPage = () => {
           setSymptomType={setSymptomType}
           symptomSeverity={symptomSeverity}
           setSymptomSeverity={setSymptomSeverity}
+          symptomDetails={symptomDetails}
+          setSymptomDetails={setSymptomDetails}
           handleAddPeriod={handleAddPeriod}
           handleAddSymptom={handleAddSymptom}
         />
-        
-        {isMobile && (
-          <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-purple-500" />
-                Record Symptoms
-              </CardTitle>
-              <CardDescription>
-                Track symptoms throughout your cycle
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <SymptomForm 
-                symptomDetails={{ type: symptomType, severity: symptomSeverity }}
-                setSymptomDetails={(details) => {
-                  setSymptomType(details.type);
-                  setSymptomSeverity(details.severity);
-                }}
-                handleAddSymptom={handleAddSymptom}
-              />
-            </CardContent>
-          </Card>
-        )}
-        
-        {nextPeriod && (
-          <CycleInsights 
-            nextPeriod={nextPeriod}
-            cycleLength={cycleLength}
-            periodLength={periodLength}
-          />
-        )}
       </div>
     </MainLayout>
   );
