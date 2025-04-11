@@ -17,9 +17,6 @@ import {
 import ActionableCard from './ActionableCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
-// Import as default
-import DashboardItemsSelector from '@/components/settings/appearance/DashboardItemsSelector';
-
 // Define DashboardItems interface to match the one in settings
 interface DashboardItems {
   water: boolean;
@@ -234,15 +231,6 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
             </button>
           </CollapsibleTrigger>
         </div>
-        
-        <DashboardItemsSelector 
-          dashboardItems={visibleCards} 
-          onDashboardItemChange={(key, checked) => {
-            // This is a placeholder for when you want to implement
-            // the onDashboardItemChange functionality
-            console.log(key, checked);
-          }} 
-        />
         
         <CollapsibleContent>
           {visibleActionCards.length > 0 && (

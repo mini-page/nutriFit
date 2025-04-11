@@ -47,13 +47,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex w-full">
       {!isMobile && <SidebarNav hideLogo={false} />}
       
       <div className="flex-1 flex flex-col">
-        <div className="flex items-center">
-          <Header userName={userName} />
-        </div>
+        <Header userName={userName} />
         <TooltipProvider>
           <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
             {children}

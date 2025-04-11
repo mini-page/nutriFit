@@ -1,247 +1,308 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Textarea,
-} from '@/components/ui/textarea';
-import { Calendar } from '@/components/ui/calendar';
-import { format, parseISO } from 'date-fns';
-import {
-  BookOpen,
-  Pencil,
-  Trash2,
-  CalendarIcon,
-  Search,
-  Sun,
-  Cloud,
-  CloudRain,
-  CloudLightning,
-} from 'lucide-react';
-import { toast } from 'sonner';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
+import JournalEntryForm from '@/components/journal/JournalEntryForm';
 import JournalEntryList from '@/components/journal/JournalEntryList';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar, CheckCircle2, FileText, PenLine, Search, Tag } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { toast } from 'sonner';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface JournalEntry {
   id: string;
   title: string;
   content: string;
-  date: string;
-  mood: string;
-  weather: string;
-  images?: string[];
+  date: Date;
+  mood?: string;
+  tags?: string[];
 }
 
-const moodOptions = [
-  { value: 'happy', label: 'Happy 😊', color: 'bg-green-100 text-green-800' },
-  { value: 'sad', label: 'Sad 😔', color: 'bg-blue-100 text-blue-800' },
-  { value: 'excited', label: 'Excited 🤩', color: 'bg-amber-100 text-amber-800' },
-  { value: 'stressed', label: 'Stressed 😓', color: 'bg-red-100 text-red-800' },
-  { value: 'calm', label: 'Calm 😌', color: 'bg-purple-100 text-purple-800' },
-];
-
-const weatherOptions = [
-  { value: 'sunny', label: 'Sunny', icon: Sun },
-  { value: 'cloudy', label: 'Cloudy', icon: Cloud },
-  { value: 'rainy', label: 'Rainy', icon: CloudRain },
-  { value: 'stormy', label: 'Stormy', icon: CloudLightning },
-];
-
-const journalPrompts = [
-  'What made you smile today?',
-  "What's something you learned recently?",
-  'What are you grateful for today?',
-  "What's something you're looking forward to?",
-  'What was challenging about today and how did you handle it?',
-  'If you could change one thing about your day, what would it be?',
-  'Describe a moment that made you feel proud.',
-  "What's something that inspired you recently?",
-  'What would make tomorrow great?',
-  'How did you take care of yourself today?',
-];
-
 const JournalPage = () => {
-  const [date, setDate] = useState<Date>(new Date());
-  const [entries, setEntries] = useState<JournalEntry[]>([
-    {
-      id: '1',
-      title: 'First day at the gym',
-      content:
-        'Today I started my fitness journey. It was challenging but I feel great about taking this first step.',
-      date: '2023-04-01',
-      mood: 'excited',
-      weather: 'sunny',
-    },
-    {
-      id: '2',
-      title: 'Tried a new healthy recipe',
-      content:
-        'Made a delicious salad with quinoa and avocado. It was surprisingly filling and tasty!',
-      date: '2023-04-02',
-      mood: 'happy',
-      weather: 'cloudy',
-    },
-  ]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [currentEntry, setCurrentEntry] = useState<JournalEntry | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [dailyStreak, setDailyStreak] = useState(0);
+  const [allTags, setAllTags] = useState<string[]>(['personal', 'work', 'ideas', 'health', 'fitness', 'food', 'travel']);
+  const isMobile = useIsMobile();
 
-  const filteredEntries = entries
-    .filter((entry) => {
-      const matchesSearch =
-        entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.content.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesSearch;
-    })
-    .sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-
-  const handleNewEntry = () => {
-    const newEntry: JournalEntry = {
-      id: Date.now().toString(),
-      title: '',
-      content: '',
-      date: format(date, 'yyyy-MM-dd'),
-      mood: '',
-      weather: '',
-    };
-    setCurrentEntry(newEntry);
-    setIsEditing(true);
-  };
-
-  const handleEditEntry = (entry: JournalEntry) => {
-    setCurrentEntry({ ...entry });
-    setIsEditing(true);
-  };
-
-  const handleSaveEntry = () => {
-    if (!currentEntry) return;
-
-    if (!currentEntry.title.trim()) {
-      toast.error('Please enter a title for your journal entry');
+  // Load journal entries from localStorage on component mount
+  useEffect(() => {
+    const savedEntries = localStorage.getItem('journalEntries');
+    if (savedEntries) {
+      try {
+        // Parse dates from JSON
+        const parsedEntries = JSON.parse(savedEntries, (key, value) => {
+          if (key === 'date') {
+            return new Date(value);
+          }
+          return value;
+        });
+        setEntries(parsedEntries);
+        
+        // Extract all tags from entries
+        const tagsFromEntries = parsedEntries.reduce((acc: string[], entry: JournalEntry) => {
+          if (entry.tags) {
+            entry.tags.forEach((tag: string) => {
+              if (!acc.includes(tag)) {
+                acc.push(tag);
+              }
+            });
+          }
+          return acc;
+        }, []);
+        
+        if (tagsFromEntries.length > 0) {
+          setAllTags([...new Set([...allTags, ...tagsFromEntries])]);
+        }
+        
+        // Calculate daily streak
+        calculateDailyStreak(parsedEntries);
+      } catch (error) {
+        console.error('Failed to parse saved journal entries:', error);
+      }
+    }
+    
+    // Show writing prompt every 3 days or if no entries yet
+    const lastPromptDate = localStorage.getItem('lastJournalPromptDate');
+    if (!lastPromptDate || (new Date().getTime() - new Date(lastPromptDate).getTime()) > 3 * 24 * 60 * 60 * 1000 || entries.length === 0) {
+      setShowPrompt(true);
+      localStorage.setItem('lastJournalPromptDate', new Date().toISOString());
+    }
+  }, []);
+  
+  // Calculate daily streak based on consecutive days with entries
+  const calculateDailyStreak = (journalEntries: JournalEntry[]) => {
+    if (journalEntries.length === 0) {
+      setDailyStreak(0);
       return;
     }
-
-    if (entries.find(e => e.id === currentEntry.id)) {
-      setEntries(
-        entries.map((e) => (e.id === currentEntry.id ? currentEntry : e))
-      );
-      toast.success('Journal entry updated');
-    } else {
-      setEntries([...entries, currentEntry]);
-      toast.success('Journal entry created');
+    
+    // Sort entries by date (newest first)
+    const sortedEntries = [...journalEntries].sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    
+    // Get most recent entry date
+    const mostRecentDate = new Date(sortedEntries[0].date);
+    const today = new Date();
+    
+    // Check if most recent entry is from today or yesterday
+    const dayDiff = Math.floor((today.getTime() - mostRecentDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (dayDiff > 1) {
+      // Streak is broken if more than 1 day has passed
+      setDailyStreak(0);
+      return;
     }
-
-    setCurrentEntry(null);
-    setIsEditing(false);
+    
+    // Count consecutive days with entries
+    let streak = 1;
+    let currentDate = mostRecentDate;
+    
+    // Create a map of dates with entries for faster lookup
+    const datesWithEntries = sortedEntries.reduce((acc: Record<string, boolean>, entry: JournalEntry) => {
+      const dateStr = new Date(entry.date).toDateString();
+      acc[dateStr] = true;
+      return acc;
+    }, {});
+    
+    // Check previous days
+    for (let i = 1; i < 100; i++) { // Limit to 100 days to prevent infinite loop
+      const prevDate = new Date(currentDate);
+      prevDate.setDate(prevDate.getDate() - 1);
+      
+      if (datesWithEntries[prevDate.toDateString()]) {
+        streak++;
+        currentDate = prevDate;
+      } else {
+        break;
+      }
+    }
+    
+    setDailyStreak(streak);
   };
 
-  const handleCancelEdit = () => {
-    setCurrentEntry(null);
-    setIsEditing(false);
+  const handleAddEntry = (newEntry: JournalEntry) => {
+    const updatedEntries = [newEntry, ...entries];
+    setEntries(updatedEntries);
+    
+    // Save entries to localStorage
+    localStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
+    
+    // Update tags
+    if (newEntry.tags && newEntry.tags.length > 0) {
+      const updatedTags = [...allTags];
+      newEntry.tags.forEach(tag => {
+        if (!updatedTags.includes(tag)) {
+          updatedTags.push(tag);
+        }
+      });
+      setAllTags(updatedTags);
+    }
+    
+    // Update streak
+    calculateDailyStreak(updatedEntries);
+    
+    toast.success('Journal entry saved successfully!');
   };
-
-  const handleDeleteEntry = (id: string) => {
-    setEntries(entries.filter((e) => e.id !== id));
-    toast.success('Journal entry deleted');
-    setCurrentEntry(null);
-    setIsEditing(false);
-  };
-
-  const handleUsePrompt = (prompt: string) => {
-    if (!currentEntry) return;
-    setCurrentEntry({
-      ...currentEntry,
-      title: prompt.substring(0, 40) + (prompt.length > 40 ? '...' : ''),
-      content: prompt + '\n\n' + (currentEntry.content || ''),
+  
+  const getFilteredEntries = () => {
+    return entries.filter(entry => {
+      // Filter by search query
+      const matchesSearch = 
+        entry.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        entry.content.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Filter by selected tags
+      const matchesTags = 
+        selectedTags.length === 0 || 
+        (entry.tags && entry.tags.some(tag => selectedTags.includes(tag)));
+      
+      return matchesSearch && matchesTags;
     });
   };
-
-  const getMoodLabel = (moodValue: string) => {
-    return moodOptions.find((m) => m.value === moodValue)?.label || '';
-  };
-
-  const getMoodColor = (moodValue: string) => {
-    return moodOptions.find((m) => m.value === moodValue)?.color || '';
-  };
-
-  const getWeatherIcon = (weatherValue: string) => {
-    const option = weatherOptions.find((w) => w.value === weatherValue);
-    if (option) {
-      const Icon = option.icon;
-      return <Icon className="h-4 w-4" />;
-    }
-    return null;
-  };
+  
+  const filteredEntries = getFilteredEntries();
+  
+  const writingPrompts = [
+    "What are three things you're grateful for today?",
+    "Describe a challenge you're facing and how you plan to overcome it.",
+    "What was the best moment of your day and why?",
+    "Write about a person who influenced you recently.",
+    "What's something new you learned today?",
+    "How did you take care of your physical health today?",
+    "Describe your current emotional state and what led to it.",
+    "What's one small thing you can do tomorrow to make it better than today?",
+    "Write about a goal you're working towards and your progress.",
+    "Reflect on a mistake you made recently and what you learned from it."
+  ];
+  
+  const currentPrompt = writingPrompts[Math.floor(Math.random() * writingPrompts.length)];
 
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-3xl font-bold">Journal</h1>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:flex-initial">
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search entries..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8"
-              />
-            </div>
-            <Button onClick={handleNewEntry}>
-              <Pencil className="mr-2 h-4 w-4" /> New Entry
-            </Button>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-1">Journal</h1>
+            <p className="text-muted-foreground">Record your thoughts, reflections, and memorable moments</p>
           </div>
+          
+          {dailyStreak > 0 && (
+            <div className="flex items-center px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 rounded-full">
+              <CheckCircle2 className="h-4 w-4 mr-2" />
+              <span className="text-sm font-medium">{dailyStreak} day{dailyStreak !== 1 ? 's' : ''} streak!</span>
+            </div>
+          )}
         </div>
-
-        {isEditing ? (
-          <JournalEntryForm
-            onSubmit={(data) => {
-              if (!currentEntry) return;
-              
-              const updatedEntry = {
-                ...currentEntry,
-                title: data.title,
-                content: data.content,
-              };
-              
-              if (entries.find(e => e.id === updatedEntry.id)) {
-                setEntries(entries.map(e => e.id === updatedEntry.id ? updatedEntry : e));
-                toast.success('Entry updated successfully');
-              } else {
-                setEntries([...entries, updatedEntry]);
-                toast.success('Entry created successfully');
-              }
-              
-              setCurrentEntry(null);
-              setIsEditing(false);
-            }}
-          />
-        ) : (
-          <JournalEntryList
-            entries={entries.map(entry => ({
-              ...entry,
-              date: new Date(entry.date)
-            }))}
-          />
+        
+        {showPrompt && (
+          <Alert className="bg-indigo-50 border-indigo-200 text-indigo-800 dark:bg-indigo-900/20 dark:border-indigo-800 dark:text-indigo-300">
+            <PenLine className="h-4 w-4" />
+            <AlertTitle>Writing Prompt</AlertTitle>
+            <AlertDescription className="flex justify-between items-center">
+              <span>{currentPrompt}</span>
+              <Button variant="outline" size="sm" onClick={() => setShowPrompt(false)}>
+                Dismiss
+              </Button>
+            </AlertDescription>
+          </Alert>
         )}
+        
+        <Tabs defaultValue="write" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="write" className="flex items-center gap-2">
+              <PenLine className="h-4 w-4" /> Write
+            </TabsTrigger>
+            <TabsTrigger value="entries" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" /> Entries ({entries.length})
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="write" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>New Entry</CardTitle>
+                <CardDescription>
+                  Write down your thoughts, feelings, and experiences
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <JournalEntryForm onSubmit={handleAddEntry} availableTags={allTags} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="entries" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Journal Entries</CardTitle>
+                <CardDescription>
+                  Browse and search through your past reflections
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search entries..."
+                      className="pl-8"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {allTags.slice(0, isMobile ? 3 : 5).map(tag => (
+                      <Button
+                        key={tag}
+                        variant={selectedTags.includes(tag) ? "default" : "outline"}
+                        size="sm"
+                        className="gap-1"
+                        onClick={() => {
+                          if (selectedTags.includes(tag)) {
+                            setSelectedTags(selectedTags.filter(t => t !== tag));
+                          } else {
+                            setSelectedTags([...selectedTags, tag]);
+                          }
+                        }}
+                      >
+                        <Tag className="h-3 w-3" />
+                        {tag}
+                      </Button>
+                    ))}
+                    
+                    {allTags.length > (isMobile ? 3 : 5) && (
+                      <Button variant="ghost" size="sm">
+                        +{allTags.length - (isMobile ? 3 : 5)} more
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                
+                {filteredEntries.length > 0 ? (
+                  <JournalEntryList entries={filteredEntries} />
+                ) : (
+                  <div className="text-center p-8">
+                    <FileText className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
+                    <h3 className="mt-4 text-lg font-medium">No entries found</h3>
+                    <p className="text-muted-foreground mt-2">
+                      {entries.length > 0 
+                        ? "Try changing your search or filters" 
+                        : "Start writing your first journal entry"}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </MainLayout>
   );
