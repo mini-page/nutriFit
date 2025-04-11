@@ -1,4 +1,4 @@
-tsx
+
 import React, { useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import {
@@ -138,17 +138,14 @@ const JournalPage = () => {
       return;
     }
 
-    if (
-      currentEntry.id === 0 ||
-      !entries.find((e) => e.id === currentEntry.id)
-    ) {
-      setEntries([...entries, currentEntry]);
-      toast.success('Journal entry created');
-    } else {
+    if (entries.find(e => e.id === currentEntry.id)) {
       setEntries(
         entries.map((e) => (e.id === currentEntry.id ? currentEntry : e))
       );
       toast.success('Journal entry updated');
+    } else {
+      setEntries([...entries, currentEntry]);
+      toast.success('Journal entry created');
     }
 
     setCurrentEntry(null);

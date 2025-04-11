@@ -86,25 +86,6 @@ const Index = () => {
     setExerciseMinutes(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - minutes) }));
   };
 
-  const actionableInsightItems = {
-    healthScore: dashboardItems.healthScore,
-    sleepQuality: dashboardItems.sleepQuality,
-    workout: dashboardItems.workout,
-    calories: dashboardItems.calories,
-    moodTracker: dashboardItems.moodTracker,
-    activeGoals: dashboardItems.activeGoals,
-    quickWater: dashboardItems.quickWater,
-    quickExercise: dashboardItems.quickExercise,
-    quickNutrition: dashboardItems.quickNutrition,
-    journalEntry: dashboardItems.journalEntry,
-    habitsTracker: dashboardItems.habitsTracker,
-    quickGoals: dashboardItems.quickGoals,
-    quickSleep: dashboardItems.quickSleep,
-    quickBudget: dashboardItems.quickBudget,
-    quickMood: dashboardItems.quickMood,
-    quickCycle: dashboardItems.quickCycle
-  };
-
   useEffect(() => {
     const savedDashboardItems = localStorage.getItem('dashboardItems');
     if (savedDashboardItems) {
@@ -149,7 +130,7 @@ const Index = () => {
         <p className="text-muted-foreground">Track your life, simplify your journey</p>
       </div>
 
-      <DashboardActionableCards visibleCards={actionableInsightItems} />
+      <DashboardActionableCards visibleCards={dashboardItems} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {dashboardItems.water && (
