@@ -7,6 +7,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import PeriodForm from '@/components/cycle-tracker/PeriodForm';
 import SymptomForm from '@/components/cycle-tracker/SymptomForm';
 import { Droplet, AlertCircle } from 'lucide-react';
+import CyclePredictions from '@/components/cycle-tracker/CyclePredictions';
 
 interface Period {
   startDate: Date;
@@ -97,6 +98,13 @@ const CycleTrackerMainView: React.FC<CycleTrackerMainViewProps> = ({
         </CardFooter>
       </Card>
       
+      <div className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
+        <CyclePredictions
+          periods={periods}
+          cycleLength={cycleLength}
+        />
+      </div>
+
       <div className={`space-y-6 ${isMobile ? "order-last" : ""}`}>
         <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
           <CardHeader>

@@ -1,7 +1,9 @@
 
-import React from 'react';
+import React from "react";
 import { cn } from '@/lib/utils';
 import { LucideIcon } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import StreakTracker from "../StreakTracker";
 
 interface DashboardActionCardProps {
   title: string;
@@ -10,6 +12,7 @@ interface DashboardActionCardProps {
   onClick?: () => void;
   className?: string;
 }
+
 
 const DashboardActionCard: React.FC<DashboardActionCardProps> = ({
   title,
@@ -34,16 +37,28 @@ const DashboardActionCard: React.FC<DashboardActionCardProps> = ({
   const colorClass = colorClasses[color] || { bg: 'bg-transparent', text: 'text-primary' };
 
   return (
-    <button 
-      className={cn(
-        "p-4 rounded-xl flex flex-col items-center justify-center w-full transition-colors", 
-        className
-      )}
-      onClick={onClick}
-    >
-      <Icon className={cn('h-6 w-6 mb-2', colorClass.text)} />
-      <span className="text-sm font-medium">{title}</span>
-    </button>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            className={cn(
+              "p-4 rounded-xl flex flex-col items-center justify-center w-full transition-colors",
+              className
+            )}
+            onClick={onClick}
+          >
+            <Icon className={cn('h-6 w-6 mb-2', colorClass.text)} />
+            <div className="flex flex-col items-center">
+              <span className="text-sm font-medium">{title}</span>
+              <StreakTracker trackerName={title} currentStreak={5} />
+            </div>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>
+          Track your {title.toLowerCase()}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 

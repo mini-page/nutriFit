@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface SymptomFormProps {
@@ -8,6 +9,8 @@ interface SymptomFormProps {
   setSymptomType: (type: string) => void;
   symptomSeverity: number;
   setSymptomSeverity: (severity: number) => void;
+  symptomDetails: string;
+  setSymptomDetails: (details: string) => void;
   handleAddSymptom: () => void;
 }
 
@@ -16,6 +19,8 @@ const SymptomForm = ({
   setSymptomType,
   symptomSeverity,
   setSymptomSeverity,
+  symptomDetails,
+  setSymptomDetails,
   handleAddSymptom
 }: SymptomFormProps) => {
   return (
@@ -51,6 +56,14 @@ const SymptomForm = ({
             <SelectItem value="5">5 - Very Severe</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Additional Details</label>
+        <Textarea
+          value={symptomDetails}
+          onChange={(e) => setSymptomDetails(e.target.value)}
+        />
       </div>
       
       <Button className="w-full" onClick={handleAddSymptom}>

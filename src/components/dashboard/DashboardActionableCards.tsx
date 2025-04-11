@@ -17,6 +17,7 @@ import {
 import ActionableCard from './ActionableCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
+import { DashboardItemsSelector } from '@/components/settings/appearance/DashboardItemsSelector';
 interface DashboardActionableCardsProps {
   visibleCards: Record<string, boolean>;
 }
@@ -207,6 +208,7 @@ const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({
           </CollapsibleTrigger>
         </div>
         
+        <DashboardItemsSelector />
         <CollapsibleContent>
           {visibleActionCards.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">

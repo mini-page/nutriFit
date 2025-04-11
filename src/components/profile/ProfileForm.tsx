@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
+import { Textarea } from '@/components/ui/textarea';
 interface UserData {
   name: string;
   email: string;
@@ -73,6 +73,27 @@ const ProfileForm = ({ userData, handleInputChange, handleSelectChange }: Profil
               <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="goals">Health and Wellness Goals</Label>
+          <Textarea
+            id="goals"
+            name="goals"
+            placeholder="e.g., Improve sleep, increase energy levels, manage stress"
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="progress-management">How Will You Manage Your Progress?</Label>
+          <Textarea
+            id="progress-management"
+            name="progress-management"
+            placeholder="e.g., Regular check-ins, tracking metrics, adjusting goals" onChange={handleInputChange}
+          />
         </div>
       </div>
     </>

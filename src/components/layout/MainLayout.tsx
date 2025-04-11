@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Header from '@/components/ui/header';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -53,9 +54,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="flex items-center">
           <Header userName={userName} />
         </div>
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
-          {children}
-        </main>
+        <TooltipProvider>
+          <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
+            {children}
+          </main>
+        </TooltipProvider>
       </div>
     </div>
   );

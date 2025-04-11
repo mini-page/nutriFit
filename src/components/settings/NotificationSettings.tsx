@@ -2,6 +2,7 @@
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { useIsMobile } from '@/hooks/use-mobile';
+import Reminder from '@/components/ui/Reminder';
 
 const NotificationSettings: React.FC = () => {
   const isMobile = useIsMobile();
@@ -18,6 +19,7 @@ const NotificationSettings: React.FC = () => {
             </div>
             <Switch defaultChecked />
           </div>
+          <Reminder />
           
           <div className="flex items-center justify-between gap-2">
             <div className={`${isMobile ? 'max-w-[70%]' : ''}`}>
