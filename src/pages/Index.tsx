@@ -1,5 +1,6 @@
 
-import React, { useEffect, useState } from 'react'; import MainLayout from '@/components/layout/MainLayout';
+import React, { useEffect, useState } from 'react'; 
+import MainLayout from '@/components/layout/MainLayout';
 import WaterTracker from '@/components/ui/water-tracker';
 import CalorieTracker from '@/components/ui/calorie-tracker';
 import ExerciseTracker from '@/components/ui/exercise-tracker';
@@ -77,11 +78,11 @@ const Index = () => {
 
   // Water Tracker State and Functions
   const [waterIntake, setWaterIntake] = useState({ currentValue: 0, goal: 8 });
-  const addWater = (amount: number) => {
-    setWaterIntake(prev => ({ ...prev, currentValue: prev.currentValue + amount }));
+  const addWater = () => {
+    setWaterIntake(prev => ({ ...prev, currentValue: Math.min(prev.currentValue + 1, prev.goal) }));
   };
-  const removeWater = (amount: number) => {
-    setWaterIntake(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - amount) }));
+  const removeWater = () => {
+    setWaterIntake(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - 1) }));
   };
 
   // Calorie Tracker State and Functions
@@ -167,8 +168,7 @@ const Index = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {dashboardItems.water && (
           <WaterTracker
-            currentIntake={waterIntake.currentValue}
-            goal={waterIntake.goal}
+            waterData={waterIntake}
             addWater={addWater}
             removeWater={removeWater}
             className="animate-on-mount opacity-0"

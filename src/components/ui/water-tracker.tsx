@@ -53,10 +53,10 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ className, waterData, addWa
             <Minus className="h-5 w-5" />
           </button>
           <button 
-            onClick={increaseWater}
+            onClick={addWater}
             className="p-2 rounded-full bg-water-light text-water-dark dark:bg-water/30 dark:text-water-light hover:bg-water hover:text-white transition-colors"
-            disabled={waterIntake >= goal}
-          onClick={addWater}>
+            disabled={currentValue >= goal}
+          >
             <Plus className="h-5 w-5" />
           </button>
         </div>

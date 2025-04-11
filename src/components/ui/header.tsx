@@ -14,15 +14,21 @@ interface HeaderProps {
   userName?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ className }) => {
+const Header: React.FC<HeaderProps> = ({ className, userName: propUserName }) => {
   const today = new Date();
   const formattedDate = format(today, 'MMM dd, E');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [userName, setUserName] = useState("Umang");
+  const [userName, setUserName] = useState(propUserName || "Umang");
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // If prop is provided, use it
+    if (propUserName) {
+      setUserName(propUserName);
+      return;
+    }
+
     // Load user name from localStorage
     const savedUserData = localStorage.getItem('userData');
     if (savedUserData) {
@@ -49,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
     return () => {
       document.removeEventListener('user-profile-updated', handleProfileUpdate);
     };
-  }, []);
+  }, [propUserName]);
 
   const handleDateClick = () => {
     navigate('/calendar');
@@ -95,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
   return (
     <header className={cn(
-      'w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary text-primary-foreground sticky top-0 z-10 custom-header-class',
+      'w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary text-primary-foreground sticky top-0 z-10 custom-header-class rounded-b-xl',
       className
     )} style={{ marginTop: '2rem' }}>
       {/* Left section with mobile menu and branding */}
