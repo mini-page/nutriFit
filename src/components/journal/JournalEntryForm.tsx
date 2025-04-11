@@ -1,5 +1,5 @@
-tsx
-import React, { useState } from 'react';
+
+import React from 'react';
 import {
   Form,
   FormControl,
@@ -86,3 +86,5 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
     </Form>
   );
 };
+
+export default JournalEntryForm;

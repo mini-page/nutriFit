@@ -34,11 +34,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import JournalEntryForm from '@/components/journal/JournalEntryForm';
+import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
 import JournalEntryList from '@/components/journal/JournalEntryList';
 
 interface JournalEntry {
-  id: number;
+  id: string;
   title: string;
   content: string;
   date: string;
@@ -79,7 +79,7 @@ const JournalPage = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [entries, setEntries] = useState<JournalEntry[]>([
     {
-      id: 1,
+      id: '1',
       title: 'First day at the gym',
       content:
         'Today I started my fitness journey. It was challenging but I feel great about taking this first step.',
@@ -88,7 +88,7 @@ const JournalPage = () => {
       weather: 'sunny',
     },
     {
-      id: 2,
+      id: '2',
       title: 'Tried a new healthy recipe',
       content:
         'Made a delicious salad with quinoa and avocado. It was surprisingly filling and tasty!',
@@ -114,7 +114,7 @@ const JournalPage = () => {
 
   const handleNewEntry = () => {
     const newEntry: JournalEntry = {
-      id: Date.now(),
+      id: Date.now().toString(),
       title: '',
       content: '',
       date: format(date, 'yyyy-MM-dd'),
@@ -160,7 +160,7 @@ const JournalPage = () => {
     setIsEditing(false);
   };
 
-  const handleDeleteEntry = (id: number) => {
+  const handleDeleteEntry = (id: string) => {
     setEntries(entries.filter((e) => e.id !== id));
     toast.success('Journal entry deleted');
     setCurrentEntry(null);
@@ -216,27 +216,33 @@ const JournalPage = () => {
 
         {isEditing ? (
           <JournalEntryForm
-            currentEntry={currentEntry}
-            moodOptions={moodOptions}
-            weatherOptions={weatherOptions}
-            journalPrompts={journalPrompts}
-            date={date}
-            getWeatherIcon={getWeatherIcon}
-            setCurrentEntry={setCurrentEntry}
-            handleUsePrompt={handleUsePrompt}
-            handleSaveEntry={handleSaveEntry}
-            handleCancelEdit={handleCancelEdit}
-            handleDeleteEntry={handleDeleteEntry}
-            getMoodLabel={getMoodLabel}
-            getMoodColor={getMoodColor}
+            onSubmit={(data) => {
+              if (!currentEntry) return;
+              
+              const updatedEntry = {
+                ...currentEntry,
+                title: data.title,
+                content: data.content,
+              };
+              
+              if (entries.find(e => e.id === updatedEntry.id)) {
+                setEntries(entries.map(e => e.id === updatedEntry.id ? updatedEntry : e));
+                toast.success('Entry updated successfully');
+              } else {
+                setEntries([...entries, updatedEntry]);
+                toast.success('Entry created successfully');
+              }
+              
+              setCurrentEntry(null);
+              setIsEditing(false);
+            }}
           />
         ) : (
           <JournalEntryList
-            entries={filteredEntries}
-            handleEditEntry={handleEditEntry}
-            getWeatherIcon={getWeatherIcon}
-            getMoodColor={getMoodColor}
-            getMoodLabel={getMoodLabel}
+            entries={entries.map(entry => ({
+              ...entry,
+              date: new Date(entry.date)
+            }))}
           />
         )}
       </div>

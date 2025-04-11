@@ -17,11 +17,36 @@ import {
 import ActionableCard from './ActionableCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
-// Fix import to use default import
+// Import as default
 import DashboardItemsSelector from '@/components/settings/appearance/DashboardItemsSelector';
 
+// Define DashboardItems interface to match the one in settings
+interface DashboardItems {
+  water: boolean;
+  nutrition: boolean;
+  exercise: boolean;
+  mood: boolean;
+  goals: boolean;
+  quickWater: boolean;
+  quickExercise: boolean;
+  quickNutrition: boolean;
+  quickGoals: boolean;
+  quickSleep: boolean;
+  quickBudget: boolean;
+  quickMood: boolean;
+  quickCycle: boolean;
+  healthScore: boolean;
+  sleepQuality: boolean;
+  workout: boolean;
+  calories: boolean;
+  moodTracker: boolean;
+  activeGoals: boolean;
+  journalEntry: boolean;
+  habitsTracker: boolean;
+}
+
 interface DashboardActionableCardsProps {
-  visibleCards: Record<string, boolean>;
+  visibleCards: DashboardItems;
 }
 
 const DashboardActionableCards: React.FC<DashboardActionableCardsProps> = ({ 

@@ -24,6 +24,8 @@ const CycleTrackerPage = () => {
   // Get gender from localStorage
   const [gender, setGender] = useState<string>('female');
   const [date, setDate] = useState<Date>(new Date());
+  const [showPermissionAlert, setShowPermissionAlert] = useState<boolean>(false);
+  const [streak, setStreak] = useState<number>(0);
   
   // Period tracking state
   const [periods, setPeriods] = useState<Period[]>([]);
@@ -213,12 +215,18 @@ const CycleTrackerPage = () => {
     );
   }
   
+  // Find the last period for the header
+  const lastPeriod = periods.length > 0 ? periods[periods.length - 1] : null;
+  
   return (
     <MainLayout>
       <CycleTrackerHeader
-        lastPeriod={periods.length > 0 ? periods[periods.length - 1] : null}
+        lastPeriod={lastPeriod}
         nextPeriod={nextPeriod}
         cycleLength={cycleLength}
+        streak={streak}
+        showPermissionAlert={showPermissionAlert}
+        setShowPermissionAlert={setShowPermissionAlert}
       />
       
       <div className="mt-6">
