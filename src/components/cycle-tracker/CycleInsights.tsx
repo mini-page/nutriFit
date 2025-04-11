@@ -4,13 +4,19 @@ import { format, differenceInDays } from 'date-fns';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Info } from 'lucide-react';
 
+interface Period {
+  startDate: Date;
+  endDate: Date;
+}
+
 interface CycleInsightsProps {
   nextPeriod: { startDate: Date; endDate: Date };
   cycleLength: number;
   periodLength: number;
+  periods?: Period[]; // Add periods as an optional prop
 }
 
-const CycleInsights = ({ nextPeriod, cycleLength, periodLength }: CycleInsightsProps) => {
+const CycleInsights = ({ nextPeriod, cycleLength, periodLength, periods = [] }: CycleInsightsProps) => {
   return (
     <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
       <CardHeader>

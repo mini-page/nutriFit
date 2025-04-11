@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import JournalEntryForm from '@/components/journal/JournalEntryForm';
@@ -30,12 +29,10 @@ const JournalPage = () => {
   const [allTags, setAllTags] = useState<string[]>(['personal', 'work', 'ideas', 'health', 'fitness', 'food', 'travel']);
   const isMobile = useIsMobile();
 
-  // Load journal entries from localStorage on component mount
   useEffect(() => {
     const savedEntries = localStorage.getItem('journalEntries');
     if (savedEntries) {
       try {
-        // Parse dates from JSON
         const parsedEntries = JSON.parse(savedEntries, (key, value) => {
           if (key === 'date') {
             return new Date(value);
@@ -44,7 +41,6 @@ const JournalPage = () => {
         });
         setEntries(parsedEntries);
         
-        // Extract all tags from entries
         const tagsFromEntries = parsedEntries.reduce((acc: string[], entry: JournalEntry) => {
           if (entry.tags) {
             entry.tags.forEach((tag: string) => {
@@ -60,59 +56,49 @@ const JournalPage = () => {
           setAllTags([...new Set([...allTags, ...tagsFromEntries])]);
         }
         
-        // Calculate daily streak
         calculateDailyStreak(parsedEntries);
       } catch (error) {
         console.error('Failed to parse saved journal entries:', error);
       }
     }
     
-    // Show writing prompt every 3 days or if no entries yet
     const lastPromptDate = localStorage.getItem('lastJournalPromptDate');
     if (!lastPromptDate || (new Date().getTime() - new Date(lastPromptDate).getTime()) > 3 * 24 * 60 * 60 * 1000 || entries.length === 0) {
       setShowPrompt(true);
       localStorage.setItem('lastJournalPromptDate', new Date().toISOString());
     }
   }, []);
-  
-  // Calculate daily streak based on consecutive days with entries
+
   const calculateDailyStreak = (journalEntries: JournalEntry[]) => {
     if (journalEntries.length === 0) {
       setDailyStreak(0);
       return;
     }
     
-    // Sort entries by date (newest first)
     const sortedEntries = [...journalEntries].sort((a, b) => 
       new Date(b.date).getTime() - new Date(a.date).getTime()
     );
     
-    // Get most recent entry date
     const mostRecentDate = new Date(sortedEntries[0].date);
     const today = new Date();
     
-    // Check if most recent entry is from today or yesterday
     const dayDiff = Math.floor((today.getTime() - mostRecentDate.getTime()) / (1000 * 60 * 60 * 24));
     
     if (dayDiff > 1) {
-      // Streak is broken if more than 1 day has passed
       setDailyStreak(0);
       return;
     }
     
-    // Count consecutive days with entries
     let streak = 1;
     let currentDate = mostRecentDate;
     
-    // Create a map of dates with entries for faster lookup
     const datesWithEntries = sortedEntries.reduce((acc: Record<string, boolean>, entry: JournalEntry) => {
       const dateStr = new Date(entry.date).toDateString();
       acc[dateStr] = true;
       return acc;
     }, {});
     
-    // Check previous days
-    for (let i = 1; i < 100; i++) { // Limit to 100 days to prevent infinite loop
+    for (let i = 1; i < 100; i++) {
       const prevDate = new Date(currentDate);
       prevDate.setDate(prevDate.getDate() - 1);
       
@@ -128,13 +114,17 @@ const JournalPage = () => {
   };
 
   const handleAddEntry = (newEntry: JournalEntry) => {
-    const updatedEntries = [newEntry, ...entries];
+    const entryWithMetadata = {
+      id: Date.now().toString(),
+      date: new Date(),
+      ...newEntry
+    };
+    
+    const updatedEntries = [entryWithMetadata, ...entries];
     setEntries(updatedEntries);
     
-    // Save entries to localStorage
     localStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
     
-    // Update tags
     if (newEntry.tags && newEntry.tags.length > 0) {
       const updatedTags = [...allTags];
       newEntry.tags.forEach(tag => {
@@ -145,20 +135,17 @@ const JournalPage = () => {
       setAllTags(updatedTags);
     }
     
-    // Update streak
     calculateDailyStreak(updatedEntries);
     
     toast.success('Journal entry saved successfully!');
   };
-  
+
   const getFilteredEntries = () => {
     return entries.filter(entry => {
-      // Filter by search query
       const matchesSearch = 
         entry.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         entry.content.toLowerCase().includes(searchQuery.toLowerCase());
       
-      // Filter by selected tags
       const matchesTags = 
         selectedTags.length === 0 || 
         (entry.tags && entry.tags.some(tag => selectedTags.includes(tag)));
@@ -166,9 +153,9 @@ const JournalPage = () => {
       return matchesSearch && matchesTags;
     });
   };
-  
+
   const filteredEntries = getFilteredEntries();
-  
+
   const writingPrompts = [
     "What are three things you're grateful for today?",
     "Describe a challenge you're facing and how you plan to overcome it.",
@@ -181,7 +168,7 @@ const JournalPage = () => {
     "Write about a goal you're working towards and your progress.",
     "Reflect on a mistake you made recently and what you learned from it."
   ];
-  
+
   const currentPrompt = writingPrompts[Math.floor(Math.random() * writingPrompts.length)];
 
   return (
@@ -233,7 +220,10 @@ const JournalPage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <JournalEntryForm onSubmit={handleAddEntry} availableTags={allTags} />
+                <JournalEntryForm 
+                  onSubmit={handleAddEntry} 
+                  availableTags={allTags} 
+                />
               </CardContent>
             </Card>
           </TabsContent>

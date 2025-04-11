@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import CycleTrackerHeader from '@/components/cycle-tracker/CycleTrackerHeader';
@@ -12,7 +11,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Calendar, FileText, Heart, LineChart, PieChart } from 'lucide-react';
 import CycleInsights from '@/components/cycle-tracker/CycleInsights';
 
-// Define interfaces for the cycle tracker data
 interface Period {
   startDate: Date;
   endDate: Date;
@@ -25,19 +23,16 @@ interface Symptom {
 }
 
 const CycleTrackerPage = () => {
-  // Get gender from localStorage
   const [gender, setGender] = useState<string>('female');
   const [date, setDate] = useState<Date>(new Date());
   const [showPermissionAlert, setShowPermissionAlert] = useState<boolean>(false);
   const [streak, setStreak] = useState<number>(0);
   
-  // Period tracking state
   const [periods, setPeriods] = useState<Period[]>([]);
   const [periodStart, setPeriodStart] = useState<Date | undefined>(new Date());
   const [periodLength, setPeriodLength] = useState(5);
   const [cycleLength, setCycleLength] = useState(28);
   
-  // Symptom tracking state
   const [symptoms, setSymptoms] = useState<Symptom[]>([]);
   const [symptomType, setSymptomType] = useState('cramps');
   const [symptomSeverity, setSymptomSeverity] = useState(3);
@@ -46,22 +41,18 @@ const CycleTrackerPage = () => {
     severity: 3
   });
   
-  // Calculate next period
   const [nextPeriod, setNextPeriod] = useState<Period | null>(null);
   const [activeTab, setActiveTab] = useState('calendar');
   
-  // Load user gender from localStorage
   useEffect(() => {
     const savedGender = localStorage.getItem('userGender');
     if (savedGender) {
       setGender(savedGender);
     }
     
-    // Load saved period and symptom data
     const savedPeriods = localStorage.getItem('periods');
     if (savedPeriods) {
       try {
-        // Parse dates from JSON
         const parsedPeriods = JSON.parse(savedPeriods, (key, value) => {
           if (key === 'startDate' || key === 'endDate') {
             return parseISO(value);
@@ -77,7 +68,6 @@ const CycleTrackerPage = () => {
     const savedSymptoms = localStorage.getItem('symptoms');
     if (savedSymptoms) {
       try {
-        // Parse dates from JSON
         const parsedSymptoms = JSON.parse(savedSymptoms, (key, value) => {
           if (key === 'date') {
             return parseISO(value);
@@ -94,13 +84,10 @@ const CycleTrackerPage = () => {
     if (savedCycleLength) {
       setCycleLength(Number(savedCycleLength));
     }
-    
   }, []);
   
-  // Calculate next period when periods or cycle length changes
   useEffect(() => {
     calculateNextPeriod();
-    // Save periods to localStorage
     if (periods.length > 0) {
       localStorage.setItem('periods', JSON.stringify(periods, (key, value) => {
         if (value instanceof Date) {
@@ -110,11 +97,9 @@ const CycleTrackerPage = () => {
       }));
     }
     
-    // Save cycle length to localStorage
     localStorage.setItem('cycleLength', String(cycleLength));
   }, [periods, cycleLength]);
   
-  // Save symptoms to localStorage when they change
   useEffect(() => {
     if (symptoms.length > 0) {
       localStorage.setItem('symptoms', JSON.stringify(symptoms, (key, value) => {
@@ -132,7 +117,6 @@ const CycleTrackerPage = () => {
       return;
     }
     
-    // Sort periods by start date (newest first)
     const sortedPeriods = [...periods].sort((a, b) => 
       b.startDate.getTime() - a.startDate.getTime()
     );
@@ -153,16 +137,13 @@ const CycleTrackerPage = () => {
       return;
     }
     
-    // Calculate the end date based on period length
     const endDate = addDays(periodStart, periodLength - 1);
     
-    // Create new period
     const newPeriod = {
       startDate: periodStart,
       endDate: endDate
     };
     
-    // Check for overlapping periods
     const hasOverlap = periods.some(period => 
       (periodStart >= period.startDate && periodStart <= period.endDate) ||
       (endDate >= period.startDate && endDate <= period.endDate)
@@ -173,33 +154,28 @@ const CycleTrackerPage = () => {
       return;
     }
     
-    // Add the new period and recalculate
     const updatedPeriods = [...periods, newPeriod];
     setPeriods(updatedPeriods);
     calculateNextPeriod();
     
-    // Increment streak if applicable
     setStreak(prev => prev + 1);
     
     toast.success('Period recorded successfully');
   };
   
   const handleAddSymptom = () => {
-    // Create new symptom with current date
     const newSymptom: Symptom = {
       date: date,
       type: symptomDetails.type,
       severity: symptomDetails.severity
     };
     
-    // Check for duplicate (same date and type)
     const duplicateSymptom = symptoms.find(
       s => format(s.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd') && 
           s.type === symptomType
     );
     
     if (duplicateSymptom) {
-      // Update existing symptom instead of adding a new one
       const updatedSymptoms = symptoms.map(s => 
         format(s.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd') && s.type === symptomType
           ? newSymptom
@@ -208,13 +184,11 @@ const CycleTrackerPage = () => {
       setSymptoms(updatedSymptoms);
       toast.success('Symptom updated successfully');
     } else {
-      // Add new symptom
       setSymptoms([...symptoms, newSymptom]);
       toast.success('Symptom recorded successfully');
     }
   };
   
-  // Check if user is female to display the cycle tracker
   if (gender.toLowerCase() !== 'female') {
     return (
       <MainLayout>
@@ -223,7 +197,6 @@ const CycleTrackerPage = () => {
     );
   }
   
-  // Find the last period for the header
   const lastPeriod = periods.length > 0 ? periods[periods.length - 1] : null;
   
   return (
@@ -288,7 +261,14 @@ const CycleTrackerPage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <CycleInsights periods={periods} cycleLength={cycleLength} />
+                  {nextPeriod && (
+                    <CycleInsights 
+                      nextPeriod={nextPeriod} 
+                      cycleLength={cycleLength} 
+                      periodLength={periodLength}
+                      periods={periods} 
+                    />
+                  )}
                 </CardContent>
               </Card>
               
