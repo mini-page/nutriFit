@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'; 
 import MainLayout from '@/components/layout/MainLayout';
 import WaterTracker from '@/components/ui/water-tracker';
@@ -34,14 +33,11 @@ const defaultDashboardItems = {
 
 const Index = () => {
   const [dashboardItems, setDashboardItems] = useState({
-    // Trackers
     water: true,
     nutrition: true,
     exercise: true,
     mood: true,
     goals: true,
-    
-    // Quick actions (now part of actionable insights)
     quickWater: true,
     quickExercise: true,
     quickNutrition: true,
@@ -50,12 +46,10 @@ const Index = () => {
     quickBudget: false,
     quickMood: false,
     quickCycle: false,
-    
-    // Actionable cards
     healthScore: true,
     sleepQuality: true,
     workout: true,
-    calories: false, 
+    calories: false,
     moodTracker: false,
     activeGoals: true,
     journalEntry: false,
@@ -76,7 +70,6 @@ const Index = () => {
     }
   }, []);
 
-  // Water Tracker State and Functions
   const [waterIntake, setWaterIntake] = useState({ currentValue: 0, goal: 8 });
   const addWater = () => {
     setWaterIntake(prev => ({ ...prev, currentValue: Math.min(prev.currentValue + 1, prev.goal) }));
@@ -85,7 +78,6 @@ const Index = () => {
     setWaterIntake(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - 1) }));
   };
 
-  // Calorie Tracker State and Functions
   const [calorieIntake, setCalorieIntake] = useState({ currentValue: 0, goal: 2000 });
   const addCalorie = (amount: number) => {
     setCalorieIntake(prev => ({ ...prev, currentValue: prev.currentValue + amount }));
@@ -94,7 +86,6 @@ const Index = () => {
     setCalorieIntake(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - amount) }));
   };
 
-  // Exercise Tracker State and Functions
   const [exerciseMinutes, setExerciseMinutes] = useState({ currentValue: 0, goal: 30 });
   const addExercise = (minutes: number) => {
     setExerciseMinutes(prev => ({ ...prev, currentValue: prev.currentValue + minutes }));
@@ -103,7 +94,6 @@ const Index = () => {
     setExerciseMinutes(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - minutes) }));
   };
 
-  // Combined Actionable Insights
   const actionableInsightItems = {
     healthScore: dashboardItems.healthScore,
     sleepQuality: dashboardItems.sleepQuality,
@@ -126,15 +116,12 @@ const Index = () => {
         }));
       } catch (error) {
         console.error('Failed to parse dashboard items from localStorage', error);
-        // Optionally, reset to default items if parsing fails
         setDashboardItems(defaultDashboardItems);
       }
     } else {
-      // If no items are saved, use the default items
       setDashboardItems(defaultDashboardItems);
     }
 
-    // Ensure we have default values for the trackers if they are not in local storage
     if (!localStorage.getItem('waterIntake')) {
       localStorage.setItem('waterIntake', JSON.stringify(waterIntake));
     }
@@ -144,7 +131,6 @@ const Index = () => {
     if (!localStorage.getItem('exerciseMinutes')) {
       localStorage.setItem('exerciseMinutes', JSON.stringify(exerciseMinutes));
     }
-
   }, []);
 
   useEffect(() => {
@@ -185,10 +171,6 @@ const Index = () => {
         )}
         {dashboardItems.exercise && (
           <ExerciseTracker
-            currentMinutes={exerciseMinutes.currentValue}
-            goal={exerciseMinutes.goal}
-            addExercise={addExercise}
-            removeExercise={removeExercise}
             className="animate-on-mount opacity-0"
           />
         )}
