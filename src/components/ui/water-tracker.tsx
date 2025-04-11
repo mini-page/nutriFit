@@ -5,20 +5,14 @@ import { cn } from '@/lib/utils';
 
 interface WaterTrackerProps {
   className?: string;
+  waterData: { currentValue: number; goal: number };
+  addWater: () => void;
+  removeWater: () => void;
 }
 
-const WaterTracker: React.FC<WaterTrackerProps> = ({ className }) => {
-  const [waterIntake, setWaterIntake] = useState(0);
-  const goal = 8; // 8 glasses of water
-  const progress = Math.min((waterIntake / goal) * 100, 100);
-
-  const increaseWater = () => {
-    setWaterIntake(prev => Math.min(prev + 1, goal));
-  };
-
-  const decreaseWater = () => {
-    setWaterIntake(prev => Math.max(prev - 1, 0));
-  };
+const WaterTracker: React.FC<WaterTrackerProps> = ({ className, waterData, addWater, removeWater }) => {
+  const { currentValue, goal } = waterData;
+  const progress = Math.min((currentValue / goal) * 100, 100);
 
   return (
     <div className={cn("glass-card p-5", className)}>
@@ -45,16 +39,16 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ className }) => {
             }}
           />
           <div className="absolute inset-0 flex items-center justify-center flex-col">
-            <span className="text-3xl font-bold text-water-dark dark:text-water-light">{waterIntake}</span>
+            <span className="text-3xl font-bold text-water-dark dark:text-water-light">{currentValue}</span>
             <span className="text-sm text-muted-foreground">of {goal} glasses</span>
           </div>
         </div>
         
         <div className="flex gap-4 mt-2">
           <button 
-            onClick={decreaseWater}
+            onClick={removeWater}
             className="p-2 rounded-full bg-water-light text-water-dark dark:bg-water/30 dark:text-water-light hover:bg-water hover:text-white transition-colors"
-            disabled={waterIntake <= 0}
+            disabled={currentValue <= 0}
           >
             <Minus className="h-5 w-5" />
           </button>
@@ -62,7 +56,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ className }) => {
             onClick={increaseWater}
             className="p-2 rounded-full bg-water-light text-water-dark dark:bg-water/30 dark:text-water-light hover:bg-water hover:text-white transition-colors"
             disabled={waterIntake >= goal}
-          >
+          onClick={addWater}>
             <Plus className="h-5 w-5" />
           </button>
         </div>
