@@ -17,7 +17,9 @@ import {
 import ActionableCard from './ActionableCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
-import { DashboardItemsSelector } from '@/components/settings/appearance/DashboardItemsSelector';
+// Fix import to use default import
+import DashboardItemsSelector from '@/components/settings/appearance/DashboardItemsSelector';
+
 interface DashboardActionableCardsProps {
   visibleCards: Record<string, boolean>;
 }

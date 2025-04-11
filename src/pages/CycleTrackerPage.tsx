@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { format, addDays, differenceInDays, isSameDay } from 'date-fns';
@@ -11,6 +10,7 @@ import CycleTrackerMainView from '@/components/cycle-tracker/CycleTrackerMainVie
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { AlertCircle, Medal } from 'lucide-react';
 import SymptomForm from '@/components/cycle-tracker/SymptomForm';
+import { SymptomDetails } from '@/components/cycle-tracker/SymptomDetailsTypes';
 
 interface Period {
   startDate: Date;
@@ -50,10 +50,8 @@ const CycleTrackerPage = () => {
   const [showTracker, setShowTracker] = useState(false);
   const [streak, setStreak] = useState(0);
   
-  // Check if the user has permission to view this page
   useEffect(() => {
     const checkUserGender = () => {
-      // Get gender from localStorage
       const gender = localStorage.getItem('userGender') || '';
       
       if (gender === 'female' || gender === 'non-binary') {
@@ -63,10 +61,8 @@ const CycleTrackerPage = () => {
       }
     };
     
-    // Check initially
     checkUserGender();
     
-    // Calculate streak
     const lastLog = localStorage.getItem('lastCycleLog');
     if (lastLog) {
       const daysSinceLastLog = differenceInDays(new Date(), new Date(lastLog));
@@ -76,7 +72,6 @@ const CycleTrackerPage = () => {
       }
     }
     
-    // Listen for updates
     const handleUserProfileUpdate = (e: any) => {
       const { gender } = e.detail.userData;
       localStorage.setItem('userGender', gender);
@@ -96,11 +91,9 @@ const CycleTrackerPage = () => {
     };
   }, []);
   
-  // Calculate next period based on the most recent period
   const calculateNextPeriod = () => {
     if (periods.length === 0) return null;
     
-    // Sort periods by start date
     const sortedPeriods = [...periods].sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
     const lastPeriod = sortedPeriods[0];
     
@@ -126,7 +119,6 @@ const CycleTrackerPage = () => {
     setPeriods([...periods, newPeriod]);
     setPeriodStart(undefined);
     
-    // Update streak for gamification
     const currentStreak = Number(localStorage.getItem('cycleStreak') || '0');
     const newStreak = currentStreak + 1;
     localStorage.setItem('cycleStreak', String(newStreak));
@@ -208,10 +200,11 @@ const CycleTrackerPage = () => {
             </CardHeader>
             <CardContent>
               <SymptomForm 
-                symptomType={symptomType}
-                setSymptomType={setSymptomType}
-                symptomSeverity={symptomSeverity}
-                setSymptomSeverity={setSymptomSeverity}
+                symptomDetails={{ type: symptomType, severity: symptomSeverity }}
+                setSymptomDetails={(details) => {
+                  setSymptomType(details.type);
+                  setSymptomSeverity(details.severity);
+                }}
                 handleAddSymptom={handleAddSymptom}
               />
             </CardContent>

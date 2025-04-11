@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 
 interface CalorieTrackerProps {
   className?: string;
+  // Remove the expected properties that are not being used
 }
 
 const CalorieTracker: React.FC<CalorieTrackerProps> = ({ className }) => {

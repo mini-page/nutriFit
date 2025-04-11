@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react'; 
 import MainLayout from '@/components/layout/MainLayout';
 import WaterTracker from '@/components/ui/water-tracker';
@@ -9,7 +10,32 @@ import DashboardActionableCards from '@/components/dashboard/DashboardActionable
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { X } from 'lucide-react';
 
-const defaultDashboardItems = {
+// Updated interface to include all required properties
+interface DashboardItems {
+  water: boolean;
+  nutrition: boolean;
+  exercise: boolean;
+  mood: boolean;
+  goals: boolean;
+  quickWater: boolean;
+  quickExercise: boolean;
+  quickNutrition: boolean;
+  quickGoals: boolean;
+  quickSleep: boolean;
+  quickBudget: boolean;
+  quickMood: boolean;
+  quickCycle: boolean;
+  healthScore: boolean;
+  sleepQuality: boolean;
+  workout: boolean;
+  calories: boolean;
+  moodTracker: boolean;
+  activeGoals: boolean;
+  journalEntry: boolean;
+  habitsTracker: boolean;
+}
+
+const defaultDashboardItems: DashboardItems = {
   water: true,
   nutrition: true,
   exercise: true,
@@ -29,46 +55,12 @@ const defaultDashboardItems = {
   calories: false,
   moodTracker: false,
   activeGoals: true,
+  journalEntry: false,
+  habitsTracker: false
 };
 
 const Index = () => {
-  const [dashboardItems, setDashboardItems] = useState({
-    water: true,
-    nutrition: true,
-    exercise: true,
-    mood: true,
-    goals: true,
-    quickWater: true,
-    quickExercise: true,
-    quickNutrition: true,
-    quickGoals: true,
-    quickSleep: false,
-    quickBudget: false,
-    quickMood: false,
-    quickCycle: false,
-    healthScore: true,
-    sleepQuality: true,
-    workout: true,
-    calories: false,
-    moodTracker: false,
-    activeGoals: true,
-    journalEntry: false,
-    habitsTracker: false
-  });
-
-  useEffect(() => {
-    const savedDashboardItems = localStorage.getItem('dashboardItems');
-    if (savedDashboardItems) {
-      try {
-        setDashboardItems(prev => ({
-          ...prev,
-          ...JSON.parse(savedDashboardItems)
-        }));
-      } catch (error) {
-        console.error('Failed to parse dashboard items from localStorage', error);
-      }
-    }
-  }, []);
+  const [dashboardItems, setDashboardItems] = useState<DashboardItems>(defaultDashboardItems);
 
   const [waterIntake, setWaterIntake] = useState({ currentValue: 0, goal: 8 });
   const addWater = () => {
@@ -104,15 +96,23 @@ const Index = () => {
     quickWater: dashboardItems.quickWater,
     quickExercise: dashboardItems.quickExercise,
     quickNutrition: dashboardItems.quickNutrition,
+    journalEntry: dashboardItems.journalEntry,
+    habitsTracker: dashboardItems.habitsTracker,
+    quickGoals: dashboardItems.quickGoals,
+    quickSleep: dashboardItems.quickSleep,
+    quickBudget: dashboardItems.quickBudget,
+    quickMood: dashboardItems.quickMood,
+    quickCycle: dashboardItems.quickCycle
   };
 
   useEffect(() => {
     const savedDashboardItems = localStorage.getItem('dashboardItems');
     if (savedDashboardItems) {
       try {
+        const parsedItems = JSON.parse(savedDashboardItems);
         setDashboardItems(prev => ({
           ...prev,
-          ...JSON.parse(savedDashboardItems),
+          ...parsedItems
         }));
       } catch (error) {
         console.error('Failed to parse dashboard items from localStorage', error);
@@ -162,10 +162,6 @@ const Index = () => {
         )}
         {dashboardItems.nutrition && (
           <CalorieTracker
-            currentIntake={calorieIntake.currentValue}
-            goal={calorieIntake.goal}
-            addCalorie={addCalorie}
-            removeCalorie={removeCalorie}
             className="animate-on-mount opacity-0"
           />
         )}

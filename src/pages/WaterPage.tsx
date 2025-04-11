@@ -1,10 +1,27 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Droplet } from 'lucide-react';
 import WaterTracker from '@/components/ui/water-tracker';
 import MainLayout from '@/components/layout/MainLayout';
 
 const WaterPage = () => {
+  // Add necessary state and handlers for WaterTracker
+  const [waterIntake, setWaterIntake] = useState({ currentValue: 5, goal: 8 });
+  
+  const addWater = () => {
+    setWaterIntake(prev => ({ 
+      ...prev, 
+      currentValue: Math.min(prev.currentValue + 1, prev.goal) 
+    }));
+  };
+  
+  const removeWater = () => {
+    setWaterIntake(prev => ({ 
+      ...prev, 
+      currentValue: Math.max(0, prev.currentValue - 1) 
+    }));
+  };
+
   return (
     <MainLayout>
       <div className="mb-6">
@@ -16,7 +33,12 @@ const WaterPage = () => {
       </div>
       
       <div className="grid grid-cols-1 gap-6">
-        <WaterTracker className="h-auto" />
+        <WaterTracker 
+          className="h-auto" 
+          waterData={waterIntake}
+          addWater={addWater}
+          removeWater={removeWater}
+        />
         
         <div className="glass-card p-5">
           <h3 className="text-lg font-medium mb-4">Daily Water Consumption History</h3>
