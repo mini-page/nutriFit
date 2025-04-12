@@ -142,7 +142,7 @@ const Index = () => {
   }, []);
   return <MainLayout>
       <div className="mb-6 animate-on-mount opacity-0">
-        <h1 className="text-2xl font-bold mb-1">Trackify Dashboard</h1>
+        <h1 className="text-2xl font-bold mb-1 text-left"> Dashboard</h1>
         <p className="text-muted-foreground text-left text-xs pl-2 text-gray-500 font-medium">Track your life, simplify your journey</p>
       </div>
 
