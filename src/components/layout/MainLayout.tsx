@@ -15,8 +15,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
   const [userName, setUserName] = useState("Life Tracker!");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
+    // Load sidebar state from localStorage for desktop only
+    if (!isMobile) {
+      const savedState = localStorage.getItem('sidebar-collapsed');
+      if (savedState) {
+        setCollapsed(savedState === 'true');
+      }
+    }
+
     // Load user data from localStorage on component mount
     const loadUserName = () => {
       const savedUserData = localStorage.getItem('userData');
@@ -47,19 +56,29 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return () => {
       document.removeEventListener('user-profile-updated', handleProfileUpdate);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <TooltipProvider>
       <div className="min-h-screen flex w-full overflow-hidden">
         {/* Desktop sidebar is always visible but can be collapsed */}
-        {!isMobile && <SidebarNav hideLogo={false} />}
+        {!isMobile && 
+          <SidebarNav 
+            hideLogo={false} 
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+          />
+        }
         
-        {/* Mobile sidebar is shown conditionally */}
+        {/* Mobile sidebar is shown conditionally with overlay */}
         {isMobile && mobileMenuOpen && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setMobileMenuOpen(false)}>
             <div className="h-full w-[85%] max-w-[300px]" onClick={e => e.stopPropagation()}>
-              <SidebarNav hideLogo={false} />
+              <SidebarNav 
+                hideLogo={false} 
+                collapsed={false} 
+                setCollapsed={() => {}} // Empty function - collapse shouldn't be toggleable on mobile
+              />
             </div>
           </div>
         )}

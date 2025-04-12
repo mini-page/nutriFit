@@ -35,6 +35,8 @@ interface NavItemProps {
 
 interface SidebarNavProps {
   hideLogo?: boolean;
+  collapsed?: boolean;
+  setCollapsed?: (collapsed: boolean) => void;
 }
 
 const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active, collapsed }) => {
@@ -79,7 +81,11 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active, collapsed 
   );
 };
 
-const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
+const SidebarNav: React.FC<SidebarNavProps> = ({ 
+  hideLogo = false,
+  collapsed: propCollapsed, 
+  setCollapsed: propSetCollapsed
+}) => {
   // Get current route
   let pathname = '/';
   try {
@@ -89,22 +95,32 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
     console.warn('SidebarNav rendered outside Router context, defaulting active state to homepage');
   }
 
-  // State for collapsed sidebar
-  const [collapsed, setCollapsed] = useState(false);
+  // Use internal state if props not provided
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
   
-  // Load collapsed state from localStorage
+  // Determine which collapsed state and setter to use
+  const collapsed = propCollapsed !== undefined ? propCollapsed : internalCollapsed;
+  const setCollapsed = propSetCollapsed || setInternalCollapsed;
+  
+  // If using internal state, handle localStorage
   useEffect(() => {
-    const savedState = localStorage.getItem('sidebar-collapsed');
-    if (savedState) {
-      setCollapsed(savedState === 'true');
+    if (propCollapsed === undefined) {
+      const savedState = localStorage.getItem('sidebar-collapsed');
+      if (savedState) {
+        setInternalCollapsed(savedState === 'true');
+      }
     }
-  }, []);
+  }, [propCollapsed]);
   
-  // Save collapsed state to localStorage
+  // Save collapsed state to localStorage (only when using internal state)
   const toggleCollapsed = () => {
     const newState = !collapsed;
     setCollapsed(newState);
-    localStorage.setItem('sidebar-collapsed', String(newState));
+    
+    // Only save to localStorage if we're using internal state
+    if (propCollapsed === undefined) {
+      localStorage.setItem('sidebar-collapsed', String(newState));
+    }
   };
 
   // Nav items grouped by section
