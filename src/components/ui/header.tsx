@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Bell, Menu } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import UserProfileMenu from '@/components/ui/user-profile-menu';
-import NotificationButton from '@/components/ui/notification-button';
+import { UserProfileMenu } from '@/components/ui/user-profile-menu';
+import { NotificationButton } from '@/components/ui/notification-button';
 
 interface HeaderProps {
   userName?: string;
