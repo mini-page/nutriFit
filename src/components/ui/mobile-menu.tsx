@@ -1,17 +1,17 @@
-
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Activity, User } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { UserProfileMenu } from '@/components/ui/user-profile-menu';
-
 interface MobileMenuProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
-
-export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => {
+export const MobileMenu: React.FC<MobileMenuProps> = ({
+  isOpen,
+  setIsOpen
+}) => {
   // Fix body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
@@ -19,14 +19,11 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => 
     } else {
       document.body.style.overflow = '';
     }
-    
     return () => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
-
-  return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+  return <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <button className="p-2 text-primary-foreground hover:text-primary-foreground/80 focus:outline-none">
           <Menu className="h-5 w-5" />
@@ -43,12 +40,11 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, setIsOpen }) => 
             </div>
           </div>
           <ScrollArea className="flex-1 h-[calc(100vh-4rem)] overflow-y-auto">
-            <div className="pt-2">
+            <div className="pt-2 rounded-none mx-6 my-0 px-0 py-0 bg-stone-950">
               <SidebarNav hideLogo={true} />
             </div>
           </ScrollArea>
         </div>
       </SheetContent>
-    </Sheet>
-  );
+    </Sheet>;
 };
