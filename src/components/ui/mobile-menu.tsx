@@ -1,16 +1,13 @@
-
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Activity, User } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { UserProfileMenu } from '@/components/ui/user-profile-menu';
-
 interface MobileMenuProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
-
 export const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
   setIsOpen
@@ -26,7 +23,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       document.body.style.overflow = '';
     };
   }, [isOpen]);
-
   return <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <button className="p-2 text-primary-foreground hover:text-primary-foreground/80 focus:outline-none">
