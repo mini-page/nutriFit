@@ -43,11 +43,11 @@
     --calories-dark: 21 90% 40%;
     --calories-light: 21 90% 95%;
     
-    --sidebar: 0 0% 100%;
+    --sidebar: 240 20% 98%;
     --sidebar-border: 240 5.9% 90%;
-    --sidebar-foreground: 240, 10%, 4%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-foreground: 240 10% 30%;
+    --sidebar-accent: 240 4.8% 90%;
+    --sidebar-accent-foreground: 240 5.9% 30%;
     --sidebar-ring: 240 5.9% 10%;
   }
   
@@ -117,32 +117,6 @@
     /* Specifically remove any hover scaling effects */
     @apply transform-none hover:transform-none;
   }
-}
-
-.custom-header-class {
-  margin-top: 0.5rem;
-}
-
-/* Animate items when they mount */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-on-mount {
-  opacity: 0;
-  transition: all 0.3s ease-out;
-}
-
-.animate-enter {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* Fix for mobile sidebar scroll */

@@ -39,7 +39,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active }) => {
         "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
         active 
           ? "bg-primary/10 text-primary font-medium" 
-          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       )}
     >
       {icon}
@@ -82,22 +82,21 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
   ];
 
   return (
-    <div className="w-60 h-screen sticky top-0 flex flex-col border-r border-border bg-background/80 backdrop-blur-md">
+    <div className="w-full md:w-60 h-full flex flex-col border-r border-sidebar-border bg-sidebar">
       {!hideLogo && (
-        <div className="px-6 mb-2 pt-6">
+        <div className="px-6 pt-6 pb-4">
           <h1 className="text-2xl font-bold flex items-center">
             <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
               <Activity className="h-5 w-5" />
             </span>
             Trackify
           </h1>
-          <div className="mt-4 mx-0 mb-4"></div>
         </div>
       )}
       
       <ScrollArea className="flex-1">
         <div className="px-3 pb-6">
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Dashboard */}
             <div>
               <NavItem
@@ -111,7 +110,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
             {/* Health Tracking Section */}
             <div>
               <div className="px-4 py-1">
-                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Health</h3>
+                <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Health</h3>
               </div>
               <div className="space-y-1">
                 {healthNavItems.map((item) => (
@@ -129,7 +128,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
             {/* Mental & Emotional Tracking */}
             <div>
               <div className="px-4 py-1">
-                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Well-being</h3>
+                <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Well-being</h3>
               </div>
               <div className="space-y-1">
                 {wellbeingNavItems.map((item) => (
@@ -147,7 +146,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
             {/* Productivity & Goals */}
             <div>
               <div className="px-4 py-1">
-                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Productivity</h3>
+                <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Productivity</h3>
               </div>
               <div className="space-y-1">
                 {productivityNavItems.map((item) => (
@@ -164,8 +163,8 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
             
             {/* Settings at the bottom */}
             <div>
-              <div className="mt-3 px-4 py-1">
-                <h3 className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Preferences</h3>
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Preferences</h3>
               </div>
               <div className="space-y-1">
                 <NavItem

@@ -7,10 +7,12 @@ import { UserProfileMenu } from '@/components/ui/user-profile-menu';
 import { NotificationButton, Notification } from '@/components/ui/notification-button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useNavigate } from 'react-router-dom';
+
 interface HeaderProps {
   className?: string;
   userName?: string;
 }
+
 const Header: React.FC<HeaderProps> = ({
   className,
   userName: propUserName
@@ -21,6 +23,7 @@ const Header: React.FC<HeaderProps> = ({
   const [userName, setUserName] = useState(propUserName || "Umang");
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+
   useEffect(() => {
     // If prop is provided, use it
     if (propUserName) {
@@ -55,42 +58,50 @@ const Header: React.FC<HeaderProps> = ({
       document.removeEventListener('user-profile-updated', handleProfileUpdate);
     };
   }, [propUserName]);
+
   const handleDateClick = () => {
     navigate('/calendar');
   };
 
   // Notification data
-  const notifications: Notification[] = [{
-    id: 1,
-    title: "Water goal reached",
-    message: "Congratulations! You've reached your daily water intake goal.",
-    time: "10 minutes ago",
-    unread: true,
-    type: "achievement"
-  }, {
-    id: 2,
-    title: "Exercise reminder",
-    message: "Don't forget your strength training session today!",
-    time: "1 hour ago",
-    unread: true,
-    type: "reminder"
-  }, {
-    id: 3,
-    title: "Weekly progress summary",
-    message: "Your weekly health report is now available.",
-    time: "Yesterday",
-    unread: false,
-    type: "info"
-  }, {
-    id: 4,
-    title: "New feature available",
-    message: "Check out the new sleep tracking feature on your dashboard.",
-    time: "2 days ago",
-    unread: false,
-    type: "system"
-  }];
+  const notifications: Notification[] = [
+    {
+      id: 1,
+      title: "Water goal reached",
+      message: "Congratulations! You've reached your daily water intake goal.",
+      time: "10 minutes ago",
+      unread: true,
+      type: "achievement"
+    },
+    {
+      id: 2,
+      title: "Exercise reminder",
+      message: "Don't forget your strength training session today!",
+      time: "1 hour ago",
+      unread: true,
+      type: "reminder"
+    },
+    {
+      id: 3,
+      title: "Weekly progress summary",
+      message: "Your weekly health report is now available.",
+      time: "Yesterday",
+      unread: false,
+      type: "info"
+    },
+    {
+      id: 4,
+      title: "New feature available",
+      message: "Check out the new sleep tracking feature on your dashboard.",
+      time: "2 days ago",
+      unread: false,
+      type: "system"
+    }
+  ];
   const unreadCount = notifications.filter(n => n.unread).length;
-  return <header className={cn('w-full py-3 px-4 sm:px-8 flex items-center justify-between bg-primary text-primary-foreground sticky top-0 z-10 custom-header-class rounded-b-xl', className)}>
+
+  return (
+    <header className={cn('w-full py-3 px-4 flex items-center justify-between bg-primary text-primary-foreground sticky top-0 z-10 rounded-b-xl shadow-md', className)}>
       {/* Left section with mobile menu and branding */}
       <div className="flex items-center gap-3">
         {isMobile && <MobileMenu isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} />}
@@ -117,6 +128,8 @@ const Header: React.FC<HeaderProps> = ({
         {!isMobile && <NotificationButton notifications={notifications} />}
         <UserProfileMenu userName={userName} notifications={isMobile ? notifications : undefined} />
       </div>
-    </header>;
+    </header>
+  );
 };
+
 export default Header;
