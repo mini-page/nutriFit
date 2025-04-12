@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-col">
           <h1 className="text-xl font-bold flex items-center">
             {!isMobile ? <span>Hello, {userName}</span> : <>
-                <span className="bg-white text-primary rounded-lg p-1 mr-2">
+                <span className="bg-white text-primary rounded-lg p-1 mr-2 font-bold justify-center item-center flex mx-0 my-0 text-lg text-center px-[4px] py-[4px]">
                   <Activity className="h-5 w-5" />
                 </span>
                 Trackify
