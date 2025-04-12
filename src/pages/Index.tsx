@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import WaterTracker from '@/components/ui/water-tracker';
 import CalorieTracker from '@/components/ui/calorie-tracker';
@@ -34,7 +33,6 @@ interface DashboardItems {
   journalEntry: boolean;
   habitsTracker: boolean;
 }
-
 const defaultDashboardItems: DashboardItems = {
   water: true,
   nutrition: true,
@@ -58,34 +56,56 @@ const defaultDashboardItems: DashboardItems = {
   journalEntry: false,
   habitsTracker: false
 };
-
 const Index = () => {
   const [dashboardItems, setDashboardItems] = useState<DashboardItems>(defaultDashboardItems);
-
-  const [waterIntake, setWaterIntake] = useState({ currentValue: 0, goal: 8 });
+  const [waterIntake, setWaterIntake] = useState({
+    currentValue: 0,
+    goal: 8
+  });
   const addWater = () => {
-    setWaterIntake(prev => ({ ...prev, currentValue: Math.min(prev.currentValue + 1, prev.goal) }));
+    setWaterIntake(prev => ({
+      ...prev,
+      currentValue: Math.min(prev.currentValue + 1, prev.goal)
+    }));
   };
   const removeWater = () => {
-    setWaterIntake(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - 1) }));
+    setWaterIntake(prev => ({
+      ...prev,
+      currentValue: Math.max(0, prev.currentValue - 1)
+    }));
   };
-
-  const [calorieIntake, setCalorieIntake] = useState({ currentValue: 0, goal: 2000 });
+  const [calorieIntake, setCalorieIntake] = useState({
+    currentValue: 0,
+    goal: 2000
+  });
   const addCalorie = (amount: number) => {
-    setCalorieIntake(prev => ({ ...prev, currentValue: prev.currentValue + amount }));
+    setCalorieIntake(prev => ({
+      ...prev,
+      currentValue: prev.currentValue + amount
+    }));
   };
   const removeCalorie = (amount: number) => {
-    setCalorieIntake(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - amount) }));
+    setCalorieIntake(prev => ({
+      ...prev,
+      currentValue: Math.max(0, prev.currentValue - amount)
+    }));
   };
-
-  const [exerciseMinutes, setExerciseMinutes] = useState({ currentValue: 0, goal: 30 });
+  const [exerciseMinutes, setExerciseMinutes] = useState({
+    currentValue: 0,
+    goal: 30
+  });
   const addExercise = (minutes: number) => {
-    setExerciseMinutes(prev => ({ ...prev, currentValue: prev.currentValue + minutes }));
+    setExerciseMinutes(prev => ({
+      ...prev,
+      currentValue: prev.currentValue + minutes
+    }));
   };
   const removeExercise = (minutes: number) => {
-    setExerciseMinutes(prev => ({ ...prev, currentValue: Math.max(0, prev.currentValue - minutes) }));
+    setExerciseMinutes(prev => ({
+      ...prev,
+      currentValue: Math.max(0, prev.currentValue - minutes)
+    }));
   };
-
   useEffect(() => {
     const savedDashboardItems = localStorage.getItem('dashboardItems');
     if (savedDashboardItems) {
@@ -102,7 +122,6 @@ const Index = () => {
     } else {
       setDashboardItems(defaultDashboardItems);
     }
-
     if (!localStorage.getItem('waterIntake')) {
       localStorage.setItem('waterIntake', JSON.stringify(waterIntake));
     }
@@ -113,7 +132,6 @@ const Index = () => {
       localStorage.setItem('exerciseMinutes', JSON.stringify(exerciseMinutes));
     }
   }, []);
-
   useEffect(() => {
     const sections = document.querySelectorAll('.animate-on-mount');
     sections.forEach((section, index) => {
@@ -122,40 +140,21 @@ const Index = () => {
       }, 100 * index);
     });
   }, []);
-
-  return (
-    <MainLayout>
+  return <MainLayout>
       <div className="mb-6 animate-on-mount opacity-0">
         <h1 className="text-2xl font-bold mb-1">Trackify Dashboard</h1>
-        <p className="text-muted-foreground">Track your life, simplify your journey</p>
+        <p className="text-muted-foreground text-left text-xs pl-2 text-gray-500 font-medium">Track your life, simplify your journey</p>
       </div>
 
       <DashboardActionableCards visibleCards={dashboardItems} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dashboardItems.water && (
-          <WaterTracker
-            waterData={waterIntake}
-            addWater={addWater}
-            removeWater={removeWater}
-            className="animate-on-mount opacity-0"
-          />
-        )}
-        {dashboardItems.nutrition && (
-          <CalorieTracker
-            className="animate-on-mount opacity-0"
-          />
-        )}
-        {dashboardItems.exercise && (
-          <ExerciseTracker
-            className="animate-on-mount opacity-0"
-          />
-        )}
+        {dashboardItems.water && <WaterTracker waterData={waterIntake} addWater={addWater} removeWater={removeWater} className="animate-on-mount opacity-0" />}
+        {dashboardItems.nutrition && <CalorieTracker className="animate-on-mount opacity-0" />}
+        {dashboardItems.exercise && <ExerciseTracker className="animate-on-mount opacity-0" />}
         {dashboardItems.mood && <MoodTracker className="animate-on-mount opacity-0" />}
         {dashboardItems.goals && <DailyGoal className="animate-on-mount opacity-0" />}
       </div>
-    </MainLayout>
-  );
+    </MainLayout>;
 };
-
 export default Index;
