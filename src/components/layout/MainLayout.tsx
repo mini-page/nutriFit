@@ -4,6 +4,8 @@ import Header from '@/components/ui/header';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -12,6 +14,7 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
   const [userName, setUserName] = useState("Life Tracker!");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Load user data from localStorage on component mount
@@ -47,18 +50,31 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen flex w-full overflow-hidden">
-      {!isMobile && <SidebarNav hideLogo={false} />}
-      
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header userName={userName} />
-        <TooltipProvider>
+    <TooltipProvider>
+      <div className="min-h-screen flex w-full overflow-hidden">
+        {/* Desktop sidebar is always visible but can be collapsed */}
+        {!isMobile && <SidebarNav hideLogo={false} />}
+        
+        {/* Mobile sidebar is shown conditionally */}
+        {isMobile && mobileMenuOpen && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setMobileMenuOpen(false)}>
+            <div className="h-full w-[85%] max-w-[300px]" onClick={e => e.stopPropagation()}>
+              <SidebarNav hideLogo={false} />
+            </div>
+          </div>
+        )}
+        
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Header 
+            userName={userName}
+            onMenuClick={isMobile ? () => setMobileMenuOpen(!mobileMenuOpen) : undefined}
+          />
           <main className="flex-1 px-2 sm:px-4 lg:px-6 py-4 w-full overflow-auto">
             {children}
           </main>
-        </TooltipProvider>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
