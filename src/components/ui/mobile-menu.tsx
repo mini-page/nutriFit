@@ -1,15 +1,13 @@
-
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Activity } from 'lucide-react';
+import { Menu, Activity, User } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
+import { UserProfileMenu } from '@/components/ui/user-profile-menu';
 interface MobileMenuProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
-
 export const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
   setIsOpen
@@ -25,9 +23,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       document.body.style.overflow = '';
     };
   }, [isOpen]);
-
-  return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+  return <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <button className="p-2 text-primary-foreground hover:text-primary-foreground/80 focus:outline-none">
           <Menu className="h-5 w-5" />
@@ -35,14 +31,20 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-full max-w-[280px] border-0">
         <div className="flex flex-col h-full">
-          {/* Always use expanded sidebar in mobile view */}
-          <SidebarNav 
-            hideLogo={true} 
-            collapsed={false}
-            setCollapsed={() => {}} // Empty function since we don't want toggling on mobile
-          />
+          <div className="flex items-center justify-between p-4 bg-primary text-primary-foreground rounded-b-xl">
+            <div className="flex items-center">
+              <div className="bg-white text-primary rounded-lg p-1 mr-2">
+                <Activity className="h-5 w-5" />
+              </div>
+              <h1 className="text-xl font-bold">Trackify</h1>
+            </div>
+          </div>
+          <ScrollArea className="flex-1 h-[calc(100vh-4rem)] overflow-y-auto">
+            <div className="py-2 bg-background">
+              <SidebarNav hideLogo={true} />
+            </div>
+          </ScrollArea>
         </div>
       </SheetContent>
-    </Sheet>
-  );
+    </Sheet>;
 };

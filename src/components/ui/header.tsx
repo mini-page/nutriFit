@@ -1,66 +1,151 @@
-
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Bell, Menu } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import React, { useState, useEffect } from 'react';
+import { Activity, Bell } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { MobileMenu } from '@/components/ui/mobile-menu';
 import { UserProfileMenu } from '@/components/ui/user-profile-menu';
-import { NotificationButton } from '@/components/ui/notification-button';
-import { Notification } from '@/components/ui/notification-display';
+import { NotificationButton, Notification } from '@/components/ui/notification-button';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
+  className?: string;
   userName?: string;
-  onMenuClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ 
-  userName = 'Guest', 
-  onMenuClick 
+const Header: React.FC<HeaderProps> = ({
+  className,
+  userName: propUserName
 }) => {
+  const today = new Date();
+  const formattedDate = format(today, 'MMM dd, E');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userName, setUserName] = useState(propUserName || "Umang");
   const isMobile = useIsMobile();
-  const initials = userName.charAt(0).toUpperCase();
-  
-  // Sample notifications - in a real app, these would come from a state manager or API
-  const [notifications, setNotifications] = useState<Notification[]>([
+  const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    // Handle scroll to change header appearance
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // If prop is provided, use it
+    if (propUserName) {
+      setUserName(propUserName);
+      return;
+    }
+
+    // Load user name from localStorage
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      try {
+        const parsedData = JSON.parse(savedUserData);
+        if (parsedData.name) {
+          setUserName(parsedData.name.split(' ')[0]); // Use first name only
+        }
+      } catch (error) {
+        console.error('Failed to parse user data from localStorage', error);
+      }
+    }
+
+    // Listen for profile updates
+    const handleProfileUpdate = (event: any) => {
+      const {
+        userData
+      } = event.detail;
+      if (userData && userData.name) {
+        setUserName(userData.name.split(' ')[0]); // Use first name only
+      }
+    };
+    document.addEventListener('user-profile-updated', handleProfileUpdate);
+    return () => {
+      document.removeEventListener('user-profile-updated', handleProfileUpdate);
+    };
+  }, [propUserName]);
+
+  const handleDateClick = () => {
+    navigate('/calendar');
+  };
+
+  // Notification data
+  const notifications: Notification[] = [
     {
       id: 1,
-      title: "New Feature",
-      message: "Check out our new journal feature!",
-      time: "Just now",
+      title: "Water goal reached",
+      message: "Congratulations! You've reached your daily water intake goal.",
+      time: "10 minutes ago",
       unread: true,
-      type: "info"
+      type: "achievement"
     },
     {
       id: 2,
-      title: "Reminder",
-      message: "Don't forget to log your activity today",
-      time: "2 hours ago",
-      unread: false,
+      title: "Exercise reminder",
+      message: "Don't forget your strength training session today!",
+      time: "1 hour ago",
+      unread: true,
       type: "reminder"
+    },
+    {
+      id: 3,
+      title: "Weekly progress summary",
+      message: "Your weekly health report is now available.",
+      time: "Yesterday",
+      unread: false,
+      type: "info"
+    },
+    {
+      id: 4,
+      title: "New feature available",
+      message: "Check out the new sleep tracking feature on your dashboard.",
+      time: "2 days ago",
+      unread: false,
+      type: "system"
     }
-  ]);
+  ];
+  const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <header className="sticky top-0 z-30 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 items-center px-4">
-        {/* Mobile menu button */}
-        {onMenuClick && (
-          <Button variant="ghost" size="icon" onClick={onMenuClick} className="mr-2">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle menu</span>
-          </Button>
-        )}
-
-        <div className="flex-1">
-          <h2 className="text-xl font-semibold">
-            Welcome, {userName}
-          </h2>
+    <header 
+      className={cn(
+        'w-full py-3 px-4 flex items-center justify-between bg-primary text-primary-foreground rounded-b-xl shadow-md',
+        'sticky top-0 z-50 transition-all duration-200',
+        isScrolled ? 'shadow-lg bg-primary/95 backdrop-blur-sm' : '',
+        className
+      )}
+    >
+      {/* Left section with mobile menu and branding */}
+      <div className="flex items-center gap-3">
+        {isMobile && <MobileMenu isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} />}
+        
+        {/* App logo and greeting */}
+        <div className="flex flex-col">
+          <h1 className="text-xl font-bold flex items-center">
+            {!isMobile ? <span>Hello, {userName}</span> : <>
+                <span className="bg-white text-primary rounded-lg p-1 mr-2 font-bold justify-center item-center flex mx-0 my-0 text-lg text-center px-[4px] py-[4px]">
+                  <Activity className="h-5 w-5" />
+                </span>
+                Trackify
+              </>}
+          </h1>
+          <p onClick={handleDateClick} className="text-primary-foreground/80 text-xs cursor-pointer hover:text-primary-foreground transition-colors text-center">
+            {formattedDate}
+          </p>
         </div>
-
-        <div className="flex items-center gap-2">
-          <NotificationButton notifications={notifications} />
-          <UserProfileMenu userName={userName} notifications={notifications} />
-        </div>
+      </div>
+      
+      {/* Right section with notifications and profile */}
+      <div className="flex items-center gap-3">
+        {/* Show notification button and profile for both mobile and desktop */}
+        {!isMobile && <NotificationButton notifications={notifications} />}
+        <UserProfileMenu userName={userName} notifications={isMobile ? notifications : undefined} />
       </div>
     </header>
   );

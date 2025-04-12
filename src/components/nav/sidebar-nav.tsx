@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -15,55 +15,23 @@ import {
   Clock,
   CheckSquare,
   BookOpen,
-  Heart,
-  ChevronLeft,
-  ChevronRight,
-  Menu
+  Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface NavItemProps {
   icon: React.ReactNode;
   label: string;
   href: string;
   active?: boolean;
-  collapsed?: boolean;
 }
 
 interface SidebarNavProps {
   hideLogo?: boolean;
-  collapsed?: boolean;
-  setCollapsed?: (collapsed: boolean) => void;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active, collapsed }) => {
-  if (collapsed) {
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Link
-            to={href}
-            className={cn(
-              "flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-200 mx-auto my-1",
-              active 
-                ? "bg-primary/10 text-primary" 
-                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            )}
-          >
-            {icon}
-            {active && <div className="absolute right-0 w-1 h-1.5 rounded-full bg-primary" />}
-          </Link>
-        </TooltipTrigger>
-        <TooltipContent side="right">
-          {label}
-        </TooltipContent>
-      </Tooltip>
-    );
-  }
-
+const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active }) => {
   return (
     <Link
       to={href}
@@ -81,49 +49,17 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active, collapsed 
   );
 };
 
-const SidebarNav: React.FC<SidebarNavProps> = ({ 
-  hideLogo = false,
-  collapsed: propCollapsed, 
-  setCollapsed: propSetCollapsed
-}) => {
-  // Get current route
+const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
+  // Safely check if we can use useLocation
   let pathname = '/';
   try {
     const location = useLocation();
     pathname = location.pathname;
   } catch (error) {
+    // If useLocation throws an error, we're outside of Router context
     console.warn('SidebarNav rendered outside Router context, defaulting active state to homepage');
   }
 
-  // Use internal state if props not provided
-  const [internalCollapsed, setInternalCollapsed] = useState(false);
-  
-  // Determine which collapsed state and setter to use
-  const collapsed = propCollapsed !== undefined ? propCollapsed : internalCollapsed;
-  const setCollapsed = propSetCollapsed || setInternalCollapsed;
-  
-  // If using internal state, handle localStorage
-  useEffect(() => {
-    if (propCollapsed === undefined) {
-      const savedState = localStorage.getItem('sidebar-collapsed');
-      if (savedState) {
-        setInternalCollapsed(savedState === 'true');
-      }
-    }
-  }, [propCollapsed]);
-  
-  // Save collapsed state to localStorage (only when using internal state)
-  const toggleCollapsed = () => {
-    const newState = !collapsed;
-    setCollapsed(newState);
-    
-    // Only save to localStorage if we're using internal state
-    if (propCollapsed === undefined) {
-      localStorage.setItem('sidebar-collapsed', String(newState));
-    }
-  };
-
-  // Nav items grouped by section
   const healthNavItems = [
     { icon: <Droplet className="h-5 w-5 text-cyan-500" />, label: 'Water Tracker', href: '/water' },
     { icon: <Flame className="h-5 w-5 text-orange-500" />, label: 'Nutrition', href: '/nutrition' },
@@ -146,42 +82,20 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
   ];
 
   return (
-    <div 
-      className={cn(
-        "h-full flex flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 hidden md:flex",
-        collapsed ? "w-20" : "w-60"
-      )}
-    >
+    <div className="w-full md:w-60 h-full flex flex-col border-r border-sidebar-border bg-sidebar">
       {!hideLogo && (
-        <div className={cn(
-          "px-6 pt-6 pb-4 flex items-center",
-          collapsed && "justify-center px-2"
-        )}>
-          <h1 className={cn(
-            "text-2xl font-bold flex items-center",
-            collapsed ? "justify-center" : ""
-          )}>
+        <div className="px-6 pt-6 pb-4">
+          <h1 className="text-2xl font-bold flex items-center">
             <span className="bg-primary text-primary-foreground rounded-lg p-1 mr-2">
               <Activity className="h-5 w-5" />
             </span>
-            {!collapsed && "Trackify"}
+            Trackify
           </h1>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleCollapsed}
-            className="ml-auto"
-          >
-            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-          </Button>
         </div>
       )}
       
       <ScrollArea className="flex-1">
-        <div className={cn(
-          "px-3 pb-6",
-          collapsed && "px-1"
-        )}>
+        <div className="px-3 pb-6">
           <div className="space-y-4">
             {/* Dashboard */}
             <div>
@@ -190,17 +104,14 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
                 label="Dashboard"
                 href="/"
                 active={pathname === '/'}
-                collapsed={collapsed}
               />
             </div>
 
             {/* Health Tracking Section */}
             <div>
-              {!collapsed && (
-                <div className="px-4 py-1">
-                  <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Health</h3>
-                </div>
-              )}
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Health</h3>
+              </div>
               <div className="space-y-1">
                 {healthNavItems.map((item) => (
                   <NavItem
@@ -209,7 +120,6 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
                     label={item.label}
                     href={item.href}
                     active={pathname === item.href}
-                    collapsed={collapsed}
                   />
                 ))}
               </div>
@@ -217,11 +127,9 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             
             {/* Mental & Emotional Tracking */}
             <div>
-              {!collapsed && (
-                <div className="px-4 py-1">
-                  <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Well-being</h3>
-                </div>
-              )}
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Well-being</h3>
+              </div>
               <div className="space-y-1">
                 {wellbeingNavItems.map((item) => (
                   <NavItem
@@ -230,7 +138,6 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
                     label={item.label}
                     href={item.href}
                     active={pathname === item.href}
-                    collapsed={collapsed}
                   />
                 ))}
               </div>
@@ -238,11 +145,9 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             
             {/* Productivity & Goals */}
             <div>
-              {!collapsed && (
-                <div className="px-4 py-1">
-                  <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Productivity</h3>
-                </div>
-              )}
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Productivity</h3>
+              </div>
               <div className="space-y-1">
                 {productivityNavItems.map((item) => (
                   <NavItem
@@ -251,7 +156,6 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
                     label={item.label}
                     href={item.href}
                     active={pathname === item.href}
-                    collapsed={collapsed}
                   />
                 ))}
               </div>
@@ -259,18 +163,15 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             
             {/* Settings at the bottom */}
             <div>
-              {!collapsed && (
-                <div className="px-4 py-1">
-                  <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Preferences</h3>
-                </div>
-              )}
+              <div className="px-4 py-1">
+                <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Preferences</h3>
+              </div>
               <div className="space-y-1">
                 <NavItem
                   icon={<Settings className="h-5 w-5 text-gray-500" />}
                   label="Settings"
                   href="/settings"
                   active={pathname === '/settings'}
-                  collapsed={collapsed}
                 />
               </div>
             </div>
