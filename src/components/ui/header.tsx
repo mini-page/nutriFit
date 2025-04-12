@@ -23,6 +23,18 @@ const Header: React.FC<HeaderProps> = ({
   const [userName, setUserName] = useState(propUserName || "Umang");
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    // Handle scroll to change header appearance
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     // If prop is provided, use it
@@ -101,7 +113,14 @@ const Header: React.FC<HeaderProps> = ({
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <header className={cn('w-full py-3 px-4 flex items-center justify-between bg-primary text-primary-foreground sticky top-0 z-10 rounded-b-xl shadow-md', className)}>
+    <header 
+      className={cn(
+        'w-full py-3 px-4 flex items-center justify-between bg-primary text-primary-foreground rounded-b-xl shadow-md',
+        'sticky top-0 z-50 transition-all duration-200',
+        isScrolled ? 'shadow-lg bg-primary/95 backdrop-blur-sm' : '',
+        className
+      )}
+    >
       {/* Left section with mobile menu and branding */}
       <div className="flex items-center gap-3">
         {isMobile && <MobileMenu isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} />}
