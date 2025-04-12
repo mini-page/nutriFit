@@ -31,7 +31,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-full max-w-[280px] border-0">
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-4 bg-primary text-primary-foreground">
+          <div className="flex items-center justify-between p-4 bg-primary text-primary-foreground rounded-b-xl">
             <div className="flex items-center">
               <div className="bg-white text-primary rounded-lg p-1 mr-2">
                 <Activity className="h-5 w-5" />
