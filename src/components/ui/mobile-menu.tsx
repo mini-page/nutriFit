@@ -1,16 +1,13 @@
-
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Activity, X } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-
 interface MobileMenuProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
-
 export const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
   setIsOpen
@@ -26,15 +23,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       document.body.style.overflow = '';
     };
   }, [isOpen]);
-
-  return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+  return <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="h-9 w-9 rounded-full text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10 transition-colors"
-        >
+        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10 transition-colors">
           <Menu className="h-5 w-5" />
           <span className="sr-only">Open menu</span>
         </Button>
@@ -48,12 +39,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
               </div>
               <h1 className="text-xl font-bold">Trackify</h1>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-full hover:bg-white/10 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full transition-colors text-blue-700">
               <X className="h-5 w-5" />
               <span className="sr-only">Close menu</span>
             </Button>
@@ -70,6 +56,5 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
           </div>
         </div>
       </SheetContent>
-    </Sheet>
-  );
+    </Sheet>;
 };
