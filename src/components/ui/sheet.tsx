@@ -37,8 +37,8 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
     side
   }), className)} {...props}>
       {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary rounded-full font-thin text-base">
-        <X className="h-6 w-5 text-white mt-1 flex justify-center item-center rounded-full bg-blue-700 px-4 mx-[0px] py-4 my-0" />
+      <SheetPrimitive.Close className="absolute right-4 top-3  disabled:pointer-events-none rounded-full font-thin">
+        <X className="h-6 w-5 text-white mt-1 flex justify-center item-center rounded-full px-4 mx-[0px] py-4 my-0 bg-blue-700 text-white" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>
