@@ -115,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({
                 Trackify
               </>}
           </h1>
-          <Button variant="ghost" size="sm" onClick={handleDateClick} className="pl-2 p-1 mt-[2px] my-0 text-primary-foreground/70 hover:text-primary-foreground transition-colors flex items-center  text-xs bg-blue-800 hover:bg-blue-700 text-slate-50 ">
+          <Button variant="ghost" size="sm" onClick={handleDateClick} className="pl-2 p-1 mt-[2px] text-primary-foreground/70 hover:text-primary-foreground transition-colors flex items-center text-xs bg-blue-800 hover:bg-blue-700 font-thin text-slate-50 rounded-full">
             {formattedDate}
             <span className="ml-1 text-[0.6rem] bg-white/20 px-1.5 py-0.5 rounded-full">Today</span>
           </Button>
