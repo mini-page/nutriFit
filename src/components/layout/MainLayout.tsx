@@ -11,7 +11,7 @@ interface MainLayoutProps {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
-  const [userName, setUserName] = useState("Life Tracker!");
+  const [userName, setUserName] = useState("Trackify");
 
   useEffect(() => {
     // Load user data from localStorage on component mount
@@ -47,13 +47,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen flex w-full overflow-hidden">
-      {!isMobile && <SidebarNav hideLogo={false} />}
+    <div className="min-h-screen flex w-full overflow-hidden bg-background">
+      {!isMobile && (
+        <aside className="hidden md:block w-60 border-r border-border bg-card/30 backdrop-blur-sm">
+          <SidebarNav hideLogo={false} />
+        </aside>
+      )}
       
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header userName={userName} />
         <TooltipProvider>
-          <main className="flex-1 px-2 sm:px-4 lg:px-6 py-4 w-full overflow-auto">
+          <main className="flex-1 px-3 sm:px-5 lg:px-6 py-5 w-full overflow-auto">
             {children}
           </main>
         </TooltipProvider>

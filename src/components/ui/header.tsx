@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Activity, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -115,9 +116,9 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header 
       className={cn(
-        'w-full py-3 px-4 flex items-center justify-between bg-primary text-primary-foreground rounded-b-xl shadow-md',
-        'sticky top-0 z-50 transition-all duration-200',
-        isScrolled ? 'shadow-lg bg-primary/95 backdrop-blur-sm' : '',
+        'w-full py-3 px-4 flex items-center justify-between bg-primary text-primary-foreground',
+        'sticky top-0 z-50 transition-all duration-200 shadow-sm',
+        isScrolled ? 'shadow-md bg-primary/95 backdrop-blur-sm' : '',
         className
       )}
     >
@@ -129,13 +130,13 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-col">
           <h1 className="text-xl font-bold flex items-center">
             {!isMobile ? <span>Hello, {userName}</span> : <>
-                <span className="bg-white text-primary rounded-lg p-1 mr-2 font-bold justify-center item-center flex mx-0 my-0 text-lg text-center px-[4px] py-[4px]">
+                <span className="bg-white text-primary rounded-lg p-1 mr-2 flex items-center justify-center h-7 w-7">
                   <Activity className="h-5 w-5" />
                 </span>
                 Trackify
               </>}
           </h1>
-          <p onClick={handleDateClick} className="text-primary-foreground/80 text-xs cursor-pointer hover:text-primary-foreground transition-colors text-center">
+          <p onClick={handleDateClick} className="text-sm text-primary-foreground/80 cursor-pointer hover:text-primary-foreground transition-colors">
             {formattedDate}
           </p>
         </div>
@@ -144,7 +145,7 @@ const Header: React.FC<HeaderProps> = ({
       {/* Right section with notifications and profile */}
       <div className="flex items-center gap-3">
         {/* Show notification button and profile for both mobile and desktop */}
-        {!isMobile && <NotificationButton notifications={notifications} />}
+        <NotificationButton notifications={notifications} />
         <UserProfileMenu userName={userName} notifications={isMobile ? notifications : undefined} />
       </div>
     </header>
