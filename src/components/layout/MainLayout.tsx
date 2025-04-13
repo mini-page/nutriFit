@@ -62,8 +62,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <div className="min-h-screen flex w-full overflow-hidden bg-background">
       {!isMobile && (
         <aside className={cn(
-          "hidden md:block w-60 border-r border-border backdrop-blur-sm transition-all duration-300",
-          isScrolled ? "bg-card/50" : "bg-card/30"
+          "hidden md:block w-60 border-r border-border backdrop-blur-sm transition-all duration-300 z-10",
+          isScrolled ? "bg-card/70" : "bg-card/50"
         )}>
           <SidebarNav hideLogo={false} />
         </aside>

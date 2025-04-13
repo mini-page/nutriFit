@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Activity, Bell } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { MobileMenu } from '@/components/ui/mobile-menu';
@@ -8,6 +8,7 @@ import { UserProfileMenu } from '@/components/ui/user-profile-menu';
 import { NotificationButton, Notification } from '@/components/ui/notification-button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
   className?: string;
@@ -114,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({
     <header 
       className={cn(
         'w-full py-3 px-4 flex items-center justify-between bg-primary text-primary-foreground',
-        'sticky top-0 z-50 transition-all duration-200',
+        'sticky top-0 z-40 transition-all duration-200',
         isScrolled ? 'shadow-md bg-primary/95 backdrop-blur-sm' : 'shadow-sm',
         className
       )}
@@ -135,10 +136,15 @@ const Header: React.FC<HeaderProps> = ({
               </>
             )}
           </h1>
-          <p onClick={handleDateClick} className="text-sm text-primary-foreground/80 cursor-pointer hover:text-primary-foreground transition-colors flex items-center">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-auto p-0 -mt-1 text-sm text-primary-foreground/80 hover:text-primary-foreground transition-colors flex items-center"
+            onClick={handleDateClick}
+          >
             {formattedDate}
             <span className="ml-1 text-[0.6rem] bg-white/20 px-1.5 py-0.5 rounded-full">Today</span>
-          </p>
+          </Button>
         </div>
       </div>
       

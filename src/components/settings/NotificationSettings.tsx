@@ -3,68 +3,94 @@ import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { useIsMobile } from '@/hooks/use-mobile';
 import Reminder from '@/components/ui/Reminder';
+import { Bell, Info, Calendar, Target, Droplet, Mail, LucideIcon } from 'lucide-react';
 
-const NotificationSettings: React.FC = () => {
+interface NotificationOptionProps {
+  title: string;
+  description: string;
+  defaultChecked?: boolean;
+  icon?: React.ReactNode;
+}
+
+const NotificationOption: React.FC<NotificationOptionProps> = ({ 
+  title, 
+  description, 
+  defaultChecked = false, 
+  icon 
+}) => {
   const isMobile = useIsMobile();
   
   return (
+    <div className="flex items-center justify-between gap-2 py-2">
+      <div className={`flex gap-3 items-start ${isMobile ? 'max-w-[70%]' : ''}`}>
+        {icon && <div className="mt-0.5 text-muted-foreground">{icon}</div>}
+        <div>
+          <p className="font-medium text-sm md:text-base">{title}</p>
+          <p className="text-xs md:text-sm text-muted-foreground">{description}</p>
+        </div>
+      </div>
+      <Switch defaultChecked={defaultChecked} />
+    </div>
+  );
+};
+
+const NotificationSettings: React.FC = () => {
+  return (
     <div className="space-y-4 md:space-y-6">
       <div className="glass-card p-4 md:p-6">
-        <h3 className="text-md md:text-lg font-medium mb-3 md:mb-4">Notification Preferences</h3>
+        <h3 className="text-md md:text-lg font-medium mb-3 md:mb-4 flex items-center">
+          <Bell className="h-4 w-4 mr-2 text-primary" />
+          Notification Preferences
+        </h3>
         <div className="space-y-3 md:space-y-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className={`${isMobile ? 'max-w-[70%]' : ''}`}>
-              <p className="font-medium text-sm md:text-base">Daily Reminders</p>
-              <p className="text-xs md:text-sm text-muted-foreground">Receive daily reminders to log your activities</p>
-            </div>
-            <Switch defaultChecked />
-          </div>
+          <NotificationOption
+            title="Daily Reminders"
+            description="Receive daily reminders to log your activities"
+            defaultChecked
+            icon={<Calendar className="h-4 w-4" />}
+          />
           <Reminder />
           
-          <div className="flex items-center justify-between gap-2">
-            <div className={`${isMobile ? 'max-w-[70%]' : ''}`}>
-              <p className="font-medium text-sm md:text-base">Weekly Reports</p>
-              <p className="text-xs md:text-sm text-muted-foreground">Receive weekly summary of your progress</p>
-            </div>
-            <Switch defaultChecked />
-          </div>
+          <NotificationOption
+            title="Weekly Reports"
+            description="Receive weekly summary of your progress"
+            defaultChecked
+            icon={<Info className="h-4 w-4" />}
+          />
           
-          <div className="flex items-center justify-between gap-2">
-            <div className={`${isMobile ? 'max-w-[70%]' : ''}`}>
-              <p className="font-medium text-sm md:text-base">Goal Alerts</p>
-              <p className="text-xs md:text-sm text-muted-foreground">Get notified when you're close to achieving a goal</p>
-            </div>
-            <Switch defaultChecked />
-          </div>
+          <NotificationOption
+            title="Goal Alerts"
+            description="Get notified when you're close to achieving a goal"
+            defaultChecked
+            icon={<Target className="h-4 w-4" />}
+          />
           
-          <div className="flex items-center justify-between gap-2">
-            <div className={`${isMobile ? 'max-w-[70%]' : ''}`}>
-              <p className="font-medium text-sm md:text-base">Hydration Reminders</p>
-              <p className="text-xs md:text-sm text-muted-foreground">Periodic reminders to drink water</p>
-            </div>
-            <Switch defaultChecked />
-          </div>
+          <NotificationOption
+            title="Hydration Reminders"
+            description="Periodic reminders to drink water"
+            defaultChecked
+            icon={<Droplet className="h-4 w-4" />}
+          />
         </div>
       </div>
       
       <div className="glass-card p-4 md:p-6">
-        <h3 className="text-md md:text-lg font-medium mb-3 md:mb-4">Email Notifications</h3>
+        <h3 className="text-md md:text-lg font-medium mb-3 md:mb-4 flex items-center">
+          <Mail className="h-4 w-4 mr-2 text-primary" />
+          Email Notifications
+        </h3>
         <div className="space-y-3 md:space-y-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className={`${isMobile ? 'max-w-[70%]' : ''}`}>
-              <p className="font-medium text-sm md:text-base">Marketing Emails</p>
-              <p className="text-xs md:text-sm text-muted-foreground">Receive emails about new features and promotions</p>
-            </div>
-            <Switch />
-          </div>
+          <NotificationOption
+            title="Marketing Emails"
+            description="Receive emails about new features and promotions"
+            defaultChecked={false}
+          />
           
-          <div className="flex items-center justify-between gap-2">
-            <div className={`${isMobile ? 'max-w-[70%]' : ''}`}>
-              <p className="font-medium text-sm md:text-base">Health Tips</p>
-              <p className="text-xs md:text-sm text-muted-foreground">Weekly health and fitness tips</p>
-            </div>
-            <Switch defaultChecked />
-          </div>
+          <NotificationOption
+            title="Health Tips"
+            description="Weekly health and fitness tips"
+            defaultChecked
+          />
         </div>
       </div>
     </div>

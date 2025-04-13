@@ -1,10 +1,10 @@
 
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Activity, User, X } from 'lucide-react';
+import { Menu, Activity, X } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { UserProfileMenu } from '@/components/ui/user-profile-menu';
+import { Button } from '@/components/ui/button';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -30,9 +30,14 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <button className="p-2.5 rounded-full text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10 transition-colors focus:outline-none">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-9 w-9 rounded-full text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10 transition-colors"
+        >
           <Menu className="h-5 w-5" />
-        </button>
+          <span className="sr-only">Open menu</span>
+        </Button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-full max-w-[300px] border-r border-border shadow-lg">
         <div className="flex flex-col h-full">
@@ -43,12 +48,15 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
               </div>
               <h1 className="text-xl font-bold">Trackify</h1>
             </div>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-full hover:bg-white/10 transition-colors"
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-full hover:bg-white/10 transition-colors"
             >
               <X className="h-5 w-5" />
-            </button>
+              <span className="sr-only">Close menu</span>
+            </Button>
           </div>
           <ScrollArea className="flex-1 h-[calc(100vh-4rem)] overflow-y-auto py-4">
             <div className="py-2">

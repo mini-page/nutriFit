@@ -1,7 +1,7 @@
 
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X, AlertCircle, CheckCircle, Info } from "lucide-react"
+import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
@@ -46,11 +46,11 @@ const Alert = React.forwardRef<
     if (icon) return icon;
     
     switch(variant) {
-      case "destructive": return <AlertCircle className="h-4 w-4" />;
-      case "success": return <CheckCircle className="h-4 w-4" />;
-      case "info": 
-      case "warning":
-      default: return <Info className="h-4 w-4" />;
+      case "destructive": return <AlertCircle className="h-5 w-5" />;
+      case "success": return <CheckCircle className="h-5 w-5" />;
+      case "warning": return <AlertTriangle className="h-5 w-5" />;
+      case "info": return <Info className="h-5 w-5" />;
+      default: return <Info className="h-5 w-5" />;
     }
   };
 
@@ -70,7 +70,7 @@ const Alert = React.forwardRef<
       
       return () => clearTimeout(timer);
     }
-  }, [autoClose, autoCloseDelay, isVisible, onClose]);
+  }, [autoClose, autoCloseDelay, isVisible]);
 
   if (!isVisible) return null;
 
@@ -81,15 +81,15 @@ const Alert = React.forwardRef<
       className={cn(
         alertVariants({ variant }), 
         className, 
-        "pr-10 transition-opacity duration-300",
-        isClosing ? "opacity-0" : "opacity-100"
+        "pr-12 transition-all duration-300 shadow-sm",
+        isClosing ? "opacity-0 transform translate-y-2" : "opacity-100 transform translate-y-0"
       )}
       {...props}
     >
       {getDefaultIcon()}
       {children}
       <button 
-        className="absolute top-3 right-3 p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+        className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
         onClick={handleClose}
         aria-label="Close alert"
       >

@@ -1,103 +1,66 @@
 
 import React from 'react';
-import { 
-  Instagram, 
-  Github, 
-  Linkedin, 
-  Send, 
-  Image, 
-  Youtube, 
-  Twitter, 
-  Facebook,
-  Link
-} from 'lucide-react';
-import { Separator } from "@/components/ui/separator";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Github, Twitter, ExternalLink, Mail, Linkedin, Instagram } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-const AboutUsSettings = () => {
-  const socialLinks = [
-    { name: 'Instagram', icon: Instagram, link: 'https://instagram.com/ug_5711', username: '@ug_5711' },
-    { name: 'Github', icon: Github, link: 'https://github.com/mini-page', username: 'mini-page' },
-    { name: 'LinkedIn', icon: Linkedin, link: 'https://www.linkedin.com/in/umanggupta5711', username: 'umanggupta5711' },
-    { name: 'Twitter', icon: Twitter, link: 'https://x.com/RaghavS5711', username: 'RaghavS5711' },
-    { name: 'Telegram', icon: Send, link: 'https://t.me/raghav5711', username: '@raghav5711' },
-    { name: 'Snapchat', icon: Image, link: 'https://snapchat.com/add/raghav5711143', username: '@raghav5711143' },
-    { name: 'YouTube', icon: Youtube, link: 'https://www.youtube.com/@ug5711', username: '@ug5711' },
-  ];
-  
-  const faqs = [
-    {
-      question: "How do I track my water intake?",
-      answer: "Navigate to the Water section from the dashboard or sidebar. Use the plus and minus buttons to log your water intake throughout the day."
-    },
-    {
-      question: "Can I customize my dashboard?",
-      answer: "Yes! Go to Settings > Appearance > Customize Dashboard to select which trackers and quick actions appear on your dashboard."
-    },
-    {
-      question: "How do I set my nutrition goals?",
-      answer: "Go to the Nutrition page and use the settings icon to adjust your daily calorie and nutrient targets."
-    },
-    {
-      question: "Is my data saved automatically?",
-      answer: "Yes, all your tracking data is automatically saved to your local device. For a backup, you can export your data from Settings > Data & Privacy."
-    },
-    {
-      question: "How can I track my fitness goals?",
-      answer: "Use the Goals section to create specific, measurable fitness goals. Track your progress in the Exercise section."
-    }
-  ];
-  
+const AboutUsSettings: React.FC = () => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div className="glass-card p-4 md:p-6">
-        <h3 className="text-lg font-medium mb-4">About Trackify</h3>
-        <p className="text-muted-foreground mb-6">
-          Hello, I'm <strong>Umang</strong>, also known as Raghav & <strong>mini-page</strong>. As a student, my mission is to help others lead healthier, more organized lives. 
-          I am dedicated to building simple yet effective tools that guide users through their daily routines, 
-          ensuring they stay on the right track and live a balanced life. With Trackify, we aim to bring simplicity 
-          and effectiveness to your daily tracking needs.
+        <h3 className="text-md md:text-lg font-medium mb-3 md:mb-4">About Trackify</h3>
+        <p className="text-sm md:text-base text-muted-foreground mb-4">
+          Trackify is your all-in-one solution for tracking health, habits, and goals. 
+          We're dedicated to helping you live a healthier, more balanced life through
+          simple, effective tracking tools.
         </p>
         
-        <Separator className="my-6" />
-        
-        <h4 className="font-medium mb-4">Connect With Us</h4>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {socialLinks.map((social) => (
-            <a
-              key={social.name}
-              href={social.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors group"
-            >
-              <social.icon className="h-5 w-5 mr-3 text-primary group-hover:text-primary/80 transition-colors" />
-              <div>
-                <p className="font-medium text-sm">{social.name}</p>
-                <p className="text-xs text-muted-foreground">{social.username}</p>
-              </div>
-            </a>
-          ))}
+        <div className="flex flex-col space-y-3">
+          <p className="text-sm font-medium">Version 1.2.0</p>
+          <p className="text-xs text-muted-foreground">Released on April 10, 2025</p>
         </div>
-        
-        <Separator className="my-6" />
-        
-        <h4 className="font-medium mb-4">Frequently Asked Questions</h4>
-        <Accordion type="single" collapsible className="w-full">
-          {faqs.map((faq, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+      </div>
+      
+      <div className="glass-card p-4 md:p-6">
+        <h3 className="text-md md:text-lg font-medium mb-3 md:mb-4">Connect With Us</h3>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+          <Button variant="outline" size="sm" className="w-full justify-start">
+            <Twitter className="mr-2 h-4 w-4 text-blue-400" />
+            Twitter
+          </Button>
+          <Button variant="outline" size="sm" className="w-full justify-start">
+            <Instagram className="mr-2 h-4 w-4 text-pink-500" />
+            Instagram
+          </Button>
+          <Button variant="outline" size="sm" className="w-full justify-start">
+            <Github className="mr-2 h-4 w-4" />
+            GitHub
+          </Button>
+          <Button variant="outline" size="sm" className="w-full justify-start">
+            <Linkedin className="mr-2 h-4 w-4 text-blue-600" />
+            LinkedIn
+          </Button>
+          <Button variant="outline" size="sm" className="w-full justify-start">
+            <Mail className="mr-2 h-4 w-4 text-red-500" />
+            Email
+          </Button>
+          <Button variant="outline" size="sm" className="w-full justify-start">
+            <ExternalLink className="mr-2 h-4 w-4 text-green-500" />
+            Website
+          </Button>
+        </div>
+      </div>
+      
+      <div className="glass-card p-4 md:p-6">
+        <h3 className="text-md md:text-lg font-medium mb-3 md:mb-4">Legal</h3>
+        <div className="space-y-2">
+          <Button variant="link" className="h-auto p-0 text-sm text-primary">Terms of Service</Button>
+          <Button variant="link" className="h-auto p-0 text-sm text-primary">Privacy Policy</Button>
+          <Button variant="link" className="h-auto p-0 text-sm text-primary">Cookie Policy</Button>
+        </div>
+      </div>
+      
+      <div className="glass-card p-4 md:p-6 text-center">
+        <p className="text-xs text-muted-foreground">&copy; 2025 Trackify. All rights reserved.</p>
       </div>
     </div>
   );

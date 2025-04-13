@@ -3,6 +3,8 @@ import React from 'react';
 import { X, Bell, Info, CheckCircle, AlertTriangle, ExternalLink, BookOpen, CalendarClock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 export interface Notification {
   id: number;
@@ -35,7 +37,7 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
   
   return (
     <div 
-      className="fixed top-0 left-0 right-0 bottom-0 z-50 bg-black/20 backdrop-blur-sm"
+      className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm"
       onClick={onClose}
     >
       <div 
@@ -52,12 +54,15 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
             <Bell className="h-4 w-4" />
             Notifications
           </h3>
-          <button 
-            className="p-1.5 rounded-full hover:bg-secondary transition-colors"
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 rounded-full"
             onClick={onClose}
           >
             <X className="h-4 w-4" />
-          </button>
+            <span className="sr-only">Close</span>
+          </Button>
         </div>
         
         <div className="max-h-[60vh] overflow-y-auto py-2">
@@ -66,7 +71,7 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
               <div 
                 key={notification.id}
                 className={cn(
-                  "p-3 m-2 rounded-lg cursor-pointer transition-colors flex items-start gap-3",
+                  "p-3 mx-2 my-1 rounded-lg cursor-pointer transition-colors flex items-start gap-3",
                   notification.unread 
                     ? "bg-secondary/70 border-l-2 border-primary" 
                     : "bg-secondary/30 hover:bg-secondary/40"
@@ -78,14 +83,19 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-1">
-                    <h4 className={cn("font-medium", notification.unread && "text-foreground")}>{notification.title}</h4>
+                    <h4 className={cn(
+                      "font-medium", 
+                      notification.unread && "text-foreground"
+                    )}>
+                      {notification.title}
+                      {notification.unread && (
+                        <Badge variant="outline" className="ml-2 py-0 h-4 text-[10px] bg-primary/10 text-primary border-primary/20">New</Badge>
+                      )}
+                    </h4>
                     <span className="text-xs text-muted-foreground ml-2">{notification.time}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">{notification.message}</p>
                 </div>
-                {notification.unread && (
-                  <span className="h-2 w-2 rounded-full bg-primary mt-1"></span>
-                )}
               </div>
             ))
           ) : (
@@ -97,15 +107,17 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
         
         {notifications.length > 0 && (
           <div className="border-t p-3 flex justify-center">
-            <button 
-              className="text-sm text-primary hover:underline"
+            <Button 
+              variant="ghost"
+              size="sm"
+              className="text-sm text-primary hover:text-primary/80 hover:bg-primary/10"
               onClick={() => {
                 toast.success('All notifications marked as read');
                 onClose();
               }}
             >
               Mark all as read
-            </button>
+            </Button>
           </div>
         )}
       </div>

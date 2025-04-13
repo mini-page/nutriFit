@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -33,19 +34,29 @@ interface SidebarNavProps {
 
 const NavItem: React.FC<NavItemProps> = ({ icon, label, href, active }) => {
   return (
-    <Link
-      to={href}
-      className={cn(
-        "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
-        active 
-          ? "bg-primary/10 text-primary font-medium" 
-          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-      )}
-    >
-      {icon}
-      <span>{label}</span>
-      {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
-    </Link>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            to={href}
+            className={cn(
+              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
+              active 
+                ? "bg-primary/10 text-primary font-medium" 
+                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            )}
+            aria-label={label}
+          >
+            {icon}
+            <span className="text-sm">{label}</span>
+            {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="right" className="text-xs">
+          {label}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
@@ -109,7 +120,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
 
             {/* Health Tracking Section */}
             <div>
-              <div className="px-4 py-1">
+              <div className="px-4 py-2">
                 <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Health</h3>
               </div>
               <div className="space-y-1">
@@ -127,7 +138,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
             
             {/* Mental & Emotional Tracking */}
             <div>
-              <div className="px-4 py-1">
+              <div className="px-4 py-2">
                 <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Well-being</h3>
               </div>
               <div className="space-y-1">
@@ -145,7 +156,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
             
             {/* Productivity & Goals */}
             <div>
-              <div className="px-4 py-1">
+              <div className="px-4 py-2">
                 <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Productivity</h3>
               </div>
               <div className="space-y-1">
@@ -163,7 +174,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ hideLogo = false }) => {
             
             {/* Settings at the bottom */}
             <div>
-              <div className="px-4 py-1">
+              <div className="px-4 py-2">
                 <h3 className="text-xs uppercase font-medium text-sidebar-foreground/70 tracking-wider">Preferences</h3>
               </div>
               <div className="space-y-1">

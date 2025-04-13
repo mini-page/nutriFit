@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, AlertTriangle, Info, CheckCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface NotificationStripeProps {
   message: string;
@@ -17,6 +19,15 @@ export const NotificationStripe: React.FC<NotificationStripeProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
+  
+  const getIcon = () => {
+    switch (type) {
+      case 'success': return <CheckCircle className="h-4 w-4" />;
+      case 'warning': 
+      case 'error': return <AlertTriangle className="h-4 w-4" />;
+      default: return <Info className="h-4 w-4" />;
+    }
+  };
   
   const getBgColor = () => {
     switch (type) {
@@ -48,15 +59,24 @@ export const NotificationStripe: React.FC<NotificationStripeProps> = ({
   if (!isVisible) return null;
   
   return (
-    <div className={`notification-stripe ${getBgColor()} ${isClosing ? 'slide-up' : ''}`}>
-      <div className="flex-1 text-center text-sm md:text-base">{message}</div>
-      <button 
+    <div className={cn(
+      "notification-stripe fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-2 px-4", 
+      getBgColor(),
+      isClosing ? 'slide-up' : ''
+    )}>
+      <div className="flex-1 text-center text-sm md:text-base flex items-center justify-center">
+        <span className="mr-2">{getIcon()}</span>
+        <span>{message}</span>
+      </div>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6 rounded-full hover:bg-white/10 transition-colors"
         onClick={handleClose}
-        className="ml-2 p-1 rounded-full hover:bg-white/10 transition-colors"
         aria-label="Close notification"
       >
         <X className="h-4 w-4" />
-      </button>
+      </Button>
     </div>
   );
 };
