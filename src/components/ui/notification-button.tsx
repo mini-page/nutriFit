@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Bell } from 'lucide-react';
 import { NotificationDisplay } from '@/components/ui/notification-display';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 export type Notification = {
   id: number;
@@ -41,13 +42,20 @@ export const NotificationButton: React.FC<NotificationButtonProps> = ({
   return (
     <>
       <button 
-        className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors relative"
+        className={cn(
+          "p-2 rounded-full transition-colors relative",
+          unreadCount > 0 
+            ? "text-foreground hover:bg-secondary/70" 
+            : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+        )}
         onClick={toggleNotifications}
-        aria-label="Notifications"
+        aria-label={`Notifications ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}`}
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full" />
+          <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[1.2rem] h-[1.2rem] text-[0.65rem] font-medium bg-primary text-primary-foreground rounded-full px-1 leading-none">
+            {unreadCount}
+          </span>
         )}
       </button>
 

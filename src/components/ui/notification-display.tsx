@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, Bell, Info, CheckCircle, AlertTriangle } from 'lucide-react';
+import { X, Bell, Info, CheckCircle, AlertTriangle, ExternalLink, BookOpen, CalendarClock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -26,10 +26,10 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
   const getIconForType = (type: string) => {
     switch(type) {
       case 'achievement': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'reminder': return <Bell className="h-4 w-4 text-orange-500" />;
+      case 'reminder': return <CalendarClock className="h-4 w-4 text-orange-500" />;
       case 'info': return <Info className="h-4 w-4 text-blue-500" />;
-      case 'system':
-      default: return <Info className="h-4 w-4 text-primary" />;
+      case 'system': return <BookOpen className="h-4 w-4 text-primary" />;
+      default: return <Bell className="h-4 w-4 text-primary" />;
     }
   };
   
@@ -68,21 +68,24 @@ export const NotificationDisplay: React.FC<NotificationDisplayProps> & {
                 className={cn(
                   "p-3 m-2 rounded-lg cursor-pointer transition-colors flex items-start gap-3",
                   notification.unread 
-                    ? "bg-secondary/70" 
+                    ? "bg-secondary/70 border-l-2 border-primary" 
                     : "bg-secondary/30 hover:bg-secondary/40"
                 )}
                 onClick={() => NotificationDisplay.handleNotificationClick(notification.id)}
               >
-                <div className="mt-0.5">
+                <div className="mt-0.5 flex items-center justify-center h-6 w-6 rounded-full bg-background">
                   {getIconForType(notification.type)}
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-1">
-                    <h4 className="font-medium">{notification.title}</h4>
+                    <h4 className={cn("font-medium", notification.unread && "text-foreground")}>{notification.title}</h4>
                     <span className="text-xs text-muted-foreground ml-2">{notification.time}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">{notification.message}</p>
                 </div>
+                {notification.unread && (
+                  <span className="h-2 w-2 rounded-full bg-primary mt-1"></span>
+                )}
               </div>
             ))
           ) : (

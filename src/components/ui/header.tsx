@@ -59,9 +59,7 @@ const Header: React.FC<HeaderProps> = ({
 
     // Listen for profile updates
     const handleProfileUpdate = (event: any) => {
-      const {
-        userData
-      } = event.detail;
+      const { userData } = event.detail;
       if (userData && userData.name) {
         setUserName(userData.name.split(' ')[0]); // Use first name only
       }
@@ -111,14 +109,13 @@ const Header: React.FC<HeaderProps> = ({
       type: "system"
     }
   ];
-  const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
     <header 
       className={cn(
         'w-full py-3 px-4 flex items-center justify-between bg-primary text-primary-foreground',
-        'sticky top-0 z-50 transition-all duration-200 shadow-sm',
-        isScrolled ? 'shadow-md bg-primary/95 backdrop-blur-sm' : '',
+        'sticky top-0 z-50 transition-all duration-200',
+        isScrolled ? 'shadow-md bg-primary/95 backdrop-blur-sm' : 'shadow-sm',
         className
       )}
     >
@@ -129,23 +126,26 @@ const Header: React.FC<HeaderProps> = ({
         {/* App logo and greeting */}
         <div className="flex flex-col">
           <h1 className="text-xl font-bold flex items-center">
-            {!isMobile ? <span>Hello, {userName}</span> : <>
+            {!isMobile ? <span>Hello, {userName}</span> : (
+              <>
                 <span className="bg-white text-primary rounded-lg p-1 mr-2 flex items-center justify-center h-7 w-7">
                   <Activity className="h-5 w-5" />
                 </span>
                 Trackify
-              </>}
+              </>
+            )}
           </h1>
-          <p onClick={handleDateClick} className="text-sm text-primary-foreground/80 cursor-pointer hover:text-primary-foreground transition-colors">
+          <p onClick={handleDateClick} className="text-sm text-primary-foreground/80 cursor-pointer hover:text-primary-foreground transition-colors flex items-center">
             {formattedDate}
+            <span className="ml-1 text-[0.6rem] bg-white/20 px-1.5 py-0.5 rounded-full">Today</span>
           </p>
         </div>
       </div>
       
       {/* Right section with notifications and profile */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         {/* Show notification button and profile for both mobile and desktop */}
-        <NotificationButton notifications={notifications} />
+        <NotificationButton notifications={notifications} onMenuClose={() => setIsMenuOpen(false)} />
         <UserProfileMenu userName={userName} notifications={isMobile ? notifications : undefined} />
       </div>
     </header>

@@ -1,7 +1,7 @@
 
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X } from "lucide-react"
+import { X, AlertCircle, CheckCircle, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
@@ -9,9 +9,15 @@ const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-background text-foreground",
+        default: "bg-background text-foreground border-border",
         destructive:
           "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+        success: 
+          "border-green-500/50 text-green-600 dark:text-green-400 [&>svg]:text-green-500",
+        info:
+          "border-blue-500/50 text-blue-600 dark:text-blue-400 [&>svg]:text-blue-500",
+        warning:
+          "border-yellow-500/50 text-yellow-600 dark:text-yellow-400 [&>svg]:text-yellow-500",
       },
     },
     defaultVariants: {
@@ -25,19 +31,41 @@ interface AlertProps extends React.HTMLAttributes<HTMLDivElement>,
   onClose?: () => void;
   autoClose?: boolean;
   autoCloseDelay?: number;
+  icon?: React.ReactNode;
 }
 
 const Alert = React.forwardRef<
   HTMLDivElement,
   AlertProps
->(({ className, variant, children, onClose, autoClose = true, autoCloseDelay = 3000, ...props }, ref) => {
+>(({ className, variant, children, onClose, autoClose = true, autoCloseDelay = 3000, icon, ...props }, ref) => {
   const [isVisible, setIsVisible] = React.useState(true);
+  const [isClosing, setIsClosing] = React.useState(false);
+
+  // Get default icon based on variant
+  const getDefaultIcon = () => {
+    if (icon) return icon;
+    
+    switch(variant) {
+      case "destructive": return <AlertCircle className="h-4 w-4" />;
+      case "success": return <CheckCircle className="h-4 w-4" />;
+      case "info": 
+      case "warning":
+      default: return <Info className="h-4 w-4" />;
+    }
+  };
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      if (onClose) onClose();
+    }, 300); // Match the transition duration
+  };
 
   React.useEffect(() => {
     if (autoClose && isVisible) {
       const timer = setTimeout(() => {
-        setIsVisible(false);
-        if (onClose) onClose();
+        handleClose();
       }, autoCloseDelay);
       
       return () => clearTimeout(timer);
@@ -50,16 +78,19 @@ const Alert = React.forwardRef<
     <div
       ref={ref}
       role="alert"
-      className={cn(alertVariants({ variant }), className, "pr-10")}
+      className={cn(
+        alertVariants({ variant }), 
+        className, 
+        "pr-10 transition-opacity duration-300",
+        isClosing ? "opacity-0" : "opacity-100"
+      )}
       {...props}
     >
+      {getDefaultIcon()}
       {children}
       <button 
         className="absolute top-3 right-3 p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-        onClick={() => {
-          setIsVisible(false);
-          if (onClose) onClose();
-        }}
+        onClick={handleClose}
         aria-label="Close alert"
       >
         <X className="h-4 w-4" />

@@ -1,6 +1,16 @@
 
 import React from 'react';
-import { Instagram, Github, Linkedin, Send, Image, Youtube, Twitter } from 'lucide-react';
+import { 
+  Instagram, 
+  Github, 
+  Linkedin, 
+  Send, 
+  Image, 
+  Youtube, 
+  Twitter, 
+  Facebook,
+  Link
+} from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 import {
   Accordion,
@@ -64,9 +74,9 @@ const AboutUsSettings = () => {
               href={social.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors"
+              className="flex items-center p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors group"
             >
-              <social.icon className="h-5 w-5 mr-3 text-primary" />
+              <social.icon className="h-5 w-5 mr-3 text-primary group-hover:text-primary/80 transition-colors" />
               <div>
                 <p className="font-medium text-sm">{social.name}</p>
                 <p className="text-xs text-muted-foreground">{social.username}</p>

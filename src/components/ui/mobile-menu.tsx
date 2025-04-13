@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Activity, User } from 'lucide-react';
+import { Menu, Activity, User, X } from 'lucide-react';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { UserProfileMenu } from '@/components/ui/user-profile-menu';
@@ -30,7 +30,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <button className="p-2 text-primary-foreground hover:text-primary-foreground/80 focus:outline-none">
+        <button className="p-2.5 rounded-full text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10 transition-colors focus:outline-none">
           <Menu className="h-5 w-5" />
         </button>
       </SheetTrigger>
@@ -43,6 +43,12 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
               </div>
               <h1 className="text-xl font-bold">Trackify</h1>
             </div>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-1.5 rounded-full hover:bg-white/10 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
           <ScrollArea className="flex-1 h-[calc(100vh-4rem)] overflow-y-auto py-4">
             <div className="py-2">

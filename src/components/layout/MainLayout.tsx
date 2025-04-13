@@ -4,6 +4,7 @@ import Header from '@/components/ui/header';
 import SidebarNav from '@/components/nav/sidebar-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -12,6 +13,17 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
   const [userName, setUserName] = useState("Trackify");
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    // Handle scroll for visual changes
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     // Load user data from localStorage on component mount
@@ -49,7 +61,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex w-full overflow-hidden bg-background">
       {!isMobile && (
-        <aside className="hidden md:block w-60 border-r border-border bg-card/30 backdrop-blur-sm">
+        <aside className={cn(
+          "hidden md:block w-60 border-r border-border backdrop-blur-sm transition-all duration-300",
+          isScrolled ? "bg-card/50" : "bg-card/30"
+        )}>
           <SidebarNav hideLogo={false} />
         </aside>
       )}
