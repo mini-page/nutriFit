@@ -7,12 +7,16 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
+import { TextQuote, Palette, Sparkles } from 'lucide-react';
 
 const UIPreferences = () => {
   return (
     <div className="space-y-6">
-      <div>
-        <div className="mb-3 font-medium">Color Accent</div>
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium flex items-center gap-2">
+          <Palette className="h-5 w-5 text-primary" />
+          Color Accent
+        </h3>
         <ToggleGroup type="single" className="flex flex-wrap gap-2">
           <ToggleGroupItem value="blue" aria-label="Blue accent" className="w-10 h-10 rounded-full bg-blue-500" />
           <ToggleGroupItem value="green" aria-label="Green accent" className="w-10 h-10 rounded-full bg-green-500" />
@@ -23,8 +27,11 @@ const UIPreferences = () => {
         </ToggleGroup>
       </div>
       
-      <div>
-        <div className="mb-3 font-medium">Font Size</div>
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium flex items-center gap-2">
+          <TextQuote className="h-5 w-5 text-primary" />
+          Font Size
+        </h3>
         <div className="grid grid-cols-3 gap-2">
           <Button variant="outline" className="text-sm">Small</Button>
           <Button variant="outline" className="text-base bg-secondary">Medium</Button>
@@ -32,10 +39,13 @@ const UIPreferences = () => {
         </div>
       </div>
       
-      <div>
-        <div className="mb-3 font-medium">Animation & Effects</div>
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-primary" />
+          Animation & Effects
+        </h3>
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between p-3 rounded-lg border border-border">
             <div className="space-y-0.5">
               <FormLabel className="text-base">Reduce Motion</FormLabel>
               <p className="text-sm text-muted-foreground">Minimize animations throughout the app</p>
@@ -43,7 +53,7 @@ const UIPreferences = () => {
             <Switch />
           </div>
           
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between p-3 rounded-lg border border-border">
             <div className="space-y-0.5">
               <FormLabel className="text-base">Glass Effects</FormLabel>
               <p className="text-sm text-muted-foreground">Enable glass morphism effects</p>
