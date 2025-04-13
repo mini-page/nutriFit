@@ -2,7 +2,7 @@
 import React from 'react';
 import { FormLabel } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { SunMedium, Moon, Monitor } from 'lucide-react';
+import { SunMedium, Moon } from 'lucide-react';
 
 interface ThemeSelectorProps {
   theme: 'light' | 'dark' | 'system';
@@ -11,8 +11,8 @@ interface ThemeSelectorProps {
 
 const ThemeSelector: React.FC<ThemeSelectorProps> = ({ theme, handleThemeChange }) => {
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium">Theme Mode</h3>
+    <div>
+      <div className="mb-3 font-medium">Theme Mode</div>
       <RadioGroup
         value={theme}
         onValueChange={(value) => handleThemeChange(value as 'light' | 'dark' | 'system')}
@@ -43,7 +43,6 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ theme, handleThemeChange 
         <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors">
           <RadioGroupItem value="system" id="system" />
           <FormLabel htmlFor="system" className="flex items-center gap-2 cursor-pointer">
-            <Monitor className="h-5 w-5 text-gray-500 dark:text-gray-400" />
             <div>
               <p className="font-medium">System Preference</p>
               <p className="text-sm text-muted-foreground">Follow your system's theme setting</p>

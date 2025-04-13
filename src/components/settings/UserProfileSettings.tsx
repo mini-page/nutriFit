@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import UserProfileCard from '@/components/profile/UserProfileCard';
-import { User } from 'lucide-react';
 
 interface UserData {
   name: string;
@@ -63,10 +62,6 @@ const UserProfileSettings = () => {
   
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-medium flex items-center gap-2">
-        <User className="h-5 w-5 text-primary" />
-        Personal Information
-      </h3>
       <UserProfileCard
         userData={userData}
         handleInputChange={handleInputChange}

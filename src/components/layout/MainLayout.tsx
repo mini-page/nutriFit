@@ -72,10 +72,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header userName={userName} />
         <TooltipProvider>
-          <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 w-full overflow-auto">
-            <div className="max-w-7xl mx-auto">
-              {children}
-            </div>
+          <main className="flex-1 px-3 sm:px-5 lg:px-6 py-5 w-full overflow-auto">
+            {children}
           </main>
         </TooltipProvider>
       </div>
