@@ -39,7 +39,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
               </div>
               <h1 className="text-xl font-bold">Trackify</h1>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full transition-colors text-blue-700">
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full transition-colors text-blue-700 bg-blue-700 hover:bg-blue-600">
               <X className="h-5 w-5" />
               <span className="sr-only">Close menu</span>
             </Button>
