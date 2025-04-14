@@ -1,3 +1,6 @@
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=mini-page/trackify@github)](https://gitads.dev/v1/ad-track?source=mini-page/trackify@github)
+
 
 # Trackify - Your Daily Tracking Companion
 
@@ -50,6 +53,8 @@ Trackify offers a wide range of features to help you manage and improve your dai
 - **Routing**: React Router
 - **Data Visualization**: Recharts
 - **Icons**: Lucide React
+
+(https://gitads.dev/v1/ad-serve?source=mini-page/trackify@github)](https://gitads.dev/v1/ad-track?source=mini-page/trackify@github)
 
 ## 🚀 Getting Started
 
