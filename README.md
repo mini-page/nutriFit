@@ -96,3 +96,8 @@ To contribute:
 3. Commit your changes (`git commit -m 'Add some YourFeature'`)
 4. Push to the branch (`git push origin feature/YourFeature`)
 5. Open a pull request
+
+
+
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=mini-page/trackify@github)](https://gitads.dev/v1/ad-track?source=mini-page/trackify@github)
