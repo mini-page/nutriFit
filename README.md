@@ -24,7 +24,7 @@ Trackify offers a wide range of features to help you manage and improve your dai
 *   **✍️ Journal**: Maintain a personal journal to record thoughts, feelings, and daily reflections.
 *   **✅ Habit Tracker**: Set and track daily and weekly habits to build positive routines.
 *   **🎯 Goals Tracker**: Define and track your personal health and wellness objectives.
-
+<!-- GitAds-Verify: OPIGWXGTEILFL2PIKERJDS9E41DHPDR1 -->
 #### Additional Features
 *   **🔔 Reminders and Notifications**: Set custom reminders to help you stay consistent with your tracking.
 *   **🎨 Customizable Dashboard**: Personalize your dashboard by choosing which metrics to display.
